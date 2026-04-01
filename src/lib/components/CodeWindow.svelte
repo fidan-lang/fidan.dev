@@ -13,6 +13,10 @@
     compact?: boolean;
   }>();
 
+  const normalizedCode = $derived(
+    code.replace(/\r\n/g, "\n").replace(/^\n+/, "").replace(/\n+$/, ""),
+  );
+
   function getPromptForLanguage(value: string): string | null {
     const normalized = value.trim().toLowerCase();
 
@@ -29,18 +33,14 @@
 
   const prompt = $derived(getPromptForLanguage(language));
   const promptedLines = $derived.by(() => {
-    const lines = code.replace(/\r\n/g, "\n").split("\n");
-    if (code.endsWith("\n") && lines.at(-1) === "") {
-      lines.pop();
-    }
-    return lines;
+    return normalizedCode ? normalizedCode.split("\n") : [];
   });
 
   let copied = $state(false);
   let copyTimer: ReturnType<typeof setTimeout> | undefined;
 
   async function copyCode() {
-    await navigator.clipboard.writeText(code);
+    await navigator.clipboard.writeText(normalizedCode);
     copied = true;
     clearTimeout(copyTimer);
     copyTimer = setTimeout(() => {
@@ -68,22 +68,17 @@
     </button>
   </div>
   <pre
-    class="overflow-x-auto px-5 text-sm leading-7 text-[var(--color-text)]"
+    class="m-0 overflow-x-auto px-4 text-sm leading-7 text-[var(--color-text)] sm:px-5"
     class:py-4={compact}
-    class:py-6={!compact}>
-    {#if prompt}
-      <code class="language-{language} code-block--prompted">
-        {#each promptedLines as line}
-          <span class="code-line">
-            <span class="code-prompt" aria-hidden="true">{prompt}</span>
-            <span class="code-line__content">{line || "\u00A0"}</span>
-          </span>
-        {/each}
-      </code>
-    {:else}
-      <code class="language-{language}">{code}</code>
-    {/if}
-  </pre>
+    class:py-6={!compact}>{#if prompt}<code
+        class="language-{language} code-block--prompted"
+        >{#each promptedLines as line}<span class="code-line"
+            ><span class="code-prompt" aria-hidden="true">{prompt}</span><span
+              class="code-line__content">{line || "\u00A0"}</span
+            ></span
+          >{/each}</code
+      >{:else}<code class="language-{language}">{normalizedCode}</code
+      >{/if}</pre>
 </div>
 
 <CopyToast visible={copied} />

@@ -275,10 +275,10 @@ pre {
 }
 
 .code-block--prompted {
-  display: block;
-  width: 100%;
+  display: inline-block;
+  min-width: 100%;
+  width: max-content;
   border-radius: 1rem;
-  overflow: hidden;
   background-clip: padding-box;
 }
 
