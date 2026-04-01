@@ -46,6 +46,10 @@ html {
   scroll-behavior: smooth;
 }
 
+html.is-route-changing {
+  scroll-behavior: auto;
+}
+
 body {
   min-height: 100vh;
   margin: 0;

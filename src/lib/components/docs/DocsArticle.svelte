@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import CopyToast from "$lib/components/CopyToast.svelte";
   import type { DocPage } from "$lib/content/docs";
   import type { TocItem } from "$lib/utils/markdown";
@@ -71,12 +70,6 @@
       handleTabs(event);
     }
   }
-
-  async function handleDocPagerClick(event: MouseEvent, href: string) {
-    event.preventDefault();
-    await goto(href, { keepFocus: true, noScroll: false });
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }
 </script>
 
 <article class="panel rounded-[var(--radius-xl)] p-6 sm:p-10">
@@ -109,7 +102,6 @@
       <a
         href={previousHref}
         class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/25 hover:bg-[color-mix(in_srgb,var(--color-surface-3)_78%,white_6%)]"
-        onclick={(event) => handleDocPagerClick(event, previousHref)}
       >
         <div
           class="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-muted)]"
@@ -140,7 +132,6 @@
       <a
         href={nextHref}
         class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 text-right transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/25 hover:bg-[color-mix(in_srgb,var(--color-surface-3)_78%,white_6%)]"
-        onclick={(event) => handleDocPagerClick(event, nextHref)}
       >
         <div
           class="mb-2 flex items-center justify-end gap-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-muted)]"
