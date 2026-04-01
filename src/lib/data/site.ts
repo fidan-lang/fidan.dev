@@ -134,14 +134,17 @@ export const compareRows = [
 export const installCommands = [
   {
     label: "Windows PowerShell",
+    language: "powershell",
     command: "iwr https://fidan.dev/install.ps1 -UseBasicParsing | iex"
   },
   {
     label: "macOS / Linux",
+    language: "bash",
     command: "curl -fsSL https://fidan.dev/install.sh | sh"
   },
   {
     label: "From release archive",
+    language: "url",
     command: "Download the latest release from https://github.com/fidan-lang/fidan/releases/latest and add fidan to your PATH."
   }
 ] as const;

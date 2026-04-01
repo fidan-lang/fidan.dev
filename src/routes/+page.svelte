@@ -152,7 +152,7 @@
         {#each installCommands as install}
           <div class="panel rounded-[var(--radius-lg)] p-6">
             <div class="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-earth-light)]">{install.label}</div>
-            <CodeWindow title={install.label} code={install.command} language="bash" compact={true} />
+            <CodeWindow title={install.label} code={install.command} language={install.language} compact={true} />
           </div>
         {/each}
       </div>
