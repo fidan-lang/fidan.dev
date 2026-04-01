@@ -39,7 +39,18 @@
           <div class="text-sm text-[var(--color-text-muted)]">{release.date}</div>
         </div>
         <p class="mb-4 text-sm leading-7 text-[var(--color-text-muted)]">{release.summary}</p>
-        <div class="text-sm font-medium text-[var(--color-primary-light)] transition group-hover:translate-x-1">Open release →</div>
+        <div class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-primary-light)] transition group-hover:translate-x-1">
+          <span>Open release</span>
+          <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M8.25 4.75 13.5 10l-5.25 5.25"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.7"
+            />
+          </svg>
+        </div>
       </a>
     {/each}
   </section>

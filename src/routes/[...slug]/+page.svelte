@@ -21,7 +21,18 @@
 <main class="mx-auto max-w-[1600px] px-4 py-10 sm:px-6 lg:px-8">
   <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
     <div>
-      <a href="/" class="mb-3 inline-flex text-sm text-[var(--color-primary-light)]">← Back to docs home</a>
+      <a href="/" class="mb-3 inline-flex items-center gap-2 text-sm text-[var(--color-primary-light)]">
+        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M11.75 4.75 6.5 10l5.25 5.25"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.7"
+          />
+        </svg>
+        <span>Back to docs home</span>
+      </a>
       <div class="text-sm uppercase tracking-[0.2em] text-[var(--color-text-muted)]">docs.fidan.dev</div>
     </div>
     <div class="w-full max-w-md">
