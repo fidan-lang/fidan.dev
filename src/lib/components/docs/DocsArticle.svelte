@@ -101,14 +101,14 @@
     {#if previousHref}
       <a
         href={previousHref}
-        class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/25 hover:bg-[color-mix(in_srgb,var(--color-surface-3)_78%,white_6%)]"
+        class="group rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/25 hover:bg-[color-mix(in_srgb,var(--color-surface-3)_78%,white_6%)]"
       >
         <div
           class="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-muted)]"
         >
           <svg
             aria-hidden="true"
-            class="h-3.5 w-3.5"
+            class="arrow-icon arrow-icon--left h-3.5 w-3.5"
             viewBox="0 0 20 20"
             fill="none"
           >
@@ -131,7 +131,7 @@
     {#if nextHref}
       <a
         href={nextHref}
-        class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 text-right transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/25 hover:bg-[color-mix(in_srgb,var(--color-surface-3)_78%,white_6%)]"
+        class="group rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 text-right transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/25 hover:bg-[color-mix(in_srgb,var(--color-surface-3)_78%,white_6%)]"
       >
         <div
           class="mb-2 flex items-center justify-end gap-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-muted)]"
@@ -139,7 +139,7 @@
           <span>Next</span>
           <svg
             aria-hidden="true"
-            class="h-3.5 w-3.5"
+            class="arrow-icon h-3.5 w-3.5"
             viewBox="0 0 20 20"
             fill="none"
           >

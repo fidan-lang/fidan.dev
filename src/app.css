@@ -132,6 +132,35 @@ pre {
   color: transparent;
 }
 
+.arrow-icon {
+  transition:
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 360ms ease-in-out;
+  will-change: transform;
+}
+
+.group:hover .arrow-icon,
+.group:focus-visible .arrow-icon,
+a:hover .arrow-icon,
+a:focus-visible .arrow-icon,
+button:hover .arrow-icon,
+button:focus-visible .arrow-icon {
+  transform: translateX(4px);
+}
+
+.arrow-icon--left {
+  transform: translateX(0);
+}
+
+.group:hover .arrow-icon--left,
+.group:focus-visible .arrow-icon--left,
+a:hover .arrow-icon--left,
+a:focus-visible .arrow-icon--left,
+button:hover .arrow-icon--left,
+button:focus-visible .arrow-icon--left {
+  transform: translateX(-4px);
+}
+
 .prose {
   color: var(--color-text);
   line-height: 1.8;
