@@ -499,7 +499,7 @@ pre {
   }
 
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-5px);
     opacity: 1;
   }
 }

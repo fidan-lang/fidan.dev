@@ -1,19 +1,19 @@
 <script lang="ts">
   import CodeWindow from "$lib/components/CodeWindow.svelte";
-  import DocsHome from "./docs-home.svelte";
   import Footer from "$lib/components/marketing/Footer.svelte";
   import Nav from "$lib/components/marketing/Nav.svelte";
   import {
-    compareRows,
-    featureCards,
-    heroSnippet,
-    installCommands,
-    marketingSections,
-    primaryNav,
-    proofStats,
-    switchCards
+      compareRows,
+      featureCards,
+      heroSnippet,
+      installCommands,
+      marketingSections,
+      primaryNav,
+      proofStats,
+      switchCards
   } from "$lib/data/site";
   import { docsHomeCards } from "$lib/utils/docs";
+  import DocsHome from "./docs-home.svelte";
 
   let { data } = $props();
 
@@ -38,7 +38,7 @@
   <main>
     <section class="relative overflow-hidden">
       <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(132,204,22,0.14),transparent_34%),radial-gradient(circle_at_78%_12%,rgba(186,143,97,0.14),transparent_20%)]"></div>
-      <div class="mx-auto grid max-w-7xl gap-14 px-4 py-20 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-28">
+      <div class="mx-auto grid max-w-7xl gap-14 px-4 py-12 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-20">
         <div class="animate-fade-up">
           <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--color-primary)]/25 bg-[var(--color-primary)]/10 px-4 py-2 text-sm text-[var(--color-primary-light)]">
             <span class="h-2 w-2 rounded-full bg-[var(--color-primary)] animate-glow-float"></span>

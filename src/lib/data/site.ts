@@ -39,7 +39,8 @@ export const footerColumns = [
   }
 ] satisfies Array<{ title: string; links: NavLink[] }>;
 
-export const heroSnippet = `use std.async as async
+export const heroSnippet = `
+use std.async as async
 use std.io as io
 
 action main {
