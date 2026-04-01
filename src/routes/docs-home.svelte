@@ -23,12 +23,12 @@
 
   <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
     {#each cards as card}
-      <a href={card.href} class="panel group rounded-[var(--radius-lg)] p-6 transition hover:-translate-y-1 hover:border-[var(--color-primary)]/30 hover:shadow-[0_20px_60px_rgba(132,204,22,0.08)]">
+      <a href={card.href} class="panel group flex h-full flex-col rounded-[var(--radius-lg)] p-6 transition hover:-translate-y-1 hover:border-[var(--color-primary)]/30 hover:shadow-[0_20px_60px_rgba(132,204,22,0.08)]">
         <div class="mb-4 inline-flex rounded-full border border-white/8 bg-white/4 px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)]">
           {card.label}
         </div>
         <h2 class="mb-3 text-2xl font-semibold text-white">{card.label}</h2>
-        <p class="text-sm leading-7 text-[var(--color-text-muted)]">{card.description}</p>
+        <p class="flex-1 text-sm leading-7 text-[var(--color-text-muted)]">{card.description}</p>
         <div class="mt-6 text-sm font-medium text-[var(--color-primary-light)] transition group-hover:translate-x-1">Open section →</div>
       </a>
     {/each}

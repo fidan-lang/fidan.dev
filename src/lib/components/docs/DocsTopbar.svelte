@@ -30,10 +30,9 @@
       </nav>
     </div>
 
-    <div class="hidden items-center gap-3 md:flex">
-      <a href="https://fidan.dev" class="text-sm text-[var(--color-text-muted)] transition hover:text-white">Main site</a>
+    <div class="hidden items-center gap-5 md:flex">
+      <a href="https://fidan.dev" class="whitespace-nowrap text-sm text-[var(--color-text-muted)] transition hover:text-white">Main site</a>
       <a href="/releases" class="text-sm text-[var(--color-text-muted)] transition hover:text-white">Releases</a>
-      <a href="https://dal.fidan.dev" class="text-sm text-[var(--color-text-muted)] transition hover:text-white">Dal</a>
       <a
         href="https://github.com/fidan-lang/fidan"
         class="rounded-full border border-white/8 px-4 py-2 text-sm text-white transition hover:border-[var(--color-primary)]/25 hover:text-[var(--color-primary-light)]"
