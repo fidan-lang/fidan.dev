@@ -1,0 +1,37 @@
+name: Verification Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "static/**"
+      - "e2e/**"
+      - "package.json"
+      - "package-lock.json"
+      - "playwright.config.ts"
+      - "svelte.config.js"
+      - "tsconfig.json"
+      - "vite.config.mts"
+      - "wrangler.toml"
+      - ".github/workflows/**"
+
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "static/**"
+      - "e2e/**"
+      - "package.json"
+      - "package-lock.json"
+      - "playwright.config.ts"
+      - "svelte.config.js"
+      - "tsconfig.json"
+      - "vite.config.mts"
+      - "wrangler.toml"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+jobs:
+  checks:
+    uses: ./.github/workflows/_web-checks.yaml
