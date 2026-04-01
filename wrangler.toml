@@ -1,0 +1,8 @@
+name = "fidan-dev"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+[vars]
+PUBLIC_CANONICAL_BASE_URL = "https://fidan.dev"
+PUBLIC_DOCS_BASE_URL = "https://docs.fidan.dev"

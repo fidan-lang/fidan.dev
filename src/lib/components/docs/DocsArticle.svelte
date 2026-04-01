@@ -1,0 +1,93 @@
+<script lang="ts">
+  import CopyToast from "$lib/components/CopyToast.svelte";
+  import type { DocPage } from "$lib/content/docs";
+  import type { TocItem } from "$lib/utils/markdown";
+
+  let { page, html, previousHref, previousLabel, nextHref, nextLabel } =
+    $props<{
+      page: DocPage;
+      html: string;
+      previousHref?: string;
+      previousLabel?: string;
+      nextHref?: string;
+      nextLabel?: string;
+      toc?: TocItem[];
+    }>();
+
+  let copied = $state(false);
+  let copyTimer: ReturnType<typeof setTimeout> | undefined;
+
+  async function handleCopy(event: MouseEvent) {
+    const target = event.target as HTMLElement | null;
+    const button = target?.closest<HTMLButtonElement>("[data-copy]");
+    if (!button) return;
+    await navigator.clipboard.writeText(button.dataset.copy ?? "");
+    copied = true;
+    button.textContent = "Copied!";
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => {
+      copied = false;
+      button.textContent = "Copy";
+    }, 1500);
+  }
+</script>
+
+<article class="panel rounded-[var(--radius-xl)] p-6 sm:p-10">
+  <div class="mb-8 border-b border-white/6 pb-8">
+    <div
+      class="mb-4 inline-flex rounded-full border border-[var(--color-primary)]/25 bg-[var(--color-primary)]/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--color-primary-light)]"
+    >
+      {page.section}
+    </div>
+    <h1 class="mb-4 text-4xl font-semibold tracking-[-0.04em] text-white">
+      {page.title}
+    </h1>
+    <p class="max-w-2xl text-base leading-8 text-[var(--color-text-muted)]">
+      {page.description}
+    </p>
+  </div>
+
+  <div
+    class="prose max-w-none"
+    role="presentation"
+    tabindex="-1"
+    onclick={handleCopy}
+    onkeydown={() => {}}
+  >
+    {@html html}
+  </div>
+
+  <div class="mt-10 grid gap-4 border-t border-white/6 pt-8 sm:grid-cols-2">
+    {#if previousHref}
+      <a
+        href={previousHref}
+        class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 transition hover:border-[var(--color-primary)]/25 hover:bg-white/4"
+      >
+        <div
+          class="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-muted)]"
+        >
+          Previous
+        </div>
+        <div class="text-sm font-medium text-white">{previousLabel}</div>
+      </a>
+    {:else}
+      <div></div>
+    {/if}
+
+    {#if nextHref}
+      <a
+        href={nextHref}
+        class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 text-right transition hover:border-[var(--color-primary)]/25 hover:bg-white/4"
+      >
+        <div
+          class="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-muted)]"
+        >
+          Next
+        </div>
+        <div class="text-sm font-medium text-white">{nextLabel}</div>
+      </a>
+    {/if}
+  </div>
+</article>
+
+<CopyToast visible={copied} />
