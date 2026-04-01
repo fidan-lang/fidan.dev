@@ -3,6 +3,7 @@
   import DocsSidebar from "$lib/components/docs/DocsSidebar.svelte";
   import DocsTopbar from "$lib/components/docs/DocsTopbar.svelte";
   import DocsToc from "$lib/components/docs/DocsToc.svelte";
+  import Footer from "$lib/components/marketing/Footer.svelte";
   import { docsBySection, docsSearchIndex } from "$lib/utils/docs";
 
   let { data } = $props();
@@ -60,3 +61,5 @@
     <DocsToc items={data.toc} />
   </div>
 </main>
+
+<Footer />

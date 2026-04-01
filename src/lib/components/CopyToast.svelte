@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { portal } from "$lib/actions/portal";
+
   let {
     visible = false,
     text = "Copied!"
@@ -9,6 +11,7 @@
 </script>
 
 <div
+  use:portal
   aria-live="polite"
   aria-atomic="true"
   class="pointer-events-none fixed bottom-6 right-6 z-50 transition duration-200 ease-out motion-reduce:transition-none {visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}"

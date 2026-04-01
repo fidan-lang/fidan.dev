@@ -45,5 +45,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy
+          command: pages deploy .svelte-kit/cloudflare --project-name fidan-dev --branch production
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

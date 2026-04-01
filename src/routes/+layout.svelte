@@ -1,7 +1,35 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
+  import { onNavigate } from "$app/navigation";
   import "../app.css";
 
   let { children, data } = $props();
+
+  type ViewTransitionCapableDocument = Document & {
+    startViewTransition?: (
+      callback: () => Promise<void> | void
+    ) => {
+      finished: Promise<void>;
+    };
+  };
+
+  if (browser) {
+    const viewTransitionDocument = document as ViewTransitionCapableDocument;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    onNavigate((navigation) => {
+      if (!viewTransitionDocument.startViewTransition || prefersReducedMotion.matches) {
+        return;
+      }
+
+      return new Promise<void>((resolve) => {
+        viewTransitionDocument.startViewTransition!(async () => {
+          resolve();
+          await navigation.complete;
+        });
+      });
+    });
+  }
 </script>
 
 <svelte:head>
@@ -15,4 +43,6 @@
   <link rel="canonical" href={data.canonicalUrl} />
 </svelte:head>
 
-{@render children()}
+<div class="route-shell">
+  {@render children()}
+</div>

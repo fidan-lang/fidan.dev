@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Footer from "$lib/components/marketing/Footer.svelte";
   import DocsTopbar from "$lib/components/docs/DocsTopbar.svelte";
 
   let { cards } = $props<{
@@ -58,3 +59,5 @@
     </div>
   </section>
 </main>
+
+<Footer />

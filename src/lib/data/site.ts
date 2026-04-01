@@ -33,7 +33,7 @@ export const footerColumns = [
     title: "Ecosystem",
     links: [
       { label: "Dal Registry", href: "https://dal.fidan.dev", external: true },
-      { label: "VS Code Extension", href: "https://marketplace.visualstudio.com/items?itemName=fidan-lang.fidan", external: true },
+      { label: "VS Code Extension", href: "https://marketplace.visualstudio.com/items?itemName=fidan.fidan", external: true },
       { label: "GitHub", href: "https://github.com/fidan-lang/fidan", external: true }
     ]
   }
