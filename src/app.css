@@ -240,9 +240,22 @@ pre {
 .code-frame {
   margin: 1.15rem 0;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  isolation: isolate;
+  border: 1px solid transparent;
   border-radius: 1rem;
   background: rgba(11, 18, 13, 0.95);
+  background-clip: padding-box;
+  clip-path: inset(1px round 1rem);
+}
+
+.code-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .code-frame pre,
@@ -255,6 +268,9 @@ pre {
     #0a100b;
   padding: 1.25rem 1.3rem;
   box-shadow: none;
+  border-bottom-left-radius: calc(1rem - 1px);
+  border-bottom-right-radius: calc(1rem - 1px);
+  background-clip: padding-box;
 }
 
 .code-frame__meta {
@@ -267,6 +283,9 @@ pre {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+  border-top-left-radius: calc(1rem - 1px);
+  border-top-right-radius: calc(1rem - 1px);
+  background-clip: padding-box;
 }
 
 .code-copy {
@@ -393,11 +412,24 @@ pre {
 
 .doc-tabs {
   margin: 1.5rem 0;
+  position: relative;
+  isolation: isolate;
   border-radius: 1.2rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid transparent;
   background: rgba(8, 13, 9, 0.9);
   box-shadow: var(--shadow-glow);
   overflow: hidden;
+  background-clip: padding-box;
+  clip-path: inset(1px round 1.2rem);
+}
+
+.doc-tabs::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .doc-tabs__list {
@@ -438,6 +470,12 @@ pre {
 
 .doc-tabs__panels {
   padding: 1rem 1rem 1rem;
+  overflow: hidden;
+  clip-path: inset(0 round 1.2rem);
+  border-radius: 1.2rem;
+  border-bottom-left-radius: calc(1.2rem - 1px);
+  border-bottom-right-radius: calc(1.2rem - 1px);
+  background-clip: padding-box;
 }
 
 .doc-tabs__panel> :first-child {
@@ -450,7 +488,10 @@ pre {
 
 .doc-tabs__panel {
   overflow: hidden;
+  clip-path: inset(0 round 1.2rem);
   border-radius: 1rem;
+  border-bottom-left-radius: calc(1.2rem - 1px);
+  border-bottom-right-radius: calc(1.2rem - 1px);
   background-clip: padding-box;
 }
 
@@ -459,6 +500,7 @@ pre {
   border-radius: 1rem;
   background-clip: padding-box;
   overflow: hidden;
+  clip-path: inset(0 round 1rem);
 }
 
 .doc-figure {
