@@ -1,27 +1,37 @@
 ---
 title: "std.parallel"
 sidebarLabel: "std.parallel"
-description: "Use thread-backed collection helpers when a parallel block would be more boilerplate than signal."
-summary: "Parallel helpers built on real worker threads."
+description: "Thread-backed collection helpers for when the language-level `parallel` syntax is not the right shape for the job."
+summary: "Parallel collection APIs backed by real worker threads."
 order: 270
 ---
 
 # std.parallel
 
-`std.parallel` provides thread-backed collection helpers for common data
-transforms.
+`std.parallel` is the thread-backed functional collection module.
 
-## Current helpers
+## Functions
 
-- `parallelMap(list, fn)`
-- `parallelFilter(list, fn)`
-- `parallelForEach(list, fn)`
-- `parallelReduce(list, init, fn)`
+- `parallelMap(list, fn) -> list`
+- `parallelFilter(list, fn) -> list`
+- `parallelForEach(list, fn) -> nothing`
+- `parallelReduce(list, init, fn) -> dynamic`
 
-## When to use it
+Aliases:
 
-Use `std.parallel` when the operation is already naturally a collection
-transform.
+- `parallel_map`
+- `parallel_filter`
+- `parallel_for_each`
+- `parallel_reduce`
 
-Use a normal `parallel` block when you want explicit task structure or mixed
-work, not just one list-oriented operation.
+## Example
+
+```fidan
+use std.parallel as parallel
+
+var doubled = parallel.parallelMap([1, 2, 3], action with (item oftype integer) returns integer {
+    return item * 2
+})
+```
+
+Use this module when a pipeline style is clearer than a `parallel for` block.

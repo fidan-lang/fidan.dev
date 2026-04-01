@@ -10,17 +10,23 @@ order: 10
 
 Fidan ships as a native CLI toolchain.
 
-## Recommended install path
+:::tip Recommended path
+Use the bootstrap install path first. It keeps the install story consistent with official releases and the update commands.
+:::
 
-Use the platform bootstrap command from `fidan.dev`:
+## Bootstrap install
 
+:::tabs
+@tab PowerShell
 ```powershell
 iwr https://fidan.dev/install.ps1 -UseBasicParsing | iex
 ```
 
+@tab Shell
 ```bash
 curl -fsSL https://fidan.dev/install.sh | sh
 ```
+:::
 
 The install endpoints redirect to the canonical bootstrap scripts in the main
 Fidan repository.
@@ -34,6 +40,10 @@ https://github.com/fidan-lang/fidan/releases/latest
 ```
 
 Extract the archive and add the `fidan` binary to your `PATH`.
+
+:::note Release archives
+Stable release archives also ship the `libfidan` embedding bundle, including the shared library, static library, C header, and a small embedding example.
+:::
 
 ## Verify the toolchain
 
@@ -50,14 +60,18 @@ If the CLI resolves and prints a version, your install is working.
 - `--target-cpu` lets you override the default when you need portability or a
   specific CPU/features target
 
-Example portable release build:
-
+:::tabs
+@tab Portable release build
 ```bash
 fidan build app.fdn --release --target-cpu generic
 ```
 
-Example host-tuned build:
-
+@tab Host-tuned release build
 ```bash
 fidan build app.fdn --release
 ```
+:::
+
+:::warning Portability reminder
+`--release` defaults to `native` CPU tuning. If the produced binary must run on other machines, override it explicitly with `--target-cpu generic` or another compatible CPU target.
+:::

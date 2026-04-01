@@ -1,31 +1,28 @@
 ---
 title: "std.env"
 sidebarLabel: "std.env"
-description: "Read arguments and environment variables explicitly through the env module."
-summary: "Process args and env values without mystery globals."
+description: "Environment variable and script-argument access without mixing in the broader file/path helpers from `std.io`."
+summary: "Use this module when you only need process environment and argv."
 order: 240
 ---
 
 # std.env
 
-`std.env` is small on purpose.
+`std.env` is the narrow process-environment module.
 
-## Core functions
+## Functions
 
-- `env.get(key)`
-- `env.set(key, value)`
-- `env.args()`
+- `get(key) -> dynamic`
+- `set(key, value) -> nothing`
+- `args() -> list`
 
-## Example
+## Typical usage
 
 ```fidan
 use std.env as env
 
+var home = env.get("HOME")
 var argv = env.args()
-var mode = env.get("APP_MODE")
 ```
 
-## CLI argument behavior
-
-Script-visible args are the program args passed to the Fidan script itself, not
-the internal wrapper args used by the host CLI.
+`args()` returns the script-facing argument list, not the raw host CLI wrapper.

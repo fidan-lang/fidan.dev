@@ -1,32 +1,51 @@
 ---
 title: "Check expressions"
 sidebarLabel: "Check"
-description: "Use check when decision logic should read like rule selection or validation instead of a pile of raw conditionals."
-summary: "Decision logic that reads like intent."
+description: "Use `check` for value-driven branching that reads like explicit selection instead of a long conditional chain."
+summary: "Pattern-style branching for both statements and expressions."
 order: 135
 ---
 
 # Check expressions
 
-Use `check` when you want branching to read like explicit decision or
-validation logic.
+Use `check` when multiple branches all revolve around the same scrutinee.
+
+## Statement form
 
 ```fidan
 check status {
     200 => print("OK")
     404 => print("Not found")
-    _ => print("Other")
+    otherwise => print("Other")
 }
 ```
 
+## Expression form
+
+```fidan
+var label = check status {
+    200 => "ok"
+    404 => "missing"
+    otherwise => "other"
+}
+```
+
+## Wildcards
+
+Use either:
+
+- `otherwise`
+- `_`
+
 ## When `check` is better than `if`
 
-- enum-like value selection
-- status/code dispatch
-- intent-heavy validation logic
+- enum-like or tag-like dispatch
+- status/code handling
+- multi-way branching on one value
+- code where each branch is conceptually “case X”
 
 ## When plain `if` is better
 
-- simple boolean conditions
-- short guard logic
-- cases where introducing a branch table would be less readable
+- simple boolean guard logic
+- short conditionals
+- branches driven by unrelated conditions

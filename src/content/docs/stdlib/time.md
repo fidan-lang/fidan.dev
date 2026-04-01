@@ -1,33 +1,85 @@
 ---
 title: "std.time"
 sidebarLabel: "std.time"
-description: "Use clocks, elapsed timing, formatting helpers, and blocking sleep deliberately."
-summary: "Time helpers with a clear blocking-vs-async distinction."
+description: "Clocks, blocking sleep, elapsed timing, extracted date/time parts, and simple formatting helpers."
+summary: "Time helpers for timestamps, sleeps, and readable date formatting."
 order: 310
 ---
 
 # std.time
 
-`std.time` covers wall-clock reads, elapsed timing, date formatting, and
-blocking sleep.
+`std.time` is the wall-clock and timestamp module.
 
-## Common helpers
+## Clock and sleep functions
 
-- `now()`
-- `timestamp()`
-- `sleep(ms)`
-- `elapsed(startMs)`
-- `date(ms?)`
-- `time(ms?)`
-- `datetime(ms?)`
+- `now() -> integer`
+- `timestamp() -> integer`
+- `sleep(ms) -> nothing`
+- `elapsed(startMs) -> integer`
 
-## Important distinction
+Aliases:
 
-`time.sleep` blocks the current thread.
+- `wait` = `sleep`
 
-That means:
+## Formatting helpers
 
-- in `parallel`, it blocks that worker thread
-- in `concurrent`, it blocks the cooperative scheduler on that thread
+- `date(ms?) -> string`
+- `time(ms?) -> string`
+- `datetime(ms?) -> string`
+- `format(ms?, pattern) -> string`
 
-Use `std.async.sleep` when you want same-thread cooperative waiting instead.
+Aliases:
+
+- `today` = `date`
+- `timeStr` / `time_str` = `time`
+- `formatDate` / `format_date` = `format`
+
+## Extracted parts
+
+- `year(ms?) -> integer`
+- `month(ms?) -> integer`
+- `day(ms?) -> integer`
+- `hour(ms?) -> integer`
+- `minute(ms?) -> integer`
+- `second(ms?) -> integer`
+- `weekday(ms?) -> integer`
+
+## Example
+
+```fidan
+use std.time as time
+
+var start = time.now()
+time.sleep(100)
+print(time.elapsed(start))
+print(time.datetime())
+```
+
+## Common usage snippets
+
+### Measure elapsed time
+
+```fidan
+use std.time as time
+
+var start = time.now()
+do_work()
+print(time.elapsed(start))
+```
+
+### Block briefly
+
+```fidan
+use std.time as time
+
+time.sleep(250)
+```
+
+### Format a date
+
+```fidan
+use std.time as time
+
+print(time.date())
+print(time.format(time.now(), "YYYY-MM-DD HH:mm:ss"))
+```

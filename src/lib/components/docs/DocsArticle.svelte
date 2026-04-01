@@ -30,6 +30,46 @@
       button.textContent = "Copy";
     }, 1500);
   }
+
+  function handleTabs(event: MouseEvent) {
+    const target = event.target as HTMLElement | null;
+    const button = target?.closest<HTMLButtonElement>("[data-tab-trigger]");
+    if (!button) return;
+
+    const tabset = button.closest<HTMLElement>("[data-tabset]");
+    if (!tabset) return;
+
+    const index = Number(button.dataset.tabIndex ?? "-1");
+    if (!Number.isFinite(index) || index < 0) return;
+
+    for (const trigger of tabset.querySelectorAll<HTMLButtonElement>(
+      "[data-tab-trigger]",
+    )) {
+      const active = Number(trigger.dataset.tabIndex ?? "-1") === index;
+      trigger.classList.toggle("is-active", active);
+      trigger.setAttribute("aria-selected", active ? "true" : "false");
+    }
+
+    for (const [panelIndex, panel] of Array.from(
+      tabset.querySelectorAll<HTMLElement>(".doc-tabs__panel"),
+    ).entries()) {
+      const active = panelIndex === index;
+      panel.classList.toggle("is-active", active);
+      panel.hidden = !active;
+    }
+  }
+
+  async function handleArticleClick(event: MouseEvent) {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest("[data-copy]")) {
+      await handleCopy(event);
+      return;
+    }
+
+    if (target?.closest("[data-tab-trigger]")) {
+      handleTabs(event);
+    }
+  }
 </script>
 
 <article class="panel rounded-[var(--radius-xl)] p-6 sm:p-10">
@@ -51,7 +91,7 @@
     class="prose max-w-none"
     role="presentation"
     tabindex="-1"
-    onclick={handleCopy}
+    onclick={handleArticleClick}
     onkeydown={() => {}}
   >
     {@html html}

@@ -1,24 +1,65 @@
 ---
 title: "Diagnostics"
 sidebarLabel: "Diagnostics"
-description: "Understand how errors and warnings are rendered, why codes matter, and how explanations stay discoverable in the terminal and editor."
-summary: "Diagnostics designed for comprehension, not intimidation."
+description: "How Fidan errors and warnings are structured, why codes matter, how explanations are guaranteed, and how terminal and editor diagnostics stay aligned."
+summary: "Readable diagnostics with stable codes and explanation coverage."
 order: 330
 ---
 
 # Diagnostics
 
-Fidan diagnostics are designed to stay readable under pressure.
+Fidan diagnostics are designed to be readable under pressure.
 
-## What a good diagnostic should do
+## What a diagnostic should do
 
-- identify the exact span that matters
-- give the message in human terms, not compiler-internal jargon
-- keep a stable code
-- point to an explanation
-- stay consistent in the terminal and the editor
+A good diagnostic should:
 
-## Explanations
+- point at the exact relevant span
+- explain the problem in language terms, not compiler-internal jargon
+- carry a stable code
+- map to a deeper explanation page
+- stay coherent between the terminal and the editor
 
-Every registered diagnostic code in the codebase has a corresponding
-explanation.
+## Diagnostic families
+
+You will commonly see:
+
+- `E...` for compile-time errors
+- `W...` for warnings
+- `R...` for runtime failures
+
+Examples:
+
+- undefined names
+- type mismatches
+- null-safety issues
+- data-race violations
+- dead code
+- runtime assertion/panic failures
+
+## Explanation coverage
+
+Every registered diagnostic code in the codebase is required to have a corresponding explanation. That coverage is checked in the codebase itself so docs do not silently drift from diagnostics.
+
+## CLI and editor alignment
+
+The same diagnostics surface powers:
+
+- terminal rendering
+- LSP diagnostics in editors
+- `fidan explain`
+
+That means the code, message, and general meaning stay aligned across tools.
+
+## Strict mode and suppression
+
+CLI flags:
+
+- `--strict`
+- `--suppress CODE1,CODE2`
+
+Use `--strict` when you want selected warnings to become build-blocking errors. Use suppression sparingly and deliberately.
+
+## Dead code and unnecessary code
+
+Structural dead code warnings are also tagged as unnecessary in the LSP so editors can dim unreachable code instead of only showing a warning squiggle.

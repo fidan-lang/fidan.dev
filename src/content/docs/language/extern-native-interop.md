@@ -1,28 +1,61 @@
 ---
 title: "Extern and native interop"
 sidebarLabel: "Extern interop"
-description: "Call native code through @extern and keep performance-sensitive boundaries explicit."
-summary: "Fidan does not wall you off from native libraries."
+description: "Use `@extern` for native scalar ABI calls or boxed Fidan ABI calls, understand the constraints, and keep interop explicit."
+summary: "Native libraries are a real first-class integration path in Fidan."
 order: 170
 ---
 
 # Extern and native interop
 
-`@extern` is the bridge from Fidan into native code.
+`@extern` is Fidan's bridge to native libraries.
+
+## Native scalar ABI example
 
 ```fidan
-@extern("kernel32", "GetTickCount64")
-action get_tick_count returns integer
+@extern("./mylib.dll", symbol = "add_i64")
+action add_native with (a oftype integer, b oftype integer) returns integer
 ```
 
-## Why it matters
+## Mixed native values
 
-Fidan is meant to be practical in native environments. That means interop is a
-real feature, not an afterthought.
+The native ABI supports scalar/native-handle style values such as:
+
+- `integer`
+- `float`
+- `boolean`
+- `handle`
+- `nothing` as a return
+
+## Boxed Fidan ABI example
+
+For richer runtime values, use the boxed Fidan ABI and mark the boundary unsafe:
+
+```fidan
+@unsafe
+@extern("./mylib.dll", symbol = "echo_boxed", abi = "fidan")
+action echo_boxed with (text oftype string) returns string
+```
 
 ## Important rules
 
 - `@extern` actions are top-level
-- they omit a normal body
-- `@precompile` does not combine with `@extern`
-- AOT builds may need explicit link inputs for the native import library
+- they omit a body
+- `@precompile` cannot be combined with `@extern`
+- `parallel action` cannot be combined with `@extern`
+- `abi = "fidan"` requires `@unsafe`
+
+## Link-time note for AOT
+
+For AOT builds, you may need explicit link metadata:
+
+```fidan
+@extern("./mylib.dll", symbol = "add_i64", link = "./mylib.lib")
+action add_native with (a oftype integer, b oftype integer) returns integer
+```
+
+That lets the AOT build resolve the native import library at link time.
+
+## Why this matters
+
+Fidan is intended to live in native environments, not behind a sandbox wall. `@extern` is a practical language feature, not a bolted-on afterthought.
