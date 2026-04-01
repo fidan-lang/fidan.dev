@@ -35,7 +35,7 @@ Fidan repository.
 
 If you want explicit artifact control, download the latest release archive:
 
-```text
+```url
 https://github.com/fidan-lang/fidan/releases/latest
 ```
 

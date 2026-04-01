@@ -42,6 +42,36 @@ function getCalloutIcon(kind: CalloutKind): string {
   }
 }
 
+function getPromptForLanguage(language: string): string | null {
+  const normalized = language.trim().toLowerCase();
+
+  if (["bash", "sh", "shell", "zsh"].includes(normalized)) {
+    return "$";
+  }
+
+  if (["powershell", "pwsh", "ps1", "ps"].includes(normalized)) {
+    return "PS>";
+  }
+
+  return null;
+}
+
+function renderPromptedCode(text: string, language: string, prompt: string): string {
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  if (text.endsWith("\n") && lines.at(-1) === "") {
+    lines.pop();
+  }
+
+  const content = lines
+    .map((line) => {
+      const lineContent = line.length > 0 ? escapeHtml(line) : "&nbsp;";
+      return `<span class="code-line"><span class="code-prompt" aria-hidden="true">${escapeHtml(prompt)}</span><span class="code-line__content">${lineContent}</span></span>`;
+    })
+    .join("\n");
+
+  return `<code class="language-${escapeHtml(language)} code-block--prompted">${content}</code>`;
+}
+
 function createRenderer() {
   const renderer = new marked.Renderer();
 
@@ -53,8 +83,13 @@ function createRenderer() {
 
   renderer.code = ({ text, lang }) => {
     const language = lang?.trim() || "text";
+    const prompt = getPromptForLanguage(language);
     const escapedCode = escapeHtml(text);
-    return `<div class="code-frame"><div class="code-frame__meta"><span>${escapeHtml(language)}</span><button type="button" class="code-copy" data-copy="${escapeHtml(text)}">Copy</button></div><pre><code class="language-${escapeHtml(language)}">${escapedCode}</code></pre></div>`;
+    const codeHtml = prompt
+      ? renderPromptedCode(text, language, prompt)
+      : `<code class="language-${escapeHtml(language)}">${escapedCode}</code>`;
+    const promptedClass = prompt ? " code-frame--prompted" : "";
+    return `<div class="code-frame${promptedClass}"><div class="code-frame__meta"><span>${escapeHtml(language)}</span><button type="button" class="code-copy" data-copy="${escapeHtml(text)}">Copy</button></div><pre>${codeHtml}</pre></div>`;
   };
 
   renderer.image = ({ href, text, title }) => {

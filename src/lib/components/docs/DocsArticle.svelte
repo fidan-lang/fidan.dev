@@ -101,12 +101,12 @@
     {#if previousHref}
       <a
         href={previousHref}
-        class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 transition hover:border-[var(--color-primary)]/25 hover:bg-white/4"
+        class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/25 hover:bg-[color-mix(in_srgb,var(--color-surface-3)_78%,white_6%)]"
       >
         <div
           class="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-muted)]"
         >
-          Previous
+          ← Previous
         </div>
         <div class="text-sm font-medium text-white">{previousLabel}</div>
       </a>
@@ -117,12 +117,12 @@
     {#if nextHref}
       <a
         href={nextHref}
-        class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 text-right transition hover:border-[var(--color-primary)]/25 hover:bg-white/4"
+        class="rounded-[var(--radius-lg)] border border-white/6 bg-white/2 p-4 text-right transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/25 hover:bg-[color-mix(in_srgb,var(--color-surface-3)_78%,white_6%)]"
       >
         <div
           class="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-muted)]"
         >
-          Next
+          Next →
         </div>
         <div class="text-sm font-medium text-white">{nextLabel}</div>
       </a>
