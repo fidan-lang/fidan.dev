@@ -119,17 +119,17 @@ export const compareRows = [
   {
     name: "Python",
     edge: "Native binaries, AOT compilation, and tighter packaging.",
-    nuance: "Python still wins on ecosystem size and notebook/data ubiquity."
+    nuance: "Ideal when you want Python-level approachability with a far stronger deployment and performance story."
   },
   {
     name: "Rust",
     edge: "Far less syntax and concept overhead for day-to-day iteration.",
-    nuance: "Rust still wins on formal safety guarantees and ecosystem maturity."
+    nuance: "Ideal when you want native performance and modern tooling with a much lighter everyday development experience."
   },
   {
     name: "C++",
     edge: "A dramatically simpler language surface with modern tooling and built-in package flow.",
-    nuance: "C++ still has the deepest optimizer maturity and legacy footprint."
+    nuance: "Ideal when you want native power, but with a cleaner language surface and a far more coherent product experience."
   }
 ] as const;
 
