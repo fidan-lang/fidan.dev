@@ -21,7 +21,10 @@
     "lint": "prettier --check . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write .",
     "e2e": "playwright test",
-    "e2e:serve": "vite preview --host localhost --port 4174 --strictPort"
+    "e2e:serve": "vite preview --host localhost --port 4174 --strictPort",
+    "format:all": "npm exec -- prettier --write .",
+    "format:all:check": "npm exec -- prettier --check .",
+    "prepare": "node ./scripts/install-git-hooks.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260310.1",

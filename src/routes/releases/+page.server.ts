@@ -5,6 +5,6 @@ export const load: PageServerLoad = async ({ fetch }) => {
   const releases = await getReleaseNotes(fetch);
   return {
     releases,
-    latestRelease: await getLatestRelease(fetch)
+    latestRelease: await getLatestRelease(fetch),
   };
 };

@@ -56,7 +56,11 @@ function getPromptForLanguage(language: string): string | null {
   return null;
 }
 
-function renderPromptedCode(text: string, language: string, prompt: string): string {
+function renderPromptedCode(
+  text: string,
+  language: string,
+  prompt: string,
+): string {
   const lines = text.replace(/\r\n/g, "\n").split("\n");
   if (text.endsWith("\n") && lines.at(-1) === "") {
     lines.pop();
@@ -76,7 +80,9 @@ function createRenderer() {
   const renderer = new marked.Renderer();
 
   renderer.heading = ({ tokens, depth }) => {
-    const text = tokens.map((token) => ("text" in token ? token.text : "")).join("");
+    const text = tokens
+      .map((token) => ("text" in token ? token.text : ""))
+      .join("");
     const id = slugify(text);
     return `<h${depth} id="${id}"><a href="#${id}">${text}</a></h${depth}>`;
   };
@@ -104,21 +110,27 @@ function renderPlainMarkdown(markdown: string): string {
   marked.setOptions({
     gfm: true,
     breaks: false,
-    renderer: createRenderer()
+    renderer: createRenderer(),
   });
 
   return marked.parse(markdown) as string;
 }
 
-function renderCallout(kind: CalloutKind, title: string | undefined, body: string) {
+function renderCallout(
+  kind: CalloutKind,
+  title: string | undefined,
+  body: string,
+) {
   const label =
     title?.trim() ||
-    ({
-      note: "Note",
-      tip: "Tip",
-      warning: "Warning",
-      success: "Success"
-    } satisfies Record<CalloutKind, string>)[kind];
+    (
+      {
+        note: "Note",
+        tip: "Tip",
+        warning: "Warning",
+        success: "Success",
+      } satisfies Record<CalloutKind, string>
+    )[kind];
 
   return `<div class="doc-callout doc-callout--${kind}"><div class="doc-callout__header"><span class="doc-callout__header-main">${getCalloutIcon(kind)}<span>${escapeHtml(label)}</span></span></div><div class="doc-callout__body">${renderRichMarkdown(body)}</div></div>`;
 }
@@ -134,7 +146,10 @@ function renderTabs(markdown: string): string {
     const match = line.match(/^@tab\s+(.+)$/);
     if (match) {
       if (currentLabel) {
-        tabs.push({ label: currentLabel, content: currentLines.join("\n").trim() });
+        tabs.push({
+          label: currentLabel,
+          content: currentLines.join("\n").trim(),
+        });
       }
       currentLabel = match[1].trim();
       currentLines = [];
@@ -156,14 +171,14 @@ function renderTabs(markdown: string): string {
   const triggers = tabs
     .map(
       (tab, index) =>
-        `<button type="button" class="doc-tabs__trigger${index === 0 ? " is-active" : ""}" role="tab" aria-selected="${index === 0 ? "true" : "false"}" aria-controls="${tabsetId}-panel-${index}" id="${tabsetId}-tab-${index}" data-tab-trigger data-tabset-id="${tabsetId}" data-tab-index="${index}">${escapeHtml(tab.label)}</button>`
+        `<button type="button" class="doc-tabs__trigger${index === 0 ? " is-active" : ""}" role="tab" aria-selected="${index === 0 ? "true" : "false"}" aria-controls="${tabsetId}-panel-${index}" id="${tabsetId}-tab-${index}" data-tab-trigger data-tabset-id="${tabsetId}" data-tab-index="${index}">${escapeHtml(tab.label)}</button>`,
     )
     .join("");
 
   const panels = tabs
     .map(
       (tab, index) =>
-        `<div class="doc-tabs__panel${index === 0 ? " is-active" : ""}" role="tabpanel" id="${tabsetId}-panel-${index}" aria-labelledby="${tabsetId}-tab-${index}" ${index === 0 ? "" : "hidden"}>${renderRichMarkdown(tab.content)}</div>`
+        `<div class="doc-tabs__panel${index === 0 ? " is-active" : ""}" role="tabpanel" id="${tabsetId}-panel-${index}" aria-labelledby="${tabsetId}-tab-${index}" ${index === 0 ? "" : "hidden"}>${renderRichMarkdown(tab.content)}</div>`,
     )
     .join("");
 
@@ -229,7 +244,7 @@ export function collectToc(markdown: string): TocItem[] {
     toc.push({
       id: slugify(match[2].trim()),
       level: match[1].length,
-      text: match[2].trim()
+      text: match[2].trim(),
     });
   }
   return toc;
@@ -239,7 +254,7 @@ export function renderInlineMarkdown(markdown: string): string {
   marked.setOptions({
     gfm: true,
     breaks: false,
-    renderer: createRenderer()
+    renderer: createRenderer(),
   });
 
   return marked.parseInline(markdown) as string;

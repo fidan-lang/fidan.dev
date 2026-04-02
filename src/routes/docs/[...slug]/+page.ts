@@ -8,6 +8,6 @@ export const load: PageLoad = async ({ params, parent, url }) => {
     slug,
     host: data.host,
     hostname: url.hostname,
-    search: url.search
+    search: url.search,
   });
 };

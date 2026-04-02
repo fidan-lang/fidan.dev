@@ -6,7 +6,9 @@ export function detectHost(hostname: string): HostKind {
 
 export function isLocalHost(hostname: string): boolean {
   const normalized = hostname.toLowerCase();
-  return normalized.startsWith("localhost") || normalized.startsWith("127.0.0.1");
+  return (
+    normalized.startsWith("localhost") || normalized.startsWith("127.0.0.1")
+  );
 }
 
 export function docsCanonical(pathname: string, search = ""): string {

@@ -45,7 +45,7 @@ outer comment
     nested comment
     /#
 back in outer comment
-/# 
+/#
 ```
 
 ## Statement separators

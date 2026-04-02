@@ -26,13 +26,13 @@ const DOC_SECTIONS: DocSection[] = [
   "tools",
   "toolchains",
   "dal",
-  "reference"
+  "reference",
 ];
 
 const rawDocs = import.meta.glob("/src/content/docs/**/*.md", {
   query: "?raw",
   import: "default",
-  eager: true
+  eager: true,
 }) as Record<string, string>;
 
 function stripQuotes(value: string) {
@@ -69,7 +69,9 @@ function parseFrontmatter(raw: string, sourcePath: string) {
     if (!trimmed) continue;
     const separator = trimmed.indexOf(":");
     if (separator === -1) {
-      throw new Error(`Docs frontmatter line is invalid in ${sourcePath}: ${trimmed}`);
+      throw new Error(
+        `Docs frontmatter line is invalid in ${sourcePath}: ${trimmed}`,
+      );
     }
     const key = trimmed.slice(0, separator).trim();
     const value = trimmed.slice(separator + 1);
@@ -78,7 +80,10 @@ function parseFrontmatter(raw: string, sourcePath: string) {
 
   return {
     fields,
-    body: lines.slice(endIndex + 1).join("\n").trim()
+    body: lines
+      .slice(endIndex + 1)
+      .join("\n")
+      .trim(),
   };
 }
 
@@ -91,7 +96,9 @@ function toSlug(sourcePath: string) {
     parts.pop();
   }
   if (parts.length === 0) {
-    throw new Error(`Docs file must not resolve to an empty slug: ${sourcePath}`);
+    throw new Error(
+      `Docs file must not resolve to an empty slug: ${sourcePath}`,
+    );
   }
   return parts;
 }
@@ -111,12 +118,16 @@ function parseDoc(sourcePath: string, raw: string): DocPage {
   const sidebarLabel = fields.get("sidebarLabel") ?? title;
 
   if (!title || !description || !summary || !orderRaw || !sidebarLabel) {
-    throw new Error(`Docs file is missing required frontmatter fields: ${sourcePath}`);
+    throw new Error(
+      `Docs file is missing required frontmatter fields: ${sourcePath}`,
+    );
   }
 
   const order = Number(orderRaw);
   if (!Number.isFinite(order)) {
-    throw new Error(`Docs file has invalid numeric order '${orderRaw}': ${sourcePath}`);
+    throw new Error(
+      `Docs file has invalid numeric order '${orderRaw}': ${sourcePath}`,
+    );
   }
 
   return {
@@ -128,7 +139,7 @@ function parseDoc(sourcePath: string, raw: string): DocPage {
     description,
     summary,
     markdown: body,
-    sourcePath
+    sourcePath,
   };
 }
 
@@ -136,7 +147,9 @@ export const docs: DocPage[] = Object.entries(rawDocs)
   .map(([sourcePath, raw]) => parseDoc(sourcePath, raw))
   .sort((left, right) => {
     if (left.section !== right.section) {
-      return DOC_SECTIONS.indexOf(left.section) - DOC_SECTIONS.indexOf(right.section);
+      return (
+        DOC_SECTIONS.indexOf(left.section) - DOC_SECTIONS.indexOf(right.section)
+      );
     }
     if (left.order !== right.order) {
       return left.order - right.order;

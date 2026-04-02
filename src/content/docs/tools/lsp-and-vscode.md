@@ -49,6 +49,7 @@ Current highlights:
 
 :::tabs
 @tab Save + format
+
 ```text
 1. Save a `.fdn` file
 2. The extension formats it through the official formatter
@@ -56,11 +57,13 @@ Current highlights:
 ```
 
 @tab Hover + inspect
+
 ```text
 1. Hover `std.env.args()`
 2. See the shared stdlib signature and docs
 3. Get the inferred return type (`list`) in the same editor flow
 ```
+
 :::
 
 ## Formatting behavior

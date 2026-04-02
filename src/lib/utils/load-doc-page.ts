@@ -7,7 +7,7 @@ export function loadDocPage({
   slug,
   host,
   hostname,
-  search
+  search,
 }: {
   slug: string[];
   host?: HostKind;
@@ -32,6 +32,6 @@ export function loadDocPage({
     html: renderMarkdown(bodyMarkdown),
     toc: collectToc(bodyMarkdown),
     previous: neighbors.previous,
-    next: neighbors.next
+    next: neighbors.next,
   };
 }

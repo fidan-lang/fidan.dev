@@ -1,7 +1,7 @@
 export function portal(node: HTMLElement) {
   if (typeof document === "undefined") {
     return {
-      destroy() {}
+      destroy() {},
     };
   }
 
@@ -18,6 +18,6 @@ export function portal(node: HTMLElement) {
       } else {
         node.remove();
       }
-    }
+    },
   };
 }

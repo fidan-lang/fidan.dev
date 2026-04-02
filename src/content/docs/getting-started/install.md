@@ -18,14 +18,17 @@ Use the bootstrap install path first. It keeps the install story consistent with
 
 :::tabs
 @tab PowerShell
+
 ```powershell
 iwr https://fidan.dev/install.ps1 -UseBasicParsing | iex
 ```
 
 @tab Shell
+
 ```bash
 curl -fsSL https://fidan.dev/install.sh | sh
 ```
+
 :::
 
 The install endpoints redirect to the canonical bootstrap scripts in the main
@@ -62,14 +65,17 @@ If the CLI resolves and prints a version, your install is working.
 
 :::tabs
 @tab Portable release build
+
 ```bash
 fidan build app.fdn --release --target-cpu generic
 ```
 
 @tab Host-tuned release build
+
 ```bash
 fidan build app.fdn --release
 ```
+
 :::
 
 :::warning Portability reminder

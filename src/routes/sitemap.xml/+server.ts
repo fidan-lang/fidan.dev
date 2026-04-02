@@ -11,7 +11,7 @@ export const GET: RequestHandler = () => {
     `${base}/releases`,
     ...releases.map((release) => `${base}/releases/${release.version}`),
     `${docsBase}/`,
-    ...docs.map((page) => `${docsBase}/${page.slug.join("/")}`)
+    ...docs.map((page) => `${docsBase}/${page.slug.join("/")}`),
   ];
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
@@ -20,14 +20,14 @@ ${urls
   .map(
     (url) => `  <url>
     <loc>${url}</loc>
-  </url>`
+  </url>`,
   )
   .join("\n")}
 </urlset>`;
 
   return new Response(body, {
     headers: {
-      "content-type": "application/xml; charset=utf-8"
-    }
+      "content-type": "application/xml; charset=utf-8",
+    },
   });
 };
