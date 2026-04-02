@@ -40,13 +40,13 @@ export const footerColumns = [
 ] satisfies Array<{ title: string; links: NavLink[] }>;
 
 export const heroSnippet = `
-use std.async as async
-use std.io as io
+use std.async
+use std.io
 
 action main {
     parallel {
-        task io.print("native work")
-        task io.print("real threads")
+        task { io.print("native work") }
+        task { io.print("real threads") }
     }
 
     concurrent {
@@ -57,7 +57,9 @@ action main {
     }
 
     io.print("Built for native speed.")
-}`;
+}
+
+main()`;
 
 export const featureCards = [
   {
