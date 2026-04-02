@@ -235,6 +235,16 @@ export function collectToc(markdown: string): TocItem[] {
   return toc;
 }
 
+export function renderInlineMarkdown(markdown: string): string {
+  marked.setOptions({
+    gfm: true,
+    breaks: false,
+    renderer: createRenderer()
+  });
+
+  return marked.parseInline(markdown) as string;
+}
+
 export function renderMarkdown(markdown: string): string {
   return renderRichMarkdown(markdown);
 }

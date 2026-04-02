@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { DocPage } from "$lib/content/docs";
   import type { SidebarGroup } from "$lib/utils/docs";
+  import { renderInlineMarkdown } from "$lib/utils/markdown";
 
   let { groups, currentPath, search = "" } = $props<{
     groups: SidebarGroup[];
@@ -28,7 +29,7 @@
               href="/{page.slug.join('/')}"
               class="block rounded-xl px-3 py-2 text-sm transition hover:bg-white/4 hover:text-white {currentPath === `/${page.slug.join('/')}` ? 'bg-[var(--color-primary)]/10 text-white ring-1 ring-[var(--color-primary)]/30' : 'text-[var(--color-text-muted)]'}"
             >
-              {page.sidebarLabel}
+              {@html renderInlineMarkdown(page.sidebarLabel)}
             </a>
           </li>
         {/each}

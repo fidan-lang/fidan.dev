@@ -5,6 +5,7 @@
   import DocsTopbar from "$lib/components/docs/DocsTopbar.svelte";
   import Footer from "$lib/components/marketing/Footer.svelte";
   import { docsBySection, docsSearchIndex } from "$lib/utils/docs";
+  import { renderInlineMarkdown } from "$lib/utils/markdown";
 
   let { data } = $props();
   let query = $state("");
@@ -74,7 +75,9 @@
                 href={entry.href}
                 class="block rounded-xl px-3 py-2 transition hover:bg-white/4"
               >
-                <div class="text-sm font-medium text-white">{entry.title}</div>
+                <div class="text-sm font-medium text-white">
+                  {@html renderInlineMarkdown(entry.title)}
+                </div>
                 <div class="text-xs text-[var(--color-text-muted)]">
                   {entry.section}
                 </div>

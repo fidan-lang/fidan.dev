@@ -1,7 +1,7 @@
 <script lang="ts">
   import CopyToast from "$lib/components/CopyToast.svelte";
   import type { DocPage } from "$lib/content/docs";
-  import type { TocItem } from "$lib/utils/markdown";
+  import { renderInlineMarkdown, type TocItem } from "$lib/utils/markdown";
 
   let { page, html, previousHref, previousLabel, nextHref, nextLabel } =
     $props<{
@@ -80,10 +80,10 @@
       {page.section}
     </div>
     <h1 class="mb-4 text-4xl font-semibold tracking-[-0.04em] text-white">
-      {page.title}
+      {@html renderInlineMarkdown(page.title)}
     </h1>
     <p class="max-w-2xl text-base leading-8 text-[var(--color-text-muted)]">
-      {page.description}
+      {@html renderInlineMarkdown(page.description)}
     </p>
   </div>
 
@@ -122,7 +122,9 @@
           </svg>
           <span>Previous</span>
         </div>
-        <div class="text-sm font-medium text-white">{previousLabel}</div>
+        <div class="text-sm font-medium text-white">
+          {@html renderInlineMarkdown(previousLabel ?? "")}
+        </div>
       </a>
     {:else}
       <div></div>
@@ -152,7 +154,9 @@
             />
           </svg>
         </div>
-        <div class="text-sm font-medium text-white">{nextLabel}</div>
+        <div class="text-sm font-medium text-white">
+          {@html renderInlineMarkdown(nextLabel ?? "")}
+        </div>
       </a>
     {/if}
   </div>
