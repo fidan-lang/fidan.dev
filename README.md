@@ -30,6 +30,22 @@ Start the dev server:
 npm run dev
 ```
 
+## Formatting
+
+Format the repo:
+
+```bash
+npm run format:all
+```
+
+Check formatting without writing changes:
+
+```bash
+npm run format:all:check
+```
+
+Git hooks are installed automatically via `npm ci` or `npm install` and run the formatter before each commit.
+
 ## Verification
 
 Typecheck:

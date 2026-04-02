@@ -43,13 +43,22 @@ npm ci
 npm run dev
 ```
 
-### 4. Run verification
+### 4. Run formatting and verification
 
 ```bash
+npm run format:all
 npm run check
 npm run build
 npm run e2e
 ```
+
+If you only want to verify formatting without writing changes, run:
+
+```bash
+npm run format:all:check
+```
+
+Git hooks are installed automatically via `npm ci` or `npm install` and run the formatter before each commit.
 
 Before opening a pull request, make sure the relevant checks pass.
 
@@ -91,6 +100,7 @@ When working in this repo:
 - preserve the visual relationship between `fidan.dev`, `docs.fidan.dev`, and
   `dal.fidan.dev`
 - make sure changes work on mobile as well as desktop
+- keep the repo formatted with `npm run format:all` before committing
 
 ## Design Expectations
 
