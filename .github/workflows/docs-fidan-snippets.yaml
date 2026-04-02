@@ -1,0 +1,48 @@
+name: Docs Fidan Snippet Verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/content/docs/**"
+      - "scripts/check-fidan-docs.mjs"
+      - "package.json"
+      - ".github/workflows/docs-fidan-snippets.yaml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/content/docs/**"
+      - "scripts/check-fidan-docs.mjs"
+      - "package.json"
+      - ".github/workflows/docs-fidan-snippets.yaml"
+
+jobs:
+  verify-doc-fences:
+    name: Verify Fidan docs fences
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout website repo
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Setup Fidan
+        id: setup-fidan
+        uses: fidan-lang/fidan-actions/setup@v1
+        with:
+          version: latest
+
+      - name: Install website dependencies
+        run: npm ci
+
+      - name: Verify Fidan docs code fences
+        env:
+          FIDAN_BIN: ${{ steps.setup-fidan.outputs.fidan-bin }}
+        run: npm run docs:check:fidan

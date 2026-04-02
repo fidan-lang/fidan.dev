@@ -24,7 +24,8 @@
     "e2e:serve": "vite preview --host localhost --port 4174 --strictPort",
     "format:all": "npm exec -- prettier --write .",
     "format:all:check": "npm exec -- prettier --check .",
-    "prepare": "node ./scripts/install-git-hooks.mjs"
+    "prepare": "node ./scripts/install-git-hooks.mjs",
+    "docs:check:fidan": "node ./scripts/check-fidan-docs.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260402.1",

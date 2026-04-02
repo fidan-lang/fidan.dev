@@ -88,7 +88,7 @@ function createRenderer() {
   };
 
   renderer.code = ({ text, lang }) => {
-    const language = lang?.trim() || "text";
+    const language = lang?.trim().split(/\s+/)[0] || "text";
     const prompt = getPromptForLanguage(language);
     const escapedCode = escapeHtml(text);
     const codeHtml = prompt

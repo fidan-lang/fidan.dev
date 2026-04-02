@@ -79,7 +79,7 @@ Important rule:
 
 So this is invalid:
 
-```fidan
+```fidan check=skip
 return left()right()
 ```
 
