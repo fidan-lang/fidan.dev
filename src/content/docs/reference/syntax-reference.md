@@ -234,11 +234,11 @@ items[0] = "first"
 
 ### `set` assignment synonym
 
-`set` is accepted anywhere assignment syntax is valid:
+`set` is accepted as an infix assignment/operator synonym in the same slot where you would normally write `=`:
 
 ```fidan
-set value = 10
-set person.name = "Ada"
+var value set 10
+person.name set "Ada"
 name set "Ada"
 ```
 
@@ -750,6 +750,25 @@ string
 boolean
 dynamic
 nothing
+```
+
+Accepted primitive/type aliases:
+
+- `int` = `integer`
+- `decimal` = `float`
+- `bool` = `boolean`
+- `text` = `string`
+- `flexible` = `dynamic`
+- `map` is accepted as a dictionary/hashmap-style type spelling alongside `dict`
+
+Example:
+
+```fidan
+var id oftype int
+var ratio oftype decimal
+var enabled oftype bool
+var label oftype text
+var values oftype map oftype string
 ```
 
 ### Generic-like chained `oftype`

@@ -75,6 +75,14 @@ The main scalar/value types you will see most often are:
 - `nothing`
 - `dynamic`
 
+Accepted alias spellings:
+
+- `int` = `integer`
+- `decimal` = `float`
+- `bool` = `boolean`
+- `text` = `string`
+- `flexible` = `dynamic`
+
 `dynamic` is the escape hatch when a value is intentionally not statically specific.
 
 ### `dynamic` alias
@@ -95,6 +103,7 @@ Fidan uses chained `oftype` rather than angle brackets:
 var scores oftype list oftype integer = [1, 2, 3]
 var names oftype list oftype string
 var lookup oftype dict oftype string oftype integer
+var alt_lookup oftype map oftype string
 var counter oftype Shared oftype integer = Shared(0)
 var handle oftype Pending oftype string
 ```
