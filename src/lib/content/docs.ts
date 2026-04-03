@@ -3,6 +3,7 @@ export type DocSection =
   | "language"
   | "stdlib"
   | "tools"
+  | "editors"
   | "toolchains"
   | "dal"
   | "reference";
@@ -24,6 +25,7 @@ const DOC_SECTIONS: DocSection[] = [
   "language",
   "stdlib",
   "tools",
+  "editors",
   "toolchains",
   "dal",
   "reference",

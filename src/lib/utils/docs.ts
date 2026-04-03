@@ -12,6 +12,7 @@ const sectionLabels: Record<DocSection, string> = {
   language: "Language",
   stdlib: "Stdlib",
   tools: "Tools",
+  editors: "Editors",
   toolchains: "Toolchains",
   dal: "Dal",
   reference: "Reference",

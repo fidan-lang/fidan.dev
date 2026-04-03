@@ -1,17 +1,19 @@
 ---
-title: "LSP and VS Code"
-sidebarLabel: "LSP and VS Code"
-description: "The editor stack built on the shared Fidan language metadata: hovers, completions, formatting, diagnostics, inlay hints, command integration, and unreachable-code dimming."
-summary: "Tooling that stays aligned with the real language surface."
+title: "LSP"
+sidebarLabel: "LSP"
+description: "The official `fidan lsp` server: hovers, completions, formatting, diagnostics, inlay hints, unreachable-code dimming, and shared compiler metadata."
+summary: "The language intelligence layer behind Fidan editor integrations."
 order: 340
 ---
 
-# LSP and VS Code
+# LSP
 
-The editor experience is built around the official `fidan lsp` server and the official VS Code extension.
+The official editor experience is built on top of `fidan lsp`.
+
+That server is responsible for understanding the real Fidan language surface rather than a stale hand-maintained approximation.
 
 :::tip Shared metadata matters
-The extension is strong because it does not maintain a separate fake language model. Builtins, decorators, stdlib modules, and stdlib member docs all come from shared compiler metadata.
+The LSP is strong because it reuses shared compiler metadata. Builtins, decorators, stdlib modules, stdlib member docs, and stdlib member return types are resolved from the same metadata layer the language itself uses.
 :::
 
 ## What the LSP understands
@@ -25,15 +27,18 @@ Today the LSP understands:
 - stdlib member signatures and return types like `std.env.args() -> list`
 - formatter config through `.fidanfmt`
 - unreachable/dead-code warnings tagged as unnecessary so editors can dim them
+- go to definition, rename, references, and signature help
 
-## VS Code extension features
+## Why it matters
 
-The extension is intended to feel like a real first-party language product, not a stale syntax-only add-on.
+The LSP is the contract between the language and editors. When hover, completion, diagnostics, and formatting all come from the same real metadata, the product feels trustworthy.
 
-Current highlights:
+That is also why editor integrations should stay thin where possible: the language server should own language intelligence, while the editor extension owns UX, commands, and platform integration.
 
-- syntax highlighting
-- semantic tokens
+## Common LSP-facing capabilities
+
+Typical capabilities exposed by Fidan editor clients include:
+
 - diagnostics from the real language server
 - hover docs
 - completions
@@ -41,62 +46,15 @@ Current highlights:
 - go to definition
 - references
 - rename
-- format on save
 - type-oriented inlay hints
-- command palette integration for the Fidan CLI
-
-## Typical workflow
-
-:::tabs
-@tab Save + format
-
-```text
-1. Save a `.fdn` file
-2. The extension formats it through the official formatter
-3. Diagnostics, hovers, and inlay hints refresh from the same LSP analysis
-```
-
-@tab Hover + inspect
-
-```text
-1. Hover `std.env.args()`
-2. See the shared stdlib signature and docs
-3. Get the inferred return type (`list`) in the same editor flow
-```
-
-:::
-
-## Formatting behavior
-
-The VS Code extension and CLI formatter share the same `.fidanfmt` config model. That means you can use:
-
-- `fidan format ...`
-- editor formatting on save
-
-without maintaining separate style systems.
-
-## Indentation
-
-The extension defaults Fidan files to 4 spaces. If you still see 2-space behavior, check `.editorconfig` or workspace overrides first.
-
-## Common commands
-
-Typical editor actions wired into the extension include:
-
-- run current file
-- build current file
-- check current file
-- fix current file
-- explain current line
-- explain diagnostic code
-- open REPL
-- restart language server
+- dead-code dimming through `Unnecessary` tagging
+- format requests routed through the official formatter
 
 ## Recommendation
 
-Use the official extension if you want the docs, compiler, formatter, and LSP metadata to stay aligned. The shared metadata layer is the reason hover and completion already know about:
+Use the official clients when possible, but keep the mental model clear:
 
-- builtins
-- decorators
-- stdlib modules
-- stdlib member return types
+- the **LSP** is the language brain
+- the **editor integration** is the local shell around it
+
+That split is what lets Fidan stay coherent as more editor integrations are added.

@@ -10,6 +10,18 @@
   let { data } = $props();
   let query = $state("");
   const searchIndex = docsSearchIndex();
+  const filteredSearchResults = $derived.by(() => {
+    const trimmed = query.trim().toLowerCase();
+    if (!trimmed) return [];
+
+    return searchIndex
+      .filter((entry) =>
+        `${entry.title} ${entry.description} ${entry.tokens.join(" ")}`
+          .toLowerCase()
+          .includes(trimmed),
+      )
+      .slice(0, 8);
+  });
 </script>
 
 <svelte:head>
@@ -66,23 +78,30 @@
       {#if query.trim()}
         <div class="panel-soft mt-3 rounded-[var(--radius-lg)] p-3">
           <div class="max-h-64 overflow-y-auto">
-            {#each searchIndex
-              .filter( (entry) => `${entry.title} ${entry.description} ${entry.tokens.join(" ")}`
-                    .toLowerCase()
-                    .includes(query.toLowerCase()), )
-              .slice(0, 8) as entry}
-              <a
-                href={entry.href}
-                class="block rounded-xl px-3 py-2 transition hover:bg-white/4"
+            {#if filteredSearchResults.length > 0}
+              {#each filteredSearchResults as entry}
+                <a
+                  href={entry.href}
+                  class="block rounded-xl px-3 py-2 transition hover:bg-white/4"
+                >
+                  <div class="text-sm font-medium text-white">
+                    {@html renderInlineMarkdown(entry.title)}
+                  </div>
+                  <div class="text-xs text-[var(--color-text-muted)]">
+                    {entry.section}
+                  </div>
+                </a>
+              {/each}
+            {:else}
+              <div
+                class="rounded-xl border border-white/8 bg-black/10 px-3 py-4 text-sm text-[var(--color-text-muted)]"
               >
-                <div class="text-sm font-medium text-white">
-                  {@html renderInlineMarkdown(entry.title)}
-                </div>
-                <div class="text-xs text-[var(--color-text-muted)]">
-                  {entry.section}
-                </div>
-              </a>
-            {/each}
+                Not found. Try a broader term like <span class="text-white"
+                  >toolchains</span
+                >, <span class="text-white">stdlib</span>, or
+                <span class="text-white">concurrency</span>.
+              </div>
+            {/if}
           </div>
         </div>
       {/if}
