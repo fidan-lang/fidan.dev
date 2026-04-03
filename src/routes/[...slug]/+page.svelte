@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { flip } from "svelte/animate";
   import DocsArticle from "$lib/components/docs/DocsArticle.svelte";
   import DocsSidebar from "$lib/components/docs/DocsSidebar.svelte";
   import DocsToc from "$lib/components/docs/DocsToc.svelte";
@@ -6,6 +7,7 @@
   import Footer from "$lib/components/marketing/Footer.svelte";
   import { docsBySection, docsSearchIndex } from "$lib/utils/docs";
   import { renderInlineMarkdown } from "$lib/utils/markdown";
+  import { fade, fly } from "svelte/transition";
 
   let { data } = $props();
   let query = $state("");
@@ -76,25 +78,35 @@
         class="w-full rounded-[var(--radius-lg)] border border-white/8 bg-white/4 px-4 py-3 text-sm text-white placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)]/30 focus:outline-none"
       />
       {#if query.trim()}
-        <div class="panel-soft mt-3 rounded-[var(--radius-lg)] p-3">
+        <div
+          class="panel-soft mt-3 rounded-[var(--radius-lg)] p-3"
+          transition:fade={{ duration: 160 }}
+        >
           <div class="max-h-64 overflow-y-auto">
             {#if filteredSearchResults.length > 0}
-              {#each filteredSearchResults as entry}
-                <a
-                  href={entry.href}
-                  class="block rounded-xl px-3 py-2 transition hover:bg-white/4"
-                >
-                  <div class="text-sm font-medium text-white">
-                    {@html renderInlineMarkdown(entry.title)}
-                  </div>
-                  <div class="text-xs text-[var(--color-text-muted)]">
-                    {entry.section}
-                  </div>
-                </a>
-              {/each}
+              <div class="space-y-1">
+                {#each filteredSearchResults as entry (entry.href)}
+                  <a
+                    href={entry.href}
+                    class="block rounded-xl px-3 py-2 transition hover:bg-white/4"
+                    animate:flip={{ duration: 180 }}
+                    in:fly={{ y: 8, duration: 180, opacity: 0.2 }}
+                    out:fade={{ duration: 120 }}
+                  >
+                    <div class="text-sm font-medium text-white">
+                      {@html renderInlineMarkdown(entry.title)}
+                    </div>
+                    <div class="text-xs text-[var(--color-text-muted)]">
+                      {entry.section}
+                    </div>
+                  </a>
+                {/each}
+              </div>
             {:else}
               <div
                 class="rounded-xl border border-white/8 bg-black/10 px-3 py-4 text-sm text-[var(--color-text-muted)]"
+                in:fly={{ y: 8, duration: 180, opacity: 0.2 }}
+                out:fade={{ duration: 120 }}
               >
                 Not found. Try a broader term like <span class="text-white"
                   >toolchains</span
