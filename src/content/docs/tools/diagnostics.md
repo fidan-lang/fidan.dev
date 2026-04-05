@@ -48,8 +48,20 @@ The same diagnostics surface powers:
 - terminal rendering
 - LSP diagnostics in editors
 - `fidan explain`
+- AI-assisted explain flows layered on top of the same diagnostic metadata
 
 That means the code, message, and general meaning stay aligned across tools.
+
+## Explain workflows
+
+When you want more than the raw diagnostic message, use the explanation layer that sits on top of the same codes and spans:
+
+- `fidan explain --diagnostic E0101`
+- `fidan explain --last-error`
+- `fidan explain app.fdn --line 18 --end-line 26`
+- VS Code explain commands for the current line or active selection
+
+If you opt into the AI toolchain, the AI explanation path still starts from the same registered diagnostic and span data. That keeps the explanation grounded in the compiler's actual model instead of inventing a second, disconnected explanation system.
 
 ## Strict mode and suppression
 

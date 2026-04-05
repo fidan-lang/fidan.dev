@@ -24,7 +24,6 @@ Current top-level commands:
 - `fidan check`
 - `fidan fix`
 - `fidan explain`
-- `fidan explain-line`
 - `fidan new`
 - `fidan self`
 - `fidan toolchain`
@@ -225,30 +224,51 @@ Apply high-confidence fix suggestions:
 
 ```bash
 fidan fix app.fdn
-fidan fix app.fdn --dry-run
+fidan fix app.fdn --in-place
+fidan fix app.fdn --ai
+fidan fix app.fdn --improve "refactor for readability"
 ```
 
-Use `--dry-run` before trusting a large mechanical change in CI or while reviewing warnings.
+By default, `fidan fix` prints the proposed result to stdout so you can review it first. Use `--in-place` when you want the file rewritten.
+
+### Useful flags
+
+- `--in-place`
+- `--ai [steering text]`
+- `--improve [steering text]`
+- `--refactor [steering text]` (alias for `--improve`)
+
+High-confidence deterministic fixes run first. `--ai` asks the installed AI toolchain for additional fixes after that pass. `--improve` and `--refactor` are the clean-code improvement mode, even when diagnostics are already resolved.
 
 ## `fidan explain`
 
-Print the explanation for a diagnostic code:
+Explain source lines, a diagnostic code, or the last recorded diagnostic:
 
 ```bash
-fidan explain E0401
-fidan explain W2006
+fidan explain app.fdn --line 42
+fidan explain app.fdn --line 10 --end-line 18
+fidan explain app.fdn:10-18
+fidan explain --diagnostic E0401
+fidan explain --last-error
+fidan explain app.fdn --line 42 --ai "focus on runtime behavior"
 ```
 
-## `fidan explain-line`
+### Useful forms
 
-Explain what a line or line range does:
+- `fidan explain path/to/file.fdn --line N`
+- `fidan explain path/to/file.fdn --line N --end-line M`
+- `fidan explain path/to/file.fdn:N`
+- `fidan explain path/to/file.fdn:N-M`
+- `fidan explain --diagnostic CODE`
+- `fidan explain --last-error`
+- `fidan explain ... --ai [steering text]`
 
-```bash
-fidan explain-line app.fdn --line 42
-fidan explain-line app.fdn --line 10 --end-line 18
-```
+### What it is for
 
-This is a static analysis tool, not an AI integration.
+- understand a source line or selected range in language/runtime terms
+- get the official explanation for a diagnostic code
+- revisit the last recorded compiler/runtime error quickly
+- optionally ask the AI toolchain for a more guided explanation
 
 ## `fidan new`
 

@@ -107,7 +107,7 @@ export const featureCards = [
   {
     title: "Tooling built into the language story",
     description:
-      "Tracing, replay, packaging, diagnostics, formatting, and LSP support are part of the product, not an afterthought.",
+      "Tracing, replay, packaging, diagnostics, formatting, LSP support, and AI-assisted explain/fix/improve workflows are part of the product, not an afterthought.",
     eyebrow: "Tooling",
   },
 ] as const;
@@ -128,6 +128,11 @@ export const proofStats = [
     label: "package flow",
     note: "first-party registry and publishing path",
   },
+  {
+    value: "AI",
+    label: "native workflows",
+    note: "fix, improve, and explain stay inside the toolchain",
+  },
 ] as const;
 
 export const switchCards = [
@@ -141,7 +146,7 @@ export const switchCards = [
     eyebrow: "Rust → Fidan",
     title: "Keep the performance, drop the ceremony.",
     description:
-      "Fidan stays native-first, but reaches that point with faster iteration, fewer concepts to juggle, and one coherent toolchain.",
+      "Fidan stays native-first, but gets there with faster iteration, fewer concepts to juggle, and one coherent toolchain.",
   },
   {
     eyebrow: "C++ → Fidan",
@@ -194,9 +199,9 @@ export const installCommands = [
 export const marketingSections = {
   whyHeading: "Why teams switch to Fidan",
   whyIntro:
-    "Fidan is built for people who want native performance, real deployment targets, and integrated tooling without drowning in the old tradeoffs.",
+    "Fidan is built for people who want native performance, real deployment targets, integrated tooling, and AI-native workflows without getting dragged back into the old tradeoffs.",
   reliability:
-    "The toolchain already ships with broad tests, multiple execution backends, tracing, replay, and packaging workflows. The goal is not novelty. The goal is a fast, coherent system that feels tight everywhere.",
+    "The toolchain already ships with broad tests, multiple execution backends, tracing, replay, packaging workflows, and AI-assisted explain, fix, and improve paths. The point is not novelty. The point is a fast, coherent system that feels tight everywhere.",
   ecosystem:
-    "Dal gives Fidan a first-party package story, and the language runtime stays open to native libraries through @extern so you are never boxed in.",
+    "Dal gives Fidan a first-party package story, and the runtime stays open to native libraries through @extern so you are never boxed in.",
 } as const;

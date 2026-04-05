@@ -26,6 +26,8 @@ Current highlights include:
 - format on save
 - type-oriented inlay hints
 - command palette integration for the Fidan CLI
+- AI-assisted fix, improve, and explain commands
+- selection-aware explain commands from the editor context menu
 - dead-code dimming for unreachable statements
 
 ## Typical workflow
@@ -70,10 +72,36 @@ Typical editor actions wired into the extension include:
 - build current file
 - check current file
 - fix current file
-- explain current line
+- AI fix current file
+- AI improve current file
+- explain selection
+- explain current line or current selection
+- explain current line or current selection with AI
 - explain diagnostic code
 - open REPL
 - restart language server
+
+## Explain workflows
+
+The explain flow in VS Code is designed to stay close to how people already work in the editor:
+
+- if nothing is selected, `Explain Current Line(s)` uses the current line
+- if text is selected, the command derives the selected line span automatically
+- `Explain Selection` appears in the editor context menu only when text is selected
+- before the command runs, the extension shows the exact line span being sent to the CLI
+
+This means you do not have to manually count lines just to ask for an explanation.
+
+## AI-assisted workflows
+
+The extension surfaces the AI-enabled CLI flows directly:
+
+- `Fidan: AI Fix File`
+- `Fidan: AI Improve File`
+- `Fidan: Explain Diagnostic Code with AI`
+- `Fidan: Explain Current Line(s) with AI`
+
+These commands still go through the official `fidan` binary, so editor behavior stays aligned with the same toolchain you use in CI and in the terminal.
 
 ## Recommendation
 
