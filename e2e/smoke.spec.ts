@@ -1,16 +1,54 @@
-import { expect, test } from "@playwright/test";
+import { APIRequestContext, expect, test } from "@playwright/test";
+
+type GitHubRelease = {
+  tag_name: string;
+  draft: boolean;
+  prerelease: boolean;
+};
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+async function getLatestStableReleaseVersion(
+  request: APIRequestContext,
+): Promise<string> {
+  const response = await request.get(
+    "https://api.github.com/repos/fidan-lang/fidan/releases",
+    {
+      headers: {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "fidan.dev-e2e",
+      },
+    },
+  );
+
+  expect(response.ok()).toBeTruthy();
+  const payload = (await response.json()) as GitHubRelease[];
+  const release = payload.find((entry) => !entry.draft && !entry.prerelease);
+  expect(release).toBeTruthy();
+
+  return release!.tag_name.trim().replace(/^v/i, "");
+}
 
 test("marketing home renders", async ({ page }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: /switch to native software/i }),
+    page.getByRole("heading", { name: /build native software in/i }),
   ).toBeVisible();
 });
 
-test("release page renders", async ({ page }) => {
-  await page.goto("/releases/1.0.0");
+test("release page renders", async ({ page, request }) => {
+  const version = await getLatestStableReleaseVersion(request);
+
+  await page.goto(`/releases/${version}`);
   await expect(
-    page.getByRole("heading", { name: /fidan 1.0.0/i }),
+    page.getByText(new RegExp(`release\\s+${escapeRegex(version)}`, "i")),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: new RegExp(`fidan\\s+${escapeRegex(version)}`, "i"),
+    }),
   ).toBeVisible();
 });
 

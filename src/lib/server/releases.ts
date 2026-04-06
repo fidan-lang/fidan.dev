@@ -1,9 +1,9 @@
-import { error } from "@sveltejs/kit";
 import {
-  pickLatestRelease,
   releases as fallbackReleases,
+  pickLatestRelease,
   type ReleaseNote,
 } from "$lib/content/releases";
+import { error } from "@sveltejs/kit";
 
 const GITHUB_RELEASES_API =
   "https://api.github.com/repos/fidan-lang/fidan/releases";
@@ -73,6 +73,19 @@ function toReleaseDate(publishedAt: string | null): string {
   return publishedAt.slice(0, 10);
 }
 
+function resolveReleaseTitle(
+  release: GitHubRelease,
+  fallback: ReleaseNote | undefined,
+  version: string,
+): string {
+  const rawName = release.name?.trim();
+  if (rawName && !/^v?\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/i.test(rawName)) {
+    return rawName;
+  }
+
+  return fallback?.title ?? `Fidan ${version}`;
+}
+
 function normalizeGitHubRelease(
   release: GitHubRelease,
   stableLatestVersion: string | undefined,
@@ -92,7 +105,7 @@ function normalizeGitHubRelease(
   return {
     version,
     date: toReleaseDate(release.published_at),
-    title: release.name?.trim() || fallback?.title || `Fidan ${version}`,
+    title: resolveReleaseTitle(release, fallback, version),
     summary,
     highlights:
       highlights.length > 0 ? highlights : (fallback?.highlights ?? []),
