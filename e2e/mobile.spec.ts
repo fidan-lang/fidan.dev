@@ -59,6 +59,31 @@ async function expectNoHorizontalOverflow(page: Page) {
 test.describe("mobile layout", () => {
   test.use({ viewport: mobileViewport });
 
+  test("mobile menu toggles open and closed", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+
+    const toggle = page.getByRole("button", { name: /toggle navigation/i });
+    const panel = page.locator("#mobile-nav-panel");
+    const installLink = page.locator("#mobile-nav-panel a", {
+      hasText: "Install",
+    });
+
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(panel).toHaveAttribute("aria-hidden", "true");
+
+    await toggle.click();
+
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(panel).toHaveAttribute("aria-hidden", "false");
+    await expect(installLink).toBeVisible();
+
+    await toggle.click();
+
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(panel).toHaveAttribute("aria-hidden", "true");
+  });
+
   test("marketing home stays inside the viewport", async ({ page }) => {
     await page.goto("/");
     await expect(
