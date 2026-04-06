@@ -14,26 +14,43 @@
 
 <Nav links={primaryNav} />
 
-<main class="mx-auto max-w-5xl px-4 py-18 sm:px-6 lg:px-8">
-  <div class="mb-6 inline-flex rounded-full border border-[var(--color-primary)]/25 bg-[var(--color-primary)]/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--color-primary-light)]">
+<main class="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-18 lg:px-8">
+  <div
+    class="mb-6 inline-flex rounded-full border border-[var(--color-primary)]/25 bg-[var(--color-primary)]/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--color-primary-light)]"
+  >
     Release {data.release.version}
   </div>
-  <h1 class="mb-4 text-5xl font-semibold tracking-[-0.05em] text-white">{data.release.title}</h1>
-  <p class="mb-8 text-lg leading-8 text-[var(--color-text-muted)]">{data.release.summary}</p>
+  <h1
+    class="mb-4 text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl"
+  >
+    {data.release.title}
+  </h1>
+  <p
+    class="mb-8 text-base leading-7 text-[var(--color-text-muted)] sm:text-lg sm:leading-8"
+  >
+    {data.release.summary}
+  </p>
 
-  <div class="panel mb-8 rounded-[var(--radius-lg)] p-6">
-    <div class="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-earth-light)]">Highlights</div>
+  <div class="panel mb-8 rounded-[var(--radius-lg)] p-6 sm:p-8">
+    <div
+      class="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-earth-light)]"
+    >
+      Highlights
+    </div>
     <ul class="space-y-3">
       {#each data.release.highlights as highlight}
-        <li class="flex items-start gap-3 text-sm leading-7 text-[var(--color-text-muted)]">
-          <span class="mt-2 h-2 w-2 rounded-full bg-[var(--color-primary)]"></span>
+        <li
+          class="flex items-start gap-3 text-sm leading-7 text-[var(--color-text-muted)]"
+        >
+          <span class="mt-2 h-2 w-2 rounded-full bg-[var(--color-primary)]"
+          ></span>
           <span>{highlight}</span>
         </li>
       {/each}
     </ul>
   </div>
 
-  <div class="panel prose rounded-[var(--radius-lg)] p-8">
+  <div class="panel prose rounded-[var(--radius-lg)] p-6 sm:p-8">
     <h2>Install and upgrade</h2>
     <ul>
       {#each data.release.installNotes as note}

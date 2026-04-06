@@ -44,24 +44,6 @@ Fidan 1.0.0 is about coherence. The language, the toolchains, the package story,
 It is not a promise that the language will stop evolving. It is a promise that the foundation is solid enough to build on.`,
     latest: true,
   },
-  {
-    version: "0.9.0",
-    date: "2026-02-12",
-    title: "Fidan 0.9.0",
-    summary:
-      "The release that solidified the modern compiler pipeline and moved the ecosystem toward a stable 1.0 launch.",
-    highlights: [
-      "Toolchain packaging and DAL workflow matured.",
-      "AOT examples and regression coverage expanded.",
-      "Language ergonomics and diagnostics improved.",
-    ],
-    installNotes: [
-      "Upgrade to 1.0.0 unless you specifically need to compare pre-stable behavior.",
-    ],
-    body: `## The road to 1.0
-
-Fidan 0.9.0 focused on cleaning up the compiler pipeline, improving diagnostics, and stress-testing the runtime across more examples and deployment paths.`,
-  },
 ];
 
 export const latestRelease =

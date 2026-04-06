@@ -63,6 +63,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.panel,
+.panel-soft,
+.code-frame {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .route-shell {
   min-height: 100vh;
 }
@@ -656,5 +663,40 @@ button:focus-visible .arrow-icon--left {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    overflow-x: clip;
+  }
+
+  .code-line {
+    gap: 0.65rem;
+  }
+
+  .doc-callout__header {
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .doc-tabs__list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .doc-tabs__trigger {
+    flex: 0 0 auto;
+  }
+
+  .prose {
+    overflow-wrap: anywhere;
+  }
+
+  .prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 }

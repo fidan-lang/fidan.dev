@@ -9,19 +9,21 @@
 
 <DocsTopbar currentPath="/" />
 
-<main class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-  <section class="animate-fade-up mb-12">
+<main class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+  <section class="animate-fade-up mb-10 sm:mb-12">
     <div
       class="mb-4 inline-flex rounded-full border border-[var(--color-primary)]/25 bg-[var(--color-primary)]/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--color-primary-light)]"
     >
       docs.fidan.dev
     </div>
     <h1
-      class="mb-5 max-w-3xl text-5xl font-semibold tracking-[-0.05em] text-white"
+      class="mb-5 max-w-3xl text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl"
     >
       The docs are built to feel like a product, not an afterthought.
     </h1>
-    <p class="max-w-2xl text-lg leading-8 text-[var(--color-text-muted)]">
+    <p
+      class="max-w-2xl text-base leading-7 text-[var(--color-text-muted)] sm:text-lg sm:leading-8"
+    >
       Learn the language, the runtime model, the toolchains, and the package
       flow without hunting through stale notes or scattered examples.
     </p>
@@ -38,7 +40,9 @@
         >
           {card.label}
         </div>
-        <h2 class="mb-3 text-2xl font-semibold text-white">{card.label}</h2>
+        <h2 class="mb-3 text-xl font-semibold text-white sm:text-2xl">
+          {card.label}
+        </h2>
         <p class="flex-1 text-sm leading-7 text-[var(--color-text-muted)]">
           {card.description}
         </p>
@@ -65,7 +69,7 @@
     {/each}
   </section>
 
-  <section class="mt-16 panel rounded-[var(--radius-xl)] p-8">
+  <section class="mt-16 panel rounded-[var(--radius-xl)] p-6 sm:p-8">
     <div
       class="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-earth-light)]"
     >

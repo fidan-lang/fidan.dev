@@ -11,7 +11,7 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npm run dev -- --host 127.0.0.1 --port 4174",
+    command: "npx vite dev --host 127.0.0.1 --port 4174",
     port: 4174,
     reuseExistingServer: !process.env.CI,
   },

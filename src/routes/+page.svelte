@@ -45,9 +45,9 @@
         class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(132,204,22,0.14),transparent_34%),radial-gradient(circle_at_78%_12%,rgba(186,143,97,0.14),transparent_20%)]"
       ></div>
       <div
-        class="mx-auto grid max-w-7xl gap-14 px-4 py-12 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-20"
+        class="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:gap-14 sm:px-6 sm:py-12 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-20"
       >
-        <div class="animate-fade-up">
+        <div class="animate-fade-up min-w-0">
           <div
             class="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--color-primary)]/25 bg-[var(--color-primary)]/10 px-4 py-2 text-sm text-[var(--color-primary-light)]"
           >
@@ -57,14 +57,14 @@
             AI-native language, native output
           </div>
           <h1
-            class="mb-6 max-w-3xl text-5xl font-semibold tracking-[-0.06em] text-white sm:text-6xl lg:text-7xl"
+            class="mb-6 max-w-3xl text-4xl leading-[0.94] font-semibold tracking-[-0.06em] text-white sm:text-6xl lg:text-7xl"
           >
             Build native software in <span class="gradient-text"
               >a language designed for AI-native work.</span
             >
           </h1>
           <p
-            class="mb-10 max-w-2xl text-lg leading-8 text-[var(--color-text-muted)]"
+            class="mb-10 max-w-2xl text-base leading-7 text-[var(--color-text-muted)] sm:text-lg sm:leading-8"
           >
             Fidan is for people who are tired of choosing between Python-level
             ergonomics, Rust-level ceremony, and C++-level legacy drag. You get
@@ -73,7 +73,7 @@
             replay, and AI-assisted explain, fix, and improve workflows that
             belong to the product instead of sitting beside it.
           </p>
-          <div class="mb-12 flex flex-col gap-4 sm:flex-row">
+          <div class="mb-12 flex flex-col gap-3 sm:flex-row sm:gap-4">
             <a
               href="#install"
               class="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold text-black transition hover:bg-[var(--color-primary-light)]"
@@ -111,7 +111,7 @@
             {/each}
           </div>
         </div>
-        <div class="animate-fade-up [animation-delay:120ms]">
+        <div class="animate-fade-up min-w-0 [animation-delay:120ms]">
           <CodeWindow title="concurrency_showcase.fdn" code={heroSnippet} />
         </div>
       </div>
@@ -124,13 +124,15 @@
         >
           Why people switch
         </div>
-        <h2 class="mb-4 text-4xl font-semibold tracking-[-0.04em] text-white">
+        <h2
+          class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl"
+        >
           Fidan is built for shipping, not for ceremony.
         </h2>
         <p class="text-lg leading-8 text-[var(--color-text-muted)]">
           It is built to be the language you actually want to ship native
-          software with in 2026: compact, direct, fast, and designed like a
-          product instead of a puzzle.
+          software with in {new Date().getFullYear()}: compact, direct, fast,
+          and designed like a product instead of a puzzle.
         </p>
       </div>
       <div class="grid gap-5 lg:grid-cols-3">
@@ -162,7 +164,9 @@
         >
           Why Fidan
         </div>
-        <h2 class="mb-4 text-4xl font-semibold tracking-[-0.04em] text-white">
+        <h2
+          class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl"
+        >
           {marketingSections.whyHeading}
         </h2>
         <p class="text-lg leading-8 text-[var(--color-text-muted)]">
@@ -192,13 +196,15 @@
       <div
         class="mx-auto grid max-w-7xl gap-12 px-4 py-18 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8"
       >
-        <div>
+        <div class="min-w-0">
           <div
             class="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-earth-light)]"
           >
             Reality check
           </div>
-          <h2 class="mb-4 text-4xl font-semibold tracking-[-0.04em] text-white">
+          <h2
+            class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl"
+          >
             Built-in tooling, not bolted-on AI.
           </h2>
           <p class="mb-6 text-base leading-8 text-[var(--color-text-muted)]">
@@ -208,7 +214,7 @@
             {marketingSections.ecosystem}
           </p>
         </div>
-        <div class="panel rounded-[var(--radius-xl)] p-6">
+        <div class="panel min-w-0 rounded-[var(--radius-xl)] p-6">
           <div
             class="mb-6 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-text-muted)]"
           >
@@ -242,7 +248,9 @@
         >
           Install
         </div>
-        <h2 class="mb-4 text-4xl font-semibold tracking-[-0.04em] text-white">
+        <h2
+          class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl"
+        >
           Get from zero to native output quickly.
         </h2>
         <p class="text-base leading-8 text-[var(--color-text-muted)]">
@@ -271,15 +279,17 @@
 
     <section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
       <div
-        class="panel grid gap-8 rounded-[var(--radius-xl)] p-8 lg:grid-cols-[1fr_0.9fr] lg:p-10"
+        class="panel grid gap-8 rounded-[var(--radius-xl)] p-6 sm:p-8 lg:grid-cols-[1fr_0.9fr] lg:p-10"
       >
-        <div>
+        <div class="min-w-0">
           <div
             class="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary-light)]"
           >
             Releases
           </div>
-          <h2 class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white">
+          <h2
+            class="mb-4 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl"
+          >
             {data.latestRelease.title}
           </h2>
           <p
@@ -308,7 +318,7 @@
           >
             Latest stable
           </div>
-          <div class="mb-2 text-4xl font-semibold text-white">
+          <div class="mb-2 text-3xl font-semibold text-white sm:text-4xl">
             {data.latestRelease.version}
           </div>
           <div class="mb-6 text-sm text-[var(--color-earth-light)]">

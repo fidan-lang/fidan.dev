@@ -6,21 +6,35 @@
   let mobileOpen = $state(false);
 </script>
 
-<nav class="sticky top-0 z-40 border-b border-white/6 bg-[rgba(8,13,9,0.72)] backdrop-blur-xl">
-  <div class="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-    <a href="/" class="group flex items-center gap-3">
-      <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/10 shadow-[0_0_32px_rgba(132,204,22,0.08)]">
+<nav
+  class="sticky top-0 z-40 border-b border-white/6 bg-[rgba(8,13,9,0.72)] backdrop-blur-xl"
+>
+  <div
+    class="relative mx-auto flex min-w-0 max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8"
+  >
+    <a href="/" class="group flex min-w-0 items-center gap-3">
+      <div
+        class="flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/10 shadow-[0_0_32px_rgba(132,204,22,0.08)] sm:h-12 sm:w-12"
+      >
         <BrandMark size={34} alt="Fidan" />
       </div>
-      <div class="leading-tight">
-        <div class="text-sm uppercase tracking-[0.22em] text-[var(--color-text-muted)]">fidan</div>
-        <div class="text-base font-semibold text-white transition group-hover:text-[var(--color-primary-light)]">
+      <div class="min-w-0 leading-tight">
+        <div
+          class="text-xs uppercase tracking-[0.22em] text-[var(--color-text-muted)] sm:text-sm"
+        >
+          fidan
+        </div>
+        <div
+          class="truncate text-sm font-semibold text-white transition group-hover:text-[var(--color-primary-light)] sm:text-base"
+        >
           Native, refreshed
         </div>
       </div>
     </a>
 
-    <div class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 md:flex">
+    <div
+      class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 md:flex"
+    >
       {#each links as link}
         <a
           href={link.href}
@@ -46,7 +60,13 @@
       aria-label="Toggle navigation"
       onclick={() => (mobileOpen = !mobileOpen)}
     >
-      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+      <svg
+        class="h-5 w-5"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+      >
         <path d="M3 6h14M3 10h14M3 14h14" stroke-linecap="round" />
       </svg>
     </button>
@@ -65,6 +85,12 @@
             {link.label}
           </a>
         {/each}
+        <a
+          href="https://docs.fidan.dev/getting-started/install"
+          class="mt-2 inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-4 py-3 text-sm font-medium text-black transition hover:bg-[var(--color-primary-light)]"
+        >
+          Install
+        </a>
       </div>
     </div>
   {/if}

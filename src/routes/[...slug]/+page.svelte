@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { flip } from "svelte/animate";
   import DocsArticle from "$lib/components/docs/DocsArticle.svelte";
   import DocsSidebar from "$lib/components/docs/DocsSidebar.svelte";
   import DocsToc from "$lib/components/docs/DocsToc.svelte";
@@ -7,6 +6,7 @@
   import Footer from "$lib/components/marketing/Footer.svelte";
   import { docsBySection, docsSearchIndex } from "$lib/utils/docs";
   import { renderInlineMarkdown } from "$lib/utils/markdown";
+  import { flip } from "svelte/animate";
   import { fade, fly } from "svelte/transition";
 
   let { data } = $props();

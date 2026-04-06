@@ -72,14 +72,16 @@
   }
 </script>
 
-<article class="panel rounded-[var(--radius-xl)] p-6 sm:p-10">
+<article class="panel min-w-0 rounded-[var(--radius-xl)] p-5 sm:p-10">
   <div class="mb-8 border-b border-white/6 pb-8">
     <div
       class="mb-4 inline-flex rounded-full border border-[var(--color-primary)]/25 bg-[var(--color-primary)]/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--color-primary-light)]"
     >
       {page.section}
     </div>
-    <h1 class="mb-4 text-4xl font-semibold tracking-[-0.04em] text-white">
+    <h1
+      class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl"
+    >
       {@html renderInlineMarkdown(page.title)}
     </h1>
     <p class="max-w-2xl text-base leading-8 text-[var(--color-text-muted)]">
