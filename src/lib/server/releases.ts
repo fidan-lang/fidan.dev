@@ -1,3 +1,4 @@
+import { env } from "$env/dynamic/private";
 import {
   releases as fallbackReleases,
   pickLatestRelease,
@@ -119,15 +120,30 @@ function normalizeGitHubRelease(
 async function fetchGitHubReleases(
   fetchFn: typeof fetch,
 ): Promise<ReleaseNote[]> {
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "fidan.dev",
+  };
+
+  const githubToken =
+    env.GITHUB_RELEASES_TOKEN?.trim() ||
+    env.GITHUB_TOKEN?.trim() ||
+    env.GITHUB_API_TOKEN?.trim();
+  if (githubToken) {
+    headers.Authorization = `Bearer ${githubToken}`;
+  }
+
   const response = await fetchFn(GITHUB_RELEASES_API, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      "User-Agent": "fidan.dev",
-    },
+    headers,
   });
 
   if (!response.ok) {
-    throw new Error(`GitHub releases request failed with ${response.status}`);
+    const detail = response.headers.get("x-ratelimit-remaining")
+      ? ` (remaining ${response.headers.get("x-ratelimit-remaining")})`
+      : "";
+    throw new Error(
+      `GitHub releases request failed with ${response.status}${detail}`,
+    );
   }
 
   const payload = (await response.json()) as GitHubRelease[];
@@ -167,7 +183,10 @@ export async function getReleaseNotes(
       releases,
     };
     return releases;
-  } catch {
+  } catch (error) {
+    console.warn(
+      `[fidan.dev] Falling back to bundled release notes: ${error instanceof Error ? error.message : String(error)}`,
+    );
     const releases = fallbackReleaseNotes();
     cachedReleases = {
       expiresAt: now + RELEASE_CACHE_TTL_MS,
