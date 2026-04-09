@@ -36,6 +36,8 @@ test("marketing home renders", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: /build native software in/i }),
   ).toBeVisible();
+  await expect(page.getByTestId("ambient-scene")).toBeVisible();
+  await expect(page.getByTestId("proof-stat-panel")).toHaveCount(4);
 });
 
 test("release page renders", async ({ page, request }) => {
@@ -59,6 +61,7 @@ test("docs home renders", async ({ page }) => {
       name: /the docs are built to feel like a product/i,
     }),
   ).toBeVisible();
+  await expect(page.getByTestId("ambient-scene")).toHaveCount(0);
 });
 
 test("language page renders", async ({ page }) => {

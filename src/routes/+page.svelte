@@ -76,7 +76,7 @@
           <div class="mb-12 flex flex-col gap-3 sm:flex-row sm:gap-4">
             <a
               href="#install"
-              class="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold text-black transition hover:bg-[var(--color-primary-light)]"
+              class="button-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold"
             >
               Install Fidan
             </a>
@@ -94,8 +94,12 @@
             </a>
           </div>
           <div class="grid gap-4 sm:grid-cols-3">
-            {#each proofStats as stat}
-              <div class="panel-soft rounded-[var(--radius-lg)] p-4">
+            {#each proofStats as stat, index}
+              <div
+                class="panel-soft hero-stat-panel rounded-[var(--radius-lg)] p-4"
+                style={`--stat-panel-delay: ${index * 160}ms;`}
+                data-testid="proof-stat-panel"
+              >
                 <div class="mb-1 text-2xl font-semibold text-white">
                   {stat.value}
                 </div>
@@ -326,7 +330,7 @@
           </div>
           <a
             href="/releases/{data.latestRelease.version}"
-            class="inline-flex rounded-full bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold text-black transition hover:bg-[var(--color-primary-light)]"
+            class="button-primary inline-flex rounded-full px-5 py-3 text-sm font-semibold"
           >
             Read release notes
           </a>

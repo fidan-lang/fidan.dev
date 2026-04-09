@@ -53,7 +53,7 @@
     </p>
     <a
       href="/releases/{data.latestRelease.version}"
-      class="inline-flex rounded-full bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold text-black transition hover:bg-[var(--color-primary-light)]"
+      class="button-primary inline-flex rounded-full px-5 py-3 text-sm font-semibold"
     >
       Read {data.latestRelease.version}
     </a>

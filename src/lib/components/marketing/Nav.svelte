@@ -48,7 +48,7 @@
           href={link.href}
           target={link.external ? "_blank" : undefined}
           rel={link.external ? "noreferrer" : undefined}
-          class="text-sm text-[var(--color-text-muted)] transition hover:text-white"
+          class="text-link text-sm text-[var(--color-text-muted)] transition hover:text-white"
         >
           {link.label}
         </a>
@@ -57,7 +57,7 @@
 
     <a
       href="https://docs.fidan.dev/getting-started/install"
-      class="hidden rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-black transition hover:bg-[var(--color-primary-light)] md:inline-flex"
+      class="button-primary hidden rounded-full px-4 py-2 text-sm font-medium md:inline-flex"
     >
       Install
     </a>
@@ -112,7 +112,7 @@
         {/each}
         <a
           href="https://docs.fidan.dev/getting-started/install"
-          class="mobile-nav-panel__item mt-2 inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-4 py-3 text-sm font-medium text-black transition hover:bg-[var(--color-primary-light)]"
+          class="button-primary mobile-nav-panel__item mt-2 inline-flex items-center justify-center rounded-full px-4 py-3 text-sm font-medium"
           style={`--mobile-nav-item-index: ${links.length};`}
           onclick={closeMobileMenu}
         >

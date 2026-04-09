@@ -32,7 +32,7 @@
                 href={link.href}
                 target={"external" in link && link.external ? "_blank" : undefined}
                 rel={"external" in link && link.external ? "noreferrer" : undefined}
-                class="text-sm text-[var(--color-text)]/85 transition hover:text-[var(--color-primary-light)]"
+                class="text-link text-sm text-[var(--color-text)]/85 transition hover:text-[var(--color-primary-light)]"
               >
                 {link.label}
               </a>

@@ -40,7 +40,7 @@
     <div>
       <a
         href="/"
-        class="group mb-3 inline-flex items-center gap-2 text-sm text-[var(--color-primary-light)]"
+        class="text-link group mb-3 inline-flex items-center gap-2 text-sm text-[var(--color-primary-light)]"
       >
         <svg
           aria-hidden="true"

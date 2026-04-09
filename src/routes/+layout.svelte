@@ -1,9 +1,23 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { onNavigate } from "$app/navigation";
+  import AmbientScene from "$lib/components/AmbientScene.svelte";
   import "../app.css";
 
   let { children, data } = $props();
+  const docsPrefixes = [
+    "/docs",
+    "/language",
+    "/stdlib",
+    "/tools",
+    "/editors",
+    "/toolchains",
+    "/dal",
+    "/reference",
+  ];
+  const showAmbientScene = $derived(
+    !docsPrefixes.some((prefix) => data.pathname.startsWith(prefix)),
+  );
 
   type ViewTransitionCapableDocument = Document & {
     startViewTransition?: (callback: () => Promise<void> | void) => {
@@ -68,5 +82,10 @@
 </svelte:head>
 
 <div class="route-shell">
-  {@render children()}
+  {#if showAmbientScene}
+    <AmbientScene />
+  {/if}
+  <div class="route-shell__content">
+    {@render children()}
+  </div>
 </div>

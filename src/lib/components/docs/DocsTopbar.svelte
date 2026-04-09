@@ -49,12 +49,12 @@
     <div class="hidden items-center gap-5 md:flex">
       <a
         href="https://fidan.dev"
-        class="whitespace-nowrap text-sm text-[var(--color-text-muted)] transition hover:text-white"
+        class="text-link whitespace-nowrap text-sm text-[var(--color-text-muted)] transition hover:text-white"
         >Main site</a
       >
       <a
         href="/releases"
-        class="text-sm text-[var(--color-text-muted)] transition hover:text-white"
+        class="text-link text-sm text-[var(--color-text-muted)] transition hover:text-white"
         >Releases</a
       >
       <a
