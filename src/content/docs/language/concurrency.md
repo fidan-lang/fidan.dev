@@ -163,10 +163,10 @@ These are same-thread async helpers, not thread spawners.
 
 Example:
 
-```fidan
-use std.parallel as parallel
+```fidan wrap=none
+use std.parallel as par
 
-var out = parallel.parallelMap(items, action with (item) returns integer {
+var out = par.parallelMap(items, action with (item) returns integer {
     return item * 2
 })
 ```

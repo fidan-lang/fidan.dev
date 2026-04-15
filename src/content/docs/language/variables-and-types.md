@@ -160,8 +160,8 @@ Example:
 ```fidan
 action greet with (
     certain name oftype string,
-    optional title oftype string = "Engineer",
-    age oftype integer
+    age oftype integer,
+    optional title oftype string = "Engineer"
 ) returns string {
     return "{title} {name} ({age})"
 }

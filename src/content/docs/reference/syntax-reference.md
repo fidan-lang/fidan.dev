@@ -272,8 +272,8 @@ Supported parameter modes:
 ```fidan
 action greet with (
     certain name oftype string,
-    optional title oftype string = "Engineer",
-    age oftype integer
+    age oftype integer,
+    optional title oftype string = "Engineer"
 ) returns nothing {
     print("{title} {name} ({age})")
 }
@@ -743,7 +743,7 @@ From lower to higher:
 
 ### Named types
 
-```fidan
+```text
 integer
 float
 string
@@ -775,7 +775,7 @@ var values oftype map oftype string
 
 Fidan uses `oftype` chaining rather than angle brackets:
 
-```fidan
+```text
 list oftype integer
 dict oftype string oftype integer
 Shared oftype integer
@@ -784,7 +784,7 @@ Pending oftype string
 
 ### Tuple types
 
-```fidan
+```text
 tuple
 (integer, string)
 ```

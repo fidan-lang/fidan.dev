@@ -35,9 +35,9 @@ Aliases:
 
 ## Example
 
-```fidan
-use std.test as test
+```fidan wrap=none
+use std.test as tests
 
-test.assertEq(2 + 2, 4)
-test.assertSome("Ada")
+tests.assertEq(2 + 2, 4)
+tests.assertSome("Ada")
 ```

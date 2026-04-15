@@ -107,7 +107,7 @@ export const featureCards = [
   {
     title: "Tooling built into the language story",
     description:
-      "Tracing, replay, packaging, diagnostics, formatting, LSP support, and AI-assisted explain/fix/improve workflows are part of the product, not an afterthought.",
+      "Tracing, replay, packaging, diagnostics, formatting, LSP support, and compiler-grounded AI explain/fix/improve workflows are part of the product, not an afterthought.",
     eyebrow: "Tooling",
   },
 ] as const;
@@ -201,7 +201,7 @@ export const marketingSections = {
   whyIntro:
     "Fidan is built for people who want native performance, real deployment targets, integrated tooling, and AI-native workflows without getting dragged back into the old tradeoffs.",
   reliability:
-    "The toolchain already ships with broad tests, multiple execution backends, tracing, replay, packaging workflows, and AI-assisted explain, fix, and improve paths. The point is not novelty. The point is a fast, coherent system that feels tight everywhere.",
+    "The toolchain already ships with broad tests, multiple execution backends, tracing, replay, packaging workflows, and AI-assisted explain, fix, and improve paths grounded in diagnostics, inferred types, reads and writes, symbols, call graphs, and static traces. The point is not novelty. The point is a fast, coherent system that feels tight everywhere.",
   ecosystem:
     "Dal gives Fidan a first-party package story, and the runtime stays open to native libraries through @extern so you are never boxed in.",
 } as const;

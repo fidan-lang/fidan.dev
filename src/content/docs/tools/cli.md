@@ -27,6 +27,7 @@ Current top-level commands:
 - `fidan new`
 - `fidan self`
 - `fidan toolchain`
+- `fidan exec`
 - `fidan dal`
 
 ## `fidan run`
@@ -312,16 +313,55 @@ If no version is provided for `install`, `use`, or `remove`, the CLI resolves `l
 
 ## `fidan toolchain`
 
-Manage optional heavyweight toolchains like LLVM.
+Manage optional toolchains like LLVM and AI analysis.
 
 ### Subcommands
 
 - `fidan toolchain available`
 - `fidan toolchain list`
-- `fidan toolchain add llvm --version 1.0.0-local`
-- `fidan toolchain remove llvm --version 1.0.0-local`
+- `fidan toolchain add llvm`
+- `fidan toolchain add ai-analysis`
+- `fidan toolchain remove llvm`
+- `fidan toolchain remove ai-analysis`
 
-Use this when you want to install or inspect the external LLVM toolchain package without manually touching `FIDAN_HOME`.
+Use this when you want to install or inspect optional toolchain packages without manually touching `FIDAN_HOME`.
+
+LLVM powers the optional LLVM AOT backend. AI analysis powers model-backed explain, fix, improve, and MCP workflows.
+
+## `fidan exec`
+
+Run commands registered by installed toolchains.
+
+```bash
+fidan exec
+fidan exec ai help
+```
+
+The AI analysis toolchain registers the `ai` namespace.
+
+### `fidan exec ai`
+
+Useful commands:
+
+- `fidan exec ai setup`
+- `fidan exec ai configure --set key=value`
+- `fidan exec ai login`
+- `fidan exec ai logout`
+- `fidan exec ai doctor`
+- `fidan exec ai mcp`
+- `fidan exec ai help`
+
+Typical first run:
+
+```bash
+fidan toolchain add ai-analysis
+fidan exec ai setup
+fidan exec ai doctor
+```
+
+`setup` can configure OpenAI-compatible APIs, Anthropic, local Ollama, local LM Studio, or a custom OpenAI-compatible endpoint. API keys can live in the OS keychain or in environment variables.
+
+For the complete model, see [AI-native tooling](/docs/tools/ai-native-tooling).
 
 ## `fidan dal`
 

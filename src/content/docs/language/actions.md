@@ -22,7 +22,7 @@ action greet with (certain name oftype string) returns nothing {
 
 Canonical action declaration:
 
-```fidan
+```text
 action name with (params...) returns Type {
     body
 }

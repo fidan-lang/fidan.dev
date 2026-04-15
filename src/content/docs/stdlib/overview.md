@@ -16,6 +16,7 @@ Fidan keeps the global language surface small and moves richer behavior under ex
 - `std.collections`
 - `std.env`
 - `std.io`
+- `std.json`
 - `std.math`
 - `std.parallel`
 - `std.regex`
@@ -54,6 +55,10 @@ Environment variables and script arguments.
 ### `std.io`
 
 Console I/O, files, directories, paths, environment convenience, and terminal helpers.
+
+### `std.json`
+
+JSON parsing, validation, compact serialization, pretty-printing, and file helpers.
 
 ### `std.math`
 

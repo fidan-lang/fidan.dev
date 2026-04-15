@@ -26,10 +26,10 @@ Aliases:
 
 ## Example
 
-```fidan
-use std.parallel as parallel
+```fidan wrap=none
+use std.parallel as par
 
-var doubled = parallel.parallelMap([1, 2, 3], action with (item oftype integer) returns integer {
+var doubled = par.parallelMap([1, 2, 3], action with (item oftype integer) returns integer {
     return item * 2
 })
 ```
