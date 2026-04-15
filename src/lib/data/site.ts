@@ -5,9 +5,9 @@ export type NavLink = {
 };
 
 export const primaryNav: NavLink[] = [
-  { label: "Why Fidan", href: "/#why-fidan" },
+  { label: "Why Fidan", href: "https://fidan.dev/#why-fidan" },
   { label: "Docs", href: "https://docs.fidan.dev/", external: true },
-  { label: "Releases", href: "/releases" },
+  { label: "Releases", href: "https://fidan.dev/releases" },
   { label: "Dal", href: "https://dal.fidan.dev", external: true },
   {
     label: "GitHub",
@@ -20,9 +20,9 @@ export const footerColumns = [
   {
     title: "Product",
     links: [
-      { label: "Why Fidan", href: "/#why-fidan" },
-      { label: "Install", href: "/#install" },
-      { label: "Releases", href: "/releases" },
+      { label: "Why Fidan", href: "https://fidan.dev/#why-fidan" },
+      { label: "Install", href: "https://fidan.dev/#install" },
+      { label: "Releases", href: "https://fidan.dev/releases" },
     ],
   },
   {
