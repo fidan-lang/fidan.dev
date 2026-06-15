@@ -80,6 +80,34 @@ Important properties:
 - preserves normal mutable-state semantics
 - suitable when you want structure and yielding, not multicore execution
 
+Interleaving sanity check:
+
+```fidan
+use std.async
+
+concurrent {
+    task {
+        print("A before")
+        await async.sleep(10)
+        print("A after")
+    }
+    task {
+        print("B before")
+        await async.sleep(1)
+        print("B after")
+    }
+}
+```
+
+Typical order is:
+
+- `A before`
+- `B before`
+- `B after`
+- `A after`
+
+This is cooperative same-thread scheduling, not thread-race ordering.
+
 ## `parallel`
 
 `parallel` runs tasks on real worker threads:
@@ -93,6 +121,9 @@ parallel {
 ```
 
 Use `parallel` for actual CPU-bound multicore work.
+
+For logging-oriented code, remember that task output order can vary from run to
+run because real worker threads are scheduled by the OS.
 
 ## `parallel for`
 

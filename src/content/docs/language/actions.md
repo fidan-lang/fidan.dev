@@ -132,6 +132,29 @@ action parse_port with (text oftype string) returns integer {
 }
 ```
 
+## Entrypoint behavior (`action main`)
+
+`action main` is a normal action declaration. It does not auto-run by itself;
+call `main()` explicitly in the module you want to execute.
+
+```fidan
+action main {
+    print("hello")
+}
+
+main()
+```
+
+Declarations are hoisted, so calls can appear before declaration text:
+
+```fidan
+var value = square(8)
+
+action square with (certain x oftype integer) returns integer {
+    return x * x
+}
+```
+
 This is also where decorators like `@precompile` and `@extern` apply.
 
 ## Extension actions

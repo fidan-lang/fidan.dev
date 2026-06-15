@@ -196,6 +196,14 @@ Format a file with the official formatter:
 fidan format app.fdn
 ```
 
+Default behavior prints the formatted source to stdout and leaves the file
+unchanged.
+
+Use `--in-place` when you want to rewrite the file on disk.
+
+Use `--check` in CI to fail with exit status 1 when formatting changes are
+required.
+
 ### Useful flags
 
 - `--in-place`
@@ -278,6 +286,9 @@ Scaffold a new project:
 ```bash
 fidan new hello_world
 ```
+
+The generated `main.fdn` includes an explicit `main()` call so entrypoint
+behavior is clear from the first file.
 
 Package-ready layout:
 
