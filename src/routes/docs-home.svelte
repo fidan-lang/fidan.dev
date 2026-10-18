@@ -2,9 +2,11 @@
   import DocsTopbar from "$lib/components/docs/DocsTopbar.svelte";
   import Footer from "$lib/components/marketing/Footer.svelte";
 
-  let { cards } = $props<{
+  let {
+    cards,
+  }: {
     cards: Array<{ label: string; description: string; href: string }>;
-  }>();
+  } = $props();
 </script>
 
 <DocsTopbar currentPath="/" />

@@ -25,6 +25,9 @@ jobs:
       - name: Typecheck
         run: npm run check
 
+      - name: Untrusted release Markdown regression
+        run: npm run check:release-markdown
+
       - name: Production build
         run: npm run build
 

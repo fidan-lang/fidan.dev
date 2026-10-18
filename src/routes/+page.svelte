@@ -66,8 +66,8 @@
           <p
             class="mb-10 max-w-2xl text-base leading-7 text-[var(--color-text-muted)] sm:text-lg sm:leading-8"
           >
-            Fidan is for people who are tired of choosing between Python-level
-            ergonomics, Rust-level ceremony, and C++-level legacy drag. You get
+            Fidan is an AI-native general-purpose language with human-readable
+            syntax and compiler-grounded tooling. Its execution paths include
             interpreter, JIT, Cranelift AOT, and LLVM AOT in one coherent
             toolchain, with real concurrency, direct native interop, tracing,
             replay, and AI-assisted explain, fix, and improve workflows that

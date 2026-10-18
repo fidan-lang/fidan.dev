@@ -11,7 +11,7 @@ It contains the marketing site, release pages, install endpoints, and the docs s
 
 ## Stack
 
-- SvelteKit 5
+- SvelteKit 2 with Svelte 5
 - Tailwind 4
 - Cloudflare Pages
 - Playwright smoke tests

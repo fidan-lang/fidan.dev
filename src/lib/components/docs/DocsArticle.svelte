@@ -3,16 +3,22 @@
   import type { DocPage } from "$lib/content/docs";
   import { renderInlineMarkdown, type TocItem } from "$lib/utils/markdown";
 
-  let { page, html, previousHref, previousLabel, nextHref, nextLabel } =
-    $props<{
-      page: DocPage;
-      html: string;
-      previousHref?: string;
-      previousLabel?: string;
-      nextHref?: string;
-      nextLabel?: string;
-      toc?: TocItem[];
-    }>();
+  let {
+    page,
+    html,
+    previousHref,
+    previousLabel,
+    nextHref,
+    nextLabel,
+  }: {
+    page: DocPage;
+    html: string;
+    previousHref?: string;
+    previousLabel?: string;
+    nextHref?: string;
+    nextLabel?: string;
+    toc?: TocItem[];
+  } = $props();
 
   let copied = $state(false);
   let copyTimer: ReturnType<typeof setTimeout> | undefined;

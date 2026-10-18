@@ -5,7 +5,8 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 const config = {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: adapter(),
+    // This site has no local persistent bindings; isolated previews avoid stale SQLite locks.
+    adapter: adapter({ platformProxy: { persist: false } }),
   },
 };
 

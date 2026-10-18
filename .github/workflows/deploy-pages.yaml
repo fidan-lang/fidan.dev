@@ -1,20 +1,16 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  workflow_run:
-    workflows: ["Verification Tests"]
-    types: [completed]
   workflow_dispatch:
+    inputs:
+      confirmation:
+        type: string
+        required: true
+        description: Enter DEPLOY_APPROVED_PAGES only after owner approval
 
 jobs:
   deploy:
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      (
-        github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.event == 'push' &&
-        github.event.workflow_run.head_branch == 'main'
-      )
+    if: github.ref == 'refs/heads/main' && inputs.confirmation == 'DEPLOY_APPROVED_PAGES'
     runs-on: ubuntu-latest
     environment: cloudflare-deploy
     permissions:
@@ -25,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          ref: ${{ github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v6

@@ -398,7 +398,7 @@ Work with the Dal package registry.
 fidan dal login
 fidan dal search regex
 fidan dal info torch
-fidan dal add json_parser
+fidan dal add json-parser
 fidan dal package
 fidan dal publish
 ```
@@ -408,7 +408,7 @@ fidan dal publish
 Package requests can include feature selections:
 
 ```bash
-fidan dal add torch[pybindings,gpu]
+fidan dal add 'demo[pretty]'
 ```
 
 ## Common workflows
@@ -416,7 +416,7 @@ fidan dal add torch[pybindings,gpu]
 ### Fast edit-run loop
 
 ```bash
-fidan run app.fdn --reload
+fidan run --reload app.fdn
 ```
 
 ### Strict CI validation
@@ -481,3 +481,14 @@ For package work:
 - `fidan dal add`
 - `fidan dal package`
 - `fidan dal publish`
+
+## Program arguments
+
+Run options must precede the source filename. After it, tokens belong to the program:
+
+```bash
+fidan run --trace none main.fdn -- --name Dal --verbose
+fidan run main.fdn --name Dal --verbose
+```
+
+Both forms forward the same three arguments through `std.env.args()` / `std.io.args()`; those APIs exclude the script executable/name. Prefer the explicit `--` separator in examples. Registry package names use hyphens, not underscores; the corresponding import module replaces hyphens with underscores. Package names in examples must exist in the chosen registry. See the Dal relaunch candidate guide for compatibility, checksum and lock/yank policy; do not assume unpublished candidate changes are already in the stable CLI.

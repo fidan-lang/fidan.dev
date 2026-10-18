@@ -6,12 +6,12 @@
     code,
     language = "fidan",
     compact = false,
-  } = $props<{
+  }: {
     title?: string;
     code: string;
     language?: string;
     compact?: boolean;
-  }>();
+  } = $props();
 
   const normalizedCode = $derived(
     code.replace(/\r\n/g, "\n").replace(/^\n+/, "").replace(/\n+$/, ""),
