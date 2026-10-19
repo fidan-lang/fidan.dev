@@ -30,6 +30,31 @@ Current top-level commands:
 - `fidan exec`
 - `fidan dal`
 
+## Directory targets in the audit candidate
+
+The local audit candidate adds directory targets to `format`, `test`, `check`,
+and `fix`. This is not part of the published Fidan 1.0.16 CLI yet.
+
+```bash
+fidan format . --check
+fidan format . --in-place
+fidan test .
+fidan check .
+fidan fix .
+fidan fix . --in-place
+```
+
+Directory targets select `.fdn` files recursively in deterministic path order,
+without following symlinks. File-level errors do not prevent later files from
+being processed; the command fails if any selected file operation fails.
+Formatting uses each file's nearest `.fidanfmt`, with CLI overrides still applied.
+`check` does not execute programs. `fix` previews edits unless `--in-place` is
+specified; explicitly selected AI modes reuse the existing workflow per file.
+Remaining unfixed diagnostics can be checked with `fidan check`.
+
+`run`, `build`, and `profile` still take an entry-point file; `explain` targets a
+file and optional source lines. They do not recursively execute source modules.
+
 ## `fidan run`
 
 Run a Fidan source file through the interpreter, optionally with JIT hot-path compilation.
