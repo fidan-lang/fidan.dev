@@ -1,34 +1,8 @@
-import { APIRequestContext, expect, test } from "@playwright/test";
-
-type GitHubRelease = {
-  tag_name: string;
-  draft: boolean;
-  prerelease: boolean;
-};
+import { displayedReleaseVersion } from "./releases";
+import { expect, test } from "@playwright/test";
 
 function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-async function getLatestStableReleaseVersion(
-  request: APIRequestContext,
-): Promise<string> {
-  const response = await request.get(
-    "https://api.github.com/repos/fidan-lang/fidan/releases",
-    {
-      headers: {
-        Accept: "application/vnd.github+json",
-        "User-Agent": "fidan.dev-e2e",
-      },
-    },
-  );
-
-  expect(response.ok()).toBeTruthy();
-  const payload = (await response.json()) as GitHubRelease[];
-  const release = payload.find((entry) => !entry.draft && !entry.prerelease);
-  expect(release).toBeTruthy();
-
-  return release!.tag_name.trim().replace(/^v/i, "");
 }
 
 test("marketing home renders", async ({ page }) => {
@@ -41,7 +15,7 @@ test("marketing home renders", async ({ page }) => {
 });
 
 test("release page renders", async ({ page, request }) => {
-  const version = await getLatestStableReleaseVersion(request);
+  const version = await displayedReleaseVersion(request);
 
   await page.goto(`/releases/${version}`);
   await expect(

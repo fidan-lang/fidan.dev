@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 
 for (const width of [390, 768, 1440, 1920]) {
@@ -71,5 +72,32 @@ test("published documentation sitemap and internal links resolve locally", async
   for (const path of links) {
     const response = await request.get(path, { maxRedirects: 0 });
     expect(response.status(), path).toBe(200);
+  }
+});
+
+test("legal navigation separates the software license from draft branding", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/");
+  const legal = page.getByRole("navigation", { name: "Legal", exact: true });
+  for (const [label, url] of [
+    ["Apache 2.0", "/LICENSE.txt"],
+    ["Attribution", "/NOTICE.txt"],
+    [
+      "Branding (draft)",
+      "https://github.com/fidan-lang/fidan/blob/main/TRADEMARKS.md",
+    ],
+  ]) {
+    await expect(
+      legal.getByRole("link", { name: label, exact: true }),
+    ).toHaveAttribute("href", url);
+  }
+  for (const name of ["LICENSE", "NOTICE"]) {
+    const response = await request.get(`/${name}.txt`);
+    expect(response.status()).toBe(200);
+    expect(await response.body()).toEqual(
+      readFileSync(new URL(`../${name}`, import.meta.url)),
+    );
   }
 });

@@ -16,6 +16,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "prebuild": "npm run sync-legal",
+    "sync-legal": "node -e \"const fs=require('fs'); for (const name of ['LICENSE','NOTICE']) fs.copyFileSync(name, 'static/'+name+'.txt');\"",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "lint": "prettier --check . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -53,5 +55,6 @@
   },
   "dependencies": {
     "sanitize-html": "^2.18.1"
-  }
+  },
+  "license": "Apache-2.0"
 }

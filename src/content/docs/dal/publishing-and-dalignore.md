@@ -48,7 +48,7 @@ Dal only allows a controlled top-level package layout such as:
 - `docs/`
 - `assets/`
 - `README*`
-- `LICENSE*`
+- `LICENSE*`, `NOTICE*`
 - `CHANGELOG.md`
 - `.dalignore`
 - `dal.toml`

@@ -80,7 +80,7 @@ And packaging validation only allows a controlled top-level surface such as:
 - `docs/`
 - `assets/`
 - `README*`
-- `LICENSE*`
+- `LICENSE*`, `NOTICE*`
 - `CHANGELOG.md`
 - `.dalignore`
 

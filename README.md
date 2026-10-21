@@ -94,3 +94,12 @@ Compiler, runtime, toolchain, formatter, LSP, and package-manager changes belong
 
 - Fidan language: `https://github.com/fidan-lang/fidan`
 - Dal package registry: `https://dal.fidan.dev`
+
+## License and branding
+
+The software is available under the unmodified [Apache License 2.0](LICENSE),
+with attribution in [NOTICE](NOTICE). Commercial use, modification, redistribution,
+sale and hosting are permitted under that license. Branding is separate: see the
+[Fidan trademark policy](https://github.com/fidan-lang/fidan/blob/main/TRADEMARKS.md).
+Truthful descriptive references and independent forks are welcome; do not falsely
+claim official affiliation or endorsement.

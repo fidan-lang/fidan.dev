@@ -44,6 +44,11 @@
   </div>
   <div class="border-t border-white/6 px-4 py-5 text-center text-xs text-[var(--color-text-muted)]">
     <p>&copy; {new Date().getFullYear()} Fidan. All rights reserved.</p>
-    <p class="mt-2.5">Fidan™ and Dal™ are trademarks of Kaan Gönüldinc (AppSolves).</p>
+    <nav aria-label="Legal" class="mt-2.5 flex flex-wrap justify-center gap-4">
+      <a href="/LICENSE.txt">Apache 2.0</a>
+      <a href="/NOTICE.txt">Attribution</a>
+      <a href="https://github.com/fidan-lang/fidan/blob/main/TRADEMARKS.md">Branding (draft)</a>
+    </nav>
+    <p class="mt-2.5">Fidan and DAL identify the official projects; see the separate branding guidance.</p>
   </div>
 </footer>

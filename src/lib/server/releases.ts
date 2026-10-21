@@ -15,6 +15,8 @@ const DEFAULT_INSTALL_NOTES = [
   "If you need maximum local performance, use --release.",
 ] as const;
 const RELEASE_CACHE_TTL_MS = 5 * 60 * 1000;
+// Release pages must retain their bundled fallback during upstream outages.
+const RELEASE_REQUEST_TIMEOUT_MS = 5000;
 
 type GitHubRelease = {
   tag_name: string;
@@ -135,6 +137,7 @@ async function fetchGitHubReleases(
 
   const response = await fetchFn(GITHUB_RELEASES_API, {
     headers,
+    signal: AbortSignal.timeout(RELEASE_REQUEST_TIMEOUT_MS),
   });
 
   if (!response.ok) {
