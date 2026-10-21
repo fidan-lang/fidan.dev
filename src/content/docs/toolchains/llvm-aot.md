@@ -8,7 +8,9 @@ order: 440
 
 # LLVM AOT
 
-LLVM AOT is an optional native compilation backend. The current release toolchain uses LLVM23.1.2 and helper1.0.6; supported language/runtime behavior still needs backend-specific regression coverage.
+LLVM AOT is an optional native compilation backend. The current release toolchain
+uses LLVM 23.1.2 and helper 1.0.6; supported language/runtime behavior still
+needs backend-specific regression coverage.
 
 ## Build example
 
@@ -55,9 +57,10 @@ fidan build app.fdn --backend llvm --release --target-cpu generic
 
 ## Relaunch audit branch compatibility
 
-The published LLVM 23.1.2 toolchain/helper1.0.6 belongs to the released compiler
-contract. The Dal relaunch source branch introduces internal LLVM backend protocol6
-for corrected package-module/export lowering and rejects old protocol5 helpers.
+The published LLVM 23.1.2 toolchain and helper 1.0.6 belong to the released
+compiler contract. The Dal relaunch source branch introduces internal LLVM backend protocol 8
+for package-module/export identity, callable metadata and optional scalar parameter
+ABI support, plus thread-local native global ownership and worker snapshots. It rejects older protocol 5/6/7 helpers.
 It requires a future owner-approved compiler/helper patch pair. Do not overwrite
-published1.0.16/1.0.6 artifacts or mix an audit compiler with an older helper. The
+published 1.0.16/1.0.6 artifacts or mix an audit compiler with an older helper. The
 private audit helper is test evidence, not an available public release.

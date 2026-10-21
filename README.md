@@ -73,7 +73,8 @@ This site is configured for **Cloudflare Pages**.
 Relevant files:
 
 - `wrangler.toml`
-- `.github/workflows/ci.yaml`
+- `.github/workflows/verification_tests.yaml`
+- `.github/workflows/_web-checks.yaml`
 - `.github/workflows/deploy-pages.yaml`
 
 The deploy workflow expects:

@@ -98,8 +98,14 @@ The relaunch candidate adds an optional compiler requirement independently of th
 [package]
 name = "args"
 version = "0.1.0"
-fidan = ">=1.0.16, <2.0.0"
+# RELEASE-ONLY BLOCKER: args requires an unreleased compiler/helper pair.
+fidan = "=0.0.0-args-unreleased"
 ```
+
+This `args` example deliberately blocks normal installation: no published compiler
+supports its required callback contract yet. Replace the sentinel only after an
+owner-approved compatible compiler/helper release. Local tests use a separate,
+capability-probed staging manifest; they do not certify the public 1.0.16 binary.
 
 The registry validates and exposes this requirement; the matching candidate CLI filters versions and checks installation and imports. Legacy manifests without it remain unrestricted. SemVer prereleases require explicit opt-in; build metadata does not change version precedence. This describes the coordinated local audit candidate, not support already present in the published 1.0.16 CLI.
 

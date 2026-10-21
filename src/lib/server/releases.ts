@@ -4,6 +4,7 @@ import {
   pickLatestRelease,
   type ReleaseNote,
 } from "$lib/content/releases";
+import { officialGitHubReleaseUrl } from "$lib/server/release-url";
 import { error } from "@sveltejs/kit";
 
 const GITHUB_RELEASES_API =
@@ -22,7 +23,6 @@ type GitHubRelease = {
   draft: boolean;
   prerelease: boolean;
   published_at: string | null;
-  html_url: string;
 };
 
 let cachedReleases:
@@ -112,7 +112,7 @@ function normalizeGitHubRelease(
       highlights.length > 0 ? highlights : (fallback?.highlights ?? []),
     installNotes: fallback?.installNotes ?? [...DEFAULT_INSTALL_NOTES],
     body,
-    githubUrl: release.html_url,
+    githubUrl: officialGitHubReleaseUrl(release.tag_name),
     latest: version === stableLatestVersion,
   };
 }
