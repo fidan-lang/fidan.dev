@@ -276,3 +276,29 @@ test("docs code frames, copy data, callouts, tabs and inline formatting survive"
     assert(html.includes(expected), expected);
   assert.equal(docs.renderInlineMarkdown("**bold**"), "<strong>bold</strong>");
 });
+
+test("non-success release responses release their body before fallback", async () => {
+  for (const status of [404, 429]) {
+    let cancellations = 0;
+    const fetch = async () =>
+      new Response(
+        new ReadableStream({
+          cancel() {
+            cancellations++;
+          },
+        }),
+        { status },
+      );
+    if (status === 404)
+      await assert.rejects(
+        releases().getReleaseByVersion(fetch, "1.0.999"),
+        fails(404),
+      );
+    else
+      await assert.rejects(
+        releases().getReleaseByVersion(fetch, "1.0.999"),
+        fails(503),
+      );
+    assert.equal(cancellations, status === 404 ? 2 : 1);
+  }
+});

@@ -166,8 +166,11 @@ async function requestGitHub(
     redirect: "error",
     signal: AbortSignal.timeout(RELEASE_REQUEST_TIMEOUT_MS),
   });
-  if (response.status === 404) return null;
-  if (!response.ok) throw new Error(`GitHub releases HTTP ${response.status}`);
+  if (!response.ok) {
+    await response.body?.cancel();
+    if (response.status === 404) return null;
+    throw new Error(`GitHub releases HTTP ${response.status}`);
+  }
   const reader = response.body?.getReader();
   if (!reader) throw new Error("Missing release body");
   const chunks: Uint8Array[] = [];
