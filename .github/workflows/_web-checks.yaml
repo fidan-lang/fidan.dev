@@ -30,6 +30,12 @@ jobs:
       - name: Typecheck
         run: npm run check
 
+      - name: Lint and formatting
+        run: npm run lint
+
+      - name: Exact release lookup and documentation security
+        run: npm run check:content
+
       - name: Untrusted release Markdown regression
         run: npm run check:release-markdown
 

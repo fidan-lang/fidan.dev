@@ -1,4 +1,23 @@
 import { marked } from "marked";
+import sanitizeHtml from "sanitize-html";
+
+// Checked-in docs are reviewed, but raw Markdown HTML is not executable content.
+// Trusted callout SVG/tab wrappers are constructed outside the sanitized user HTML.
+function sanitizeMarkdownHtml(html: string): string {
+  return sanitizeHtml(html, {
+    allowedTags: [...sanitizeHtml.defaults.allowedTags, "img", "button"],
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      "*": ["class", "id"],
+      img: ["src", "alt", "title", "loading", "width", "height"],
+      button: ["type", "class", "data-copy"],
+    },
+    allowedSchemes: ["http", "https", "mailto"],
+    allowProtocolRelative: false,
+    nestingLimit: 64,
+    parseStyleAttributes: false,
+  });
+}
 
 export type TocItem = {
   id: string;
@@ -113,7 +132,7 @@ function renderPlainMarkdown(markdown: string): string {
     renderer: createRenderer(),
   });
 
-  return marked.parse(markdown) as string;
+  return sanitizeMarkdownHtml(marked.parse(markdown) as string);
 }
 
 function renderCallout(
@@ -257,7 +276,7 @@ export function renderInlineMarkdown(markdown: string): string {
     renderer: createRenderer(),
   });
 
-  return marked.parseInline(markdown) as string;
+  return sanitizeMarkdownHtml(marked.parseInline(markdown) as string);
 }
 
 export function renderMarkdown(markdown: string): string {

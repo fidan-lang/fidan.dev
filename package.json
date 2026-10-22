@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "author": {
-    "name": "Kaan Gönüldinc",
+    "name": "Kaan G\u00f6n\u00fcldinc",
     "email": "contact@appsolves.dev",
     "url": "https://appsolves.dev"
   },
@@ -28,7 +28,8 @@
     "format:all:check": "npm exec -- prettier --check .",
     "prepare": "node ./scripts/install-git-hooks.mjs",
     "docs:check:fidan": "node ./scripts/check-fidan-docs.mjs",
-    "check:release-markdown": "node scripts/check-release-markdown.mjs"
+    "check:release-markdown": "node scripts/check-release-markdown.mjs",
+    "check:content": "node --test scripts/check-site-security.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5",
