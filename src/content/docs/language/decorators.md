@@ -49,6 +49,12 @@ action parse_user_v1 with (text oftype string) returns dynamic {
 }
 ```
 
+The upcoming compiler includes a supplied constant String message in `W2005`.
+`@deprecated` without arguments keeps the default warning. Compiler attributes
+never call user code to obtain metadata: a runtime-computed message is a compile
+time error. `@precompile` and `@unsafe` take no arguments; extra arguments are
+rejected rather than ignored. `@extern` retains its specialized literal arguments.
+
 ## `@extern`
 
 Bridge to native code through a declared foreign action:
@@ -78,3 +84,37 @@ action echo_boxed with (text oftype string) returns string
 - use deprecation messages that tell users where to move
 - treat `@unsafe` as a real boundary marker, not decoration
 - do not combine decorators in ways the compiler explicitly rejects
+
+## User-defined decorators in the upcoming compiler
+
+Custom decorators receive the action value and execute at its declaration during
+ordered module initialization, after imported modules and preceding statements.
+They are ordinary callable values, including imported actions and closures.
+Computed and named arguments use normal call checking and evaluate once in source
+order. Nested declarations apply their decorators whenever that declaration runs.
+
+```fidan check=compile
+action validate_action with (certain callback oftype action) returns action {
+    assert(len(callback.parameters) == 1)
+    return callback
+}
+
+@validate_action
+action greet with (optional name oftype string = "Dal") returns string {
+    return "Hello, " + name
+}
+
+assert_eq(greet("Ada"), "Hello, Ada")
+assert_eq(greet.invoke(["Ada"]), "Hello, Ada")
+```
+
+A returned action replaces the current callable; returning `nothing` retains it
+for compatible side-effect decorators. Other return values are rejected. Stacked
+decorators apply in declaration order, with each receiving the preceding callable;
+this is deliberately different from Python's reverse application order. Reserved
+compiler decorator spellings remain compiler-controlled even if an ordinary
+symbol has the same name. `@gpu` remains reserved and is rejected.
+
+This is a coordinated future-compiler capability. The published 1.0.16 compiler
+must not be assumed to implement custom decorator replacement or callable
+reflection merely because an editor extension recognizes the syntax.

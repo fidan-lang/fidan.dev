@@ -86,6 +86,12 @@ action fibonacci_old with (certain n oftype integer) returns integer {
 }
 ```
 
+The upcoming compiler accepts zero arguments or one compile-time String message
+(positional, or named `message`). The supplied hint appears in `W2005`; it is not
+silently discarded. Nonconstant messages and incorrect types/arity are errors.
+`@precompile` and `@unsafe` have no parameters. These compiler attributes do not
+execute runtime expressions to determine their meaning.
+
 ### Recommended usage
 
 Include a short migration hint in the message:

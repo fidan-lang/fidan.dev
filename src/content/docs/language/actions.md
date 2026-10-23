@@ -293,3 +293,30 @@ action connect with (
     return {"host": host, "port": port, "tls": use_tls}
 }
 ```
+
+## Callable reflection and runtime argument lists
+
+The upcoming compiler exposes defensive `name` and `parameters` snapshots on
+first-class actions. Parameter descriptors report names, types, required/certain
+status and whether a default value is known. Reading metadata never evaluates a
+computed default or exposes captured values.
+
+```fidan check=compile
+action increment with (certain value oftype integer) returns integer {
+    return value + 1
+}
+
+var callback oftype action = increment
+assert_eq(callback.name, "increment")
+assert_eq(callback.parameters[0]["name"], "value")
+assert_eq(callback(4), 5)
+assert_eq(callback.invoke([4]), 5)
+```
+
+Use the ordinary call when arguments are known in source. `invoke(list)` is the
+general operation for a runtime-computed positional argument list, for example
+inside a signature-driven CLI framework. It uses normal argument/default/type and
+exception handling, with no separate args-specific dispatcher. It does not treat
+the list as named arguments. Mutating a metadata snapshot does not alter the action.
+These APIs require the matching future compiler; they are absent from published
+Fidan 1.0.16. Select that compiler explicitly in editor `fidan.server.path`.
