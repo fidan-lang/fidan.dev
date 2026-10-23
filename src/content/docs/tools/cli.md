@@ -30,6 +30,65 @@ Current top-level commands:
 - `fidan exec`
 - `fidan dal`
 
+## Global operational diagnostics in the candidate
+
+| Option            | Operational diagnostics                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| none              | Off; existing output, errors, warnings and progress remain active                                            |
+| `-v`, `--verbose` | INFO: operation lifecycle, compilation/execution/backend selection, package and artifact operations          |
+| `-vv`             | DEBUG: frontend counts, phase boundaries, optimizer/build policy, cache/checksum and toolchain decisions     |
+| `-vvv`            | TRACE: nested phase timings, import processing, resolver branches, LLVM transitions and LSP document changes |
+| `-V`, `--version` | Version only; independent of verbosity                                                                       |
+
+Repeat `-v` or `--verbose` to increase the level. Counts add across nested command
+levels. More than three CLI occurrences is a usage error (exit 2). Normal compiler
+errors, warnings, essential progress and exit codes do not depend on these levels.
+The existing `--trace` option controls Fidan runtime stack reports, not these logs.
+
+## Placement and program arguments
+
+```sh
+fidan -vv run main.fdn -- --verbose -v -V
+fidan run -vv main.fdn -- --verbose
+fidan -v build main.fdn --backend cranelift --opt O3
+fidan -vv build main.fdn --backend llvm --lto full
+fidan dal -v add example-package
+fidan toolchain list -vv
+fidan -vv check .
+fidan -vvv repl
+```
+
+`run` and `exec` reserve their trailing arguments for the user program/toolchain
+command. Put Fidan verbosity **before the source file or exec namespace**. After
+that positional, `-v`, `--verbose` and `-V` belong to the program, even without
+`--`. Existing run options such as `--jit-threshold` remain supported after the
+file until the program argument tail starts. Use `--` for unequivocal forwarding:
+
+```sh
+fidan -vv run main.fdn -- --verbose > result.txt 2> compiler.log
+```
+
+Program stdout remains byte-for-byte program output. Formatter output, explicit
+IR output, profile JSON files, helper JSON and LSP JSON-RPC retain their existing
+channels. Operational diagnostics use stderr only, with no ANSI sequences, even
+in a terminal. Existing terminal-aware language-diagnostic rendering is separate.
+
+## Environment and filtering
+
+Previously the compiler did not initialize a RUST_LOG subscriber. The candidate
+supports `RUST_LOG=debug`, or first-party target directives such as
+`RUST_LOG=fidan::pipeline=debug,fidan_driver=trace`. Explicit CLI verbosity wins
+over RUST_LOG entirely, including an invalid RUST_LOG value. Without flags, an
+invalid filter is a startup error; it is never silently accepted. Accepted levels
+are `off,error,warn,info,debug,trace`. Targets must be `fidan`, `fidan::*`, or
+`fidan_*`. Field/regex filters and third-party targets are deliberately unsupported;
+`-vvv` never enables HTTP, TLS, Tokio or Cranelift dependency trace floods.
+
+The LLVM helper receives the resolved filter through a private child-process
+environment entry, not a wire-protocol change. Its diagnostics stay on stderr;
+its stdout remains the compile-response JSON. Existing explicit LLVM developer
+IR-dump switches are separate and are never enabled by verbosity.
+
 ## Directory targets in the audit candidate
 
 The local audit candidate adds directory targets to `format`, `test`, `check`,
