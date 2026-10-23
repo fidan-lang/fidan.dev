@@ -31,6 +31,29 @@ Accepted spellings:
 - `otherwise when`
 - `else if`
 
+## Logical operators: short-circuit evaluation
+
+In the upcoming compiler candidate, `and` (`&&`) and `or` (`||`) evaluate from
+left to right. Both expressions are statically checked, including an expression
+that will be skipped at runtime. Operands must be Boolean; a flexible value is
+checked when evaluated and does not use truthiness. An evaluated `nothing` is a
+runtime type error.
+
+```fidan
+var value oftype flexible = nothing
+var nonempty = value != nothing and len(value) > 0
+assert_eq(nonempty, false)
+```
+
+`false and rhs` returns false without evaluating `rhs`; `true or rhs` returns
+true without evaluating `rhs`. `true and rhs` and `false or rhs` evaluate `rhs`
+exactly once and propagate its errors. Ternaries likewise evaluate only their
+selected branch; `??` evaluates its fallback only when the left value is nothing.
+
+This is an intentional compatibility change from the previous eager logical
+implementation, not a feature of the published 1.0.16 binary. Move work into an
+explicit preceding statement if it must run regardless of the Boolean result.
+
 ## Ternary expressions
 
 Fidan supports expression-form conditionals:
