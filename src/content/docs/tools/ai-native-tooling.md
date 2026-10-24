@@ -40,7 +40,6 @@ API keys can come from environment variables or the OS keychain.
 ```bash
 fidan explain app.fdn --line 42 --ai
 fidan explain app.fdn --line 20 --end-line 36 --ai "focus on data flow"
-fidan explain --diagnostic E0401 --ai
 ```
 
 The deterministic explain path already knows line behavior, inferred type information, reads, writes, and risks. The AI path adds a structured natural-language layer on top of that context.
@@ -88,7 +87,7 @@ For scripted setup, use `configure`:
 
 ```bash
 fidan exec ai configure --set provider=openai-compatible
-fidan exec ai configure --set model=gpt-4.1
+fidan exec ai configure --set model=YOUR_CONFIGURED_MODEL
 fidan exec ai configure --set base_url=https://api.example.test/v1/chat/completions
 ```
 
@@ -110,3 +109,9 @@ It means the compiler and tooling expose machine-readable facts that AI systems 
 - validated source-edit hunks
 
 The compiler remains the source of truth. The model is an assistant layered over that truth.
+
+## Deterministic codes and MCP tool surface
+
+`fidan explain --diagnostic E0401` is the deterministic code reference. It cannot be combined with `--ai`; AI explanation targets source lines/ranges instead. The MCP tools are `explain_target_context`, `get_diagnostics`, `module_outline`, `project_summary`, `symbol_info`, `get_call_chain`, `get_type_info`, `get_runtime_trace`, `suggest_fix` and `apply_fix_preview`.
+
+The runtime trace in compiler analysis is a **static** trace, not a recording that actually executed arbitrary user code. A source-edit preview is not proof that a suggested patch preserves behavior. Review, check and test it. Provider/model availability depends on your configuration; this documentation does not guarantee a particular hosted model or require a provider for ordinary compiler/LSP use.

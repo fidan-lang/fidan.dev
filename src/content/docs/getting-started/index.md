@@ -30,3 +30,7 @@ sense when you move from editing a script to shipping a native build.
 - Then read [Your first program](/docs/getting-started/first-program)
 - After that, jump into [Variables and types](/docs/language/variables-and-types)
   and [Concurrency](/docs/language/concurrency)
+
+## Choose your compatibility target
+
+Start with [stable versus candidate compatibility](/docs/getting-started/release-candidate). The public installer does not silently provide unreleased compiler/helper/package APIs.

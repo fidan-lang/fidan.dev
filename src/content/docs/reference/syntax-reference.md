@@ -30,7 +30,7 @@ At a glance, Fidan programs are made from:
 
 Use `#` for a line comment:
 
-```fidan check=compile
+```fidan check=run
 var port = 8080  # local dev server
 ```
 
@@ -38,7 +38,7 @@ var port = 8080  # local dev server
 
 Use `#/` to start and `/#` to end a block comment. These comments are nestable:
 
-```fidan check=compile
+```fidan check=run
 #/
 outer comment
     #/
@@ -60,16 +60,16 @@ These all separate statements:
 
 Examples:
 
-```fidan check=compile
+```fidan check=run
 var x = 1
 var y = 2
 ```
 
-```fidan check=compile
+```fidan check=run
 var x = 1; var y = 2
 ```
 
-```fidan check=compile
+```fidan check=run
 var x = 1 sep var y = 2
 ```
 
@@ -79,7 +79,7 @@ Important rule:
 
 So this is invalid:
 
-```fidan check=skip
+```fidan check=error error=E0000 wrap=main
 return left()right()
 ```
 
@@ -94,7 +94,7 @@ Accepted forms:
 - hex: `0xFF`
 - binary: `0b101010`
 
-```fidan check=compile
+```fidan check=run
 var a = 42
 var b = 1_000
 var c = 0x2A
@@ -103,7 +103,7 @@ var d = 0b101010
 
 ### Floats
 
-```fidan check=compile
+```fidan check=run
 var pi = 3.14159
 var big = 1_000.25
 var exp = 6.02e23
@@ -124,7 +124,7 @@ The formatter prefers lowercase.
 
 `nothing` is the language null-like value:
 
-```fidan check=compile
+```fidan check=run
 var maybe_name = nothing
 ```
 
@@ -132,7 +132,7 @@ var maybe_name = nothing
 
 Normal strings support interpolation and escape sequences:
 
-```fidan check=compile
+```fidan check=run
 var name = "Ada"
 print("Hello, {name}")
 ```
@@ -151,14 +151,14 @@ Supported escapes in normal strings:
 
 Raw strings start with `r"` and do **not** process escapes or interpolation:
 
-```fidan check=compile
+```fidan check=run
 var pattern = r"\d+\s+items"
 var literal = r"{name} stays literal"
 ```
 
 Use normal strings when you need embedded quotes:
 
-```fidan check=compile
+```fidan check=run
 var quote = "\""
 ```
 
@@ -174,9 +174,10 @@ object TaskRunner { }
 
 After a dot, Fidan also allows keyword-like field names:
 
-```fidan check=syntax
-obj.set()
-obj.new()
+```fidan check=run
+var counter = Shared(0)
+counter.set(1)
+assert_eq(counter.get(), 1)
 ```
 
 That is why stdlib calls like `math.pow()` and APIs like `queue.top()` work cleanly.
@@ -185,7 +186,7 @@ That is why stdlib calls like `math.pow()` and APIs like `queue.top()` work clea
 
 ### Mutable declarations
 
-```fidan check=compile
+```fidan check=run
 var name = "Ada"
 var count oftype integer = 10
 var pending_value oftype Pending oftype string
@@ -195,7 +196,7 @@ var pending_value oftype Pending oftype string
 
 Use `const var` for single-assignment variables:
 
-```fidan check=compile
+```fidan check=run
 const var retries = 3
 const var use_cache = true
 ```
@@ -204,13 +205,13 @@ const var use_cache = true
 
 Canonical form:
 
-```fidan check=compile
+```fidan check=run
 var count oftype integer
 ```
 
 Also accepted:
 
-```fidan check=compile
+```fidan check=run
 var count -> integer
 ```
 
@@ -218,7 +219,7 @@ var count -> integer
 
 Tuple destructuring works in declarations:
 
-```fidan check=syntax
+```fidan check=run context=pair
 var (left, right) = pair()
 ```
 
@@ -226,7 +227,7 @@ var (left, right) = pair()
 
 ### Canonical assignment
 
-```fidan check=syntax
+```fidan check=run context=assign
 value = 10
 person.name = "Ada"
 items[0] = "first"
@@ -236,7 +237,7 @@ items[0] = "first"
 
 `set` is accepted as an infix assignment/operator synonym in the same slot where you would normally write `=`:
 
-```fidan check=syntax
+```fidan check=run context=set
 var value set 10
 person.name set "Ada"
 name set "Ada"
@@ -254,7 +255,7 @@ Supported:
 - `/=`
 - `%=`
 
-```fidan check=syntax
+```fidan check=run context=compound
 count += 1
 total *= scale
 ```
@@ -304,13 +305,13 @@ action create with (certain name oftype string also optional age oftype integer 
 
 Positional:
 
-```fidan check=syntax
+```fidan check=run context=create
 create("Ada", 37)
 ```
 
 Named arguments:
 
-```fidan check=syntax
+```fidan check=run context=create
 create(name = "Ada", age = 37)
 create(name set "Ada", age set 37)
 ```
@@ -327,7 +328,7 @@ action add with (certain a oftype integer, certain b oftype integer) returns int
 
 ### Parallel action
 
-```fidan check=syntax
+```fidan check=compile context=hash
 parallel action hash_chunk with (chunk oftype string) returns string {
     return do_hash(chunk)
 }
@@ -335,7 +336,7 @@ parallel action hash_chunk with (chunk oftype string) returns string {
 
 ### Extension action
 
-```fidan check=compile
+```fidan check=compile context=dog
 action bark extends Dog returns nothing {
     print("{this.name} barks")
 }
@@ -345,7 +346,7 @@ action bark extends Dog returns nothing {
 
 Inline actions are expressions:
 
-```fidan check=syntax
+```fidan check=run context=items
 items.map(action with (certain value oftype integer) returns integer {
     return value * 2
 })
@@ -371,7 +372,7 @@ object User {
 
 ### Inheritance
 
-```fidan check=syntax
+```fidan check=compile context=user
 object Admin extends User {
     new with (certain name oftype string) {
         parent(name = name)
@@ -389,10 +390,10 @@ object Admin extends User {
 
 Fidan supports `enum` declarations with simple or payload-bearing variants.
 
-```fidan check=compile
+```fidan check=run
 enum Result {
     Ok
-    Err(message oftype string)
+    Err(string)
 }
 ```
 
@@ -404,7 +405,7 @@ Pattern-style handling is typically done with `check`.
 
 Canonical:
 
-```fidan check=syntax
+```fidan check=run context=score
 if score > 90 {
     print("great")
 } otherwise when score > 75 {
@@ -425,25 +426,25 @@ Accepted spellings:
 
 Form:
 
-```fidan check=syntax
+```fidan check=run context=score
 var label = "hot" if temp > 30 else "cold"
 ```
 
 Fidan also supports the implicit-subject shorthand:
 
-```fidan check=syntax
+```fidan check=run context=nullable
 var actual = value if is not nothing else fallback
 ```
 
 Equivalent to:
 
-```fidan check=syntax
+```fidan check=run context=nullable
 var actual = value if (value != nothing) else fallback
 ```
 
 ### `for`
 
-```fidan check=syntax
+```fidan check=run context=items
 for item in items {
     print(item)
 }
@@ -454,7 +455,7 @@ Ranges:
 - `1..10` exclusive end
 - `1...10` inclusive end
 
-```fidan check=compile
+```fidan check=run
 for i in 0..10 {
     print(i)
 }
@@ -462,7 +463,7 @@ for i in 0..10 {
 
 ### `while`
 
-```fidan check=syntax
+```fidan check=run context=loop
 while running {
     tick()
 }
@@ -483,7 +484,7 @@ Alias:
 
 ### `attempt`
 
-```fidan check=syntax
+```fidan check=run context=errors
 attempt {
     do_work()
 } catch error {
@@ -502,7 +503,7 @@ Accepted aliases:
 
 Typed catches:
 
-```fidan check=syntax
+```fidan check=run context=errors
 attempt {
     risky()
 } catch error -> string {
@@ -514,7 +515,7 @@ attempt {
 
 Canonical:
 
-```fidan check=compile
+```fidan check=runtime-error error=R1002
 panic("boom")
 ```
 
@@ -526,7 +527,7 @@ Alias:
 
 Statement form:
 
-```fidan check=syntax
+```fidan check=run context=status
 check code {
     200 => print("ok")
     404 => print("missing")
@@ -536,7 +537,7 @@ check code {
 
 Expression form:
 
-```fidan check=syntax
+```fidan check=run context=status
 var label = check code {
     200 => "ok"
     404 => "missing"
@@ -553,14 +554,14 @@ Wildcard spellings:
 
 ### Same-thread cooperative work
 
-```fidan check=syntax
+```fidan check=run context=async
 var handle = spawn fetch_data()
 var result = await handle
 ```
 
 ### Structured concurrent block
 
-```fidan check=syntax
+```fidan check=run context=async
 concurrent {
     task {
         load_user()
@@ -574,7 +575,7 @@ concurrent {
 
 ### Real thread parallelism
 
-```fidan check=syntax
+```fidan check=run context=parallel
 parallel {
     task { crunch_a() }
     task { crunch_b() }
@@ -583,7 +584,7 @@ parallel {
 
 ### Parallel iteration
 
-```fidan check=syntax
+```fidan check=run context=parallel
 parallel for item in items {
     process(item)
 }
@@ -593,7 +594,7 @@ parallel for item in items {
 
 ### Module import
 
-```fidan check=syntax
+```fidan check=run context=modules
 use std.math
 use std.math as math
 use utils.helpers
@@ -602,13 +603,13 @@ use "./local/module.fdn" as module
 
 ### Grouped import
 
-```fidan check=compile
+```fidan check=run
 use std.math.{sqrt, floor, ceil}
 ```
 
 ### Re-export
 
-```fidan check=compile
+```fidan check=run
 export use std.math
 ```
 
@@ -616,7 +617,7 @@ export use std.math
 
 ### Field access and calls
 
-```fidan check=syntax
+```fidan check=run context=access
 user.name
 math.sqrt(144)
 queue.push(10)
@@ -624,7 +625,7 @@ queue.push(10)
 
 ### Indexing
 
-```fidan check=syntax
+```fidan check=run context=index
 items[0]
 dict["name"]
 ```
@@ -633,18 +634,18 @@ dict["name"]
 
 Examples:
 
-```fidan check=syntax
-items[1..5]
-items[1...5]
-items[..5]
-items[2..]
-items[..]
-items[0..10 step 2]
+```fidan check=run context=slice
+items[1:5]
+items[:5]
+items[2:]
+items[:]
+items[::-1]
+items[0:10:2]
 ```
 
 ### Lists, dicts, and tuples
 
-```fidan check=compile
+```fidan check=run
 var list = [1, 2, 3]
 var dict = {"name": "Ada", "age": 37}
 var pair = ("Ada", 37)
@@ -652,7 +653,7 @@ var pair = ("Ada", 37)
 
 ### Comprehensions
 
-```fidan check=syntax
+```fidan check=run context=comprehension
 var doubled = [x * 2 for x in values]
 var filtered = [x for x in values if x % 2 == 0]
 var lookup = {x: x * x for x in values}
@@ -720,7 +721,7 @@ Readable aliases:
 
 ### Null-aware operator
 
-```fidan check=syntax
+```fidan check=run context=nullable
 var actual = maybe_value ?? fallback
 ```
 
@@ -730,14 +731,15 @@ From lower to higher:
 
 1. ternary `a if cond else b`
 2. null-coalescing `??`
-3. `or`
-4. `and`
-5. comparisons
-6. `+`, `-`, `|`
-7. `*`, `/`, `%`, `&`, shifts
-8. power `**` and `^`
-9. unary prefix `+`, `-`, `not`, `spawn`, `await`
-10. postfix call, field access, indexing, slicing
+3. ranges `..`, `...`
+4. `or`
+5. `and`
+6. comparisons
+7. `+`, `-`, `|`
+8. `*`, `/`, `%`, `&`, shifts
+9. power `**` and `^`
+10. unary prefix `+`, `-`, `not`, `spawn`, `await`
+11. postfix call, field access, indexing, slicing
 
 ## Type syntax
 
@@ -763,7 +765,7 @@ Accepted primitive/type aliases:
 
 Example:
 
-```fidan check=compile
+```fidan check=run
 var id oftype int
 var ratio oftype decimal
 var enabled oftype bool

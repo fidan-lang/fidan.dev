@@ -11,6 +11,11 @@ for (const width of [390, 768, 1440, 1920]) {
       "/",
       "/dal/dal-toml",
       "/dal/publishing-and-dalignore",
+      "/language/callable-reflection",
+      "/language/collections-and-enums",
+      "/dal/args-framework",
+      "/reference/receiver-methods",
+      "/reference/cli-options",
     ]) {
       const response = await page.goto(route, {
         waitUntil: "domcontentloaded",
@@ -100,4 +105,30 @@ test("legal navigation separates the software license from draft branding", asyn
       readFileSync(new URL(`../${name}`, import.meta.url)),
     );
   }
+});
+
+test("documentation tabs support keyboard navigation and roving focus", async ({
+  page,
+}) => {
+  await page.goto("/getting-started/install");
+  const first = page.getByRole("tab", { name: "PowerShell", exact: true });
+  const second = page.getByRole("tab", { name: "Shell", exact: true });
+  await expect(first).toHaveAttribute("tabindex", "0");
+  await expect(second).toHaveAttribute("tabindex", "-1");
+  await first.focus();
+  await first.press("ArrowRight");
+  await expect(second).toBeFocused();
+  await expect(second).toHaveAttribute("aria-selected", "true");
+  await expect(first).toHaveAttribute("aria-selected", "false");
+  await second.press("Home");
+  await expect(first).toBeFocused();
+  await first.press("End");
+  await expect(second).toBeFocused();
+  await second.press("ArrowRight");
+  await expect(first).toBeFocused();
+  await first.press("ArrowLeft");
+  await expect(second).toBeFocused();
+  await first.click();
+  await expect(first).toHaveAttribute("aria-selected", "true");
+  await expect(second).toHaveAttribute("tabindex", "-1");
 });

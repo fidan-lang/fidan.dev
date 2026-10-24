@@ -157,7 +157,7 @@ Compile a source file to a native binary.
 fidan build app.fdn --output app
 ```
 
-### Important flags
+### Important flags: `fidan build`
 
 - `--output <path>`
 - `--opt O0|O1|O2|O3|Os|Oz`
@@ -262,6 +262,8 @@ Useful for:
 
 `--trace` is supported here too for panic stack reporting.
 
+The REPL defaults runtime traces to `short` (unlike `run`, which defaults to `none`). Use `--max-errors-per-input` to bound each submission's diagnostics. Built-in session commands include `:help`, `:exit`/`:quit`/`:q`, `:clear`/`:cls`, `:reset`, `:cancel`, `:ast <snippet>`, `:type <expr>` and `:last [--full]`. Multiline blocks accumulate until their braces close; `:cancel` discards an unfinished block. Interactive terminal rendering and automated stdin sessions have different prompt presentation, but use the same frontend/runtime semantics.
+
 ## `fidan lsp`
 
 Start the language server:
@@ -324,7 +326,7 @@ fidan fix app.fdn --improve "refactor for readability"
 
 By default, `fidan fix` prints the proposed result to stdout so you can review it first. Use `--in-place` when you want the file rewritten.
 
-### Useful flags
+### Useful flags: `fidan fix`
 
 - `--in-place`
 - `--ai [steering text]`
@@ -410,7 +412,7 @@ If no version is provided for `install`, `use`, or `remove`, the CLI resolves `l
 
 Manage optional toolchains like LLVM and AI analysis.
 
-### Subcommands
+### Subcommands: `fidan toolchain`
 
 - `fidan toolchain available`
 - `fidan toolchain list`
@@ -462,7 +464,7 @@ For the complete model, see [AI-native tooling](/docs/tools/ai-native-tooling).
 
 Work with the Dal package registry.
 
-### Subcommands
+### Subcommands: `fidan dal`
 
 - `login`
 - `logout`
@@ -476,7 +478,7 @@ Work with the Dal package registry.
 - `yank`
 - `unyank`
 
-### Examples
+### Examples: `fidan dal`
 
 ```bash
 fidan dal login
@@ -566,9 +568,9 @@ For package work:
 - `fidan dal package`
 - `fidan dal publish`
 
-## Program arguments
+## Program arguments: Recommended usage pattern
 
-Run options must precede the source filename. After it, tokens belong to the program:
+Put Fidan verbosity flags before the source filename. Recognized run options can follow the filename until the trailing program-argument sequence begins. Use `--` to make the boundary explicit:
 
 ```bash
 fidan run --trace none main.fdn -- --name Dal --verbose
@@ -576,3 +578,12 @@ fidan run main.fdn --name Dal --verbose
 ```
 
 Both forms forward the same three arguments through `std.env.args()` / `std.io.args()`; those APIs exclude the script executable/name. Prefer the explicit `--` separator in examples. Registry package names use hyphens, not underscores; the corresponding import module replaces hyphens with underscores. Package names in examples must exist in the chosen registry. See the Dal relaunch candidate guide for compatibility, checksum and lock/yank policy; do not assume unpublished candidate changes are already in the stable CLI.
+
+### Application argument example
+
+The documentation harness runs this complete program with the three forwarded tokens shown below, independently of Fidan's own verbosity setting.
+
+```fidan check=run id=program-arguments
+use std.env as env
+assert_eq(env.args(), ["--verbose", "-v", "-V"])
+```

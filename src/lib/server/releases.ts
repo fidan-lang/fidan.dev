@@ -14,8 +14,8 @@ const GITHUB_RELEASES_API =
   "https://api.github.com/repos/fidan-lang/fidan/releases";
 const DEFAULT_INSTALL_NOTES = [
   "Use the installer for your platform or download the release archive.",
-  "If you need portable binaries, keep the default target CPU or pass --target-cpu explicitly.",
-  "If you need maximum local performance, use --release.",
+  "For portable distribution, select --target-cpu generic explicitly.",
+  "Use --release for the host-tuned optimization preset; benchmark your workload.",
 ] as const;
 const RELEASE_CACHE_TTL_MS = 5 * 60 * 1000;
 // Release pages must retain their bundled fallback during upstream outages.
@@ -160,40 +160,69 @@ async function requestGitHub(
     env.GITHUB_TOKEN?.trim() ||
     env.GITHUB_API_TOKEN?.trim();
   if (token) headers.Authorization = `Bearer ${token}`;
-  // Only a fixed GitHub origin; redirects must never carry a server credential.
-  const response = await fetchFn(`${GITHUB_RELEASES_API}${suffix}`, {
-    headers,
-    redirect: "error",
-    signal: AbortSignal.timeout(RELEASE_REQUEST_TIMEOUT_MS),
+  const controller = new AbortController();
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timeout = setTimeout(() => {
+      const reason = new DOMException(
+        "Release request timed out",
+        "TimeoutError",
+      );
+      controller.abort(reason);
+      // Wrapped fetch implementations may not abort their response body.
+      void reader?.cancel().catch(() => {});
+      reject(reason);
+    }, RELEASE_REQUEST_TIMEOUT_MS);
   });
-  if (!response.ok) {
-    await response.body?.cancel();
-    if (response.status === 404) return null;
-    throw new Error(`GitHub releases HTTP ${response.status}`);
-  }
-  const reader = response.body?.getReader();
-  if (!reader) throw new Error("Missing release body");
-  const chunks: Uint8Array[] = [];
-  let size = 0;
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      size += value.byteLength;
-      if (size > RELEASE_RESPONSE_MAX_BYTES)
-        throw new Error("Release response exceeds limit");
-      chunks.push(value);
+  const readResponse = async (): Promise<unknown | null> => {
+    // Only a fixed GitHub origin; redirects must never carry a server credential.
+    const response = await fetchFn(`${GITHUB_RELEASES_API}${suffix}`, {
+      headers,
+      redirect: "error",
+      signal: controller.signal,
+    });
+    if (controller.signal.aborted) {
+      void response.body?.cancel().catch(() => {});
+      throw controller.signal.reason;
     }
+    if (!response.ok) {
+      await response.body?.cancel();
+      if (response.status === 404) return null;
+      throw new Error(`GitHub releases HTTP ${response.status}`);
+    }
+    const bodyReader = response.body?.getReader();
+    reader = bodyReader;
+    if (!bodyReader) throw new Error("Missing release body");
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    try {
+      while (true) {
+        const { done, value } = await bodyReader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > RELEASE_RESPONSE_MAX_BYTES)
+          throw new Error("Release response exceeds limit");
+        chunks.push(value);
+      }
+    } finally {
+      // Cleanup must not turn a completed or failed read into another unbounded wait.
+      void bodyReader.cancel().catch(() => {});
+      bodyReader.releaseLock();
+    }
+    const bytes = new Uint8Array(size);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+  };
+  try {
+    return await Promise.race([readResponse(), deadline]);
   } finally {
-    await reader.cancel();
+    clearTimeout(timeout);
   }
-  const bytes = new Uint8Array(size);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
 }
 
 async function fetchGitHubReleases(

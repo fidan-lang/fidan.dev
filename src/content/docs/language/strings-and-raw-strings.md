@@ -40,7 +40,7 @@ print("2 + 2 = {2 + 2}")
 
 Interpolated expressions can be richer than plain variable lookups:
 
-```fidan check=syntax
+```fidan check=run context=interpolation
 print("Upper: {name.toUpper()}")
 print("Sqrt: {math.sqrt(144)}")
 ```
@@ -117,7 +117,7 @@ var quote = "\""
 
 Most code should prefer normal interpolation:
 
-```fidan check=syntax
+```fidan check=run context=interpolation
 print("Hello, {name}")
 ```
 

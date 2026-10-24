@@ -190,14 +190,14 @@ function renderTabs(markdown: string): string {
   const triggers = tabs
     .map(
       (tab, index) =>
-        `<button type="button" class="doc-tabs__trigger${index === 0 ? " is-active" : ""}" role="tab" aria-selected="${index === 0 ? "true" : "false"}" aria-controls="${tabsetId}-panel-${index}" id="${tabsetId}-tab-${index}" data-tab-trigger data-tabset-id="${tabsetId}" data-tab-index="${index}">${escapeHtml(tab.label)}</button>`,
+        `<button type="button" class="doc-tabs__trigger${index === 0 ? " is-active" : ""}" role="tab" tabindex="${index === 0 ? "0" : "-1"}" aria-selected="${index === 0 ? "true" : "false"}" aria-controls="${tabsetId}-panel-${index}" id="${tabsetId}-tab-${index}" data-tab-trigger data-tabset-id="${tabsetId}" data-tab-index="${index}">${escapeHtml(tab.label)}</button>`,
     )
     .join("");
 
   const panels = tabs
     .map(
       (tab, index) =>
-        `<div class="doc-tabs__panel${index === 0 ? " is-active" : ""}" role="tabpanel" id="${tabsetId}-panel-${index}" aria-labelledby="${tabsetId}-tab-${index}" ${index === 0 ? "" : "hidden"}>${renderRichMarkdown(tab.content)}</div>`,
+        `<div class="doc-tabs__panel${index === 0 ? " is-active" : ""}" role="tabpanel" tabindex="0" id="${tabsetId}-panel-${index}" aria-labelledby="${tabsetId}-tab-${index}" ${index === 0 ? "" : "hidden"}>${renderRichMarkdown(tab.content)}</div>`,
     )
     .join("");
 

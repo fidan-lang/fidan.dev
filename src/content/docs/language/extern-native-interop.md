@@ -59,3 +59,9 @@ That lets the AOT build resolve the native import library at link time.
 ## Why this matters
 
 Fidan is intended to live in native environments, not behind a sandbox wall. `@extern` is a practical language feature, not a bolted-on afterthought.
+
+## Ownership and safety boundary
+
+For the boxed ABI, parameters are borrowed for the duration of the call and boxed returns are owned. Return a clone/new owned value when returning an input; do not return a borrowed pointer and let both callers free it. The embedding API has its own explicit ownership helpers and borrowed string/error lifetimes; see [libfidan](/docs/toolchains/libfidan-embedding).
+
+Foreign code is trusted native code. `@unsafe` acknowledges the boundary; it is not isolation and does not enforce Fidan sandbox file/environment policies inside arbitrary native code. The declaration-only examples above are frontend-checked contracts, not claims that `mylib.dll` exists. Real linkage needs the matching platform library/import artifact. Backend-specific interop tests compile and execute actual native fixtures.

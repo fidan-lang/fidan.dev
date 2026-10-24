@@ -3,7 +3,13 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { loadTypeScript } from "./load-typescript.mjs";
 import { fileURLToPath } from "node:url";
+import {
+  applyContext,
+  validateCases,
+  extractFences,
+} from "./check-fidan-docs.mjs";
 const cwd = fileURLToPath(new URL("../", import.meta.url));
 const bin = process.env.FIDAN_BIN;
 assert(bin, "Run with the exact candidate FIDAN_BIN; no PATH fallback");
@@ -32,6 +38,23 @@ try {
     assert.notEqual(check("1.5 & 2.0", "error error=E0304").status, 0);
     assert.notEqual(check("print(1)", "error error=E0203").status, 0);
   });
+  test("unknown page selections cannot produce a vacuous backend pass", () => {
+    const result = spawnSync(
+      process.execPath,
+      [
+        "scripts/check-fidan-docs.mjs",
+        "--docs-root",
+        root,
+        "--fidan-bin",
+        bin,
+        "--pages",
+        "missing.md",
+      ],
+      { cwd, encoding: "utf8", timeout: 60000 },
+    );
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Unknown requested documentation page/);
+  });
   test("new fences must explicitly declare their validation mode", () => {
     writeFileSync(path.join(root, "case.md"), '```fidan\nprint("ok")\n```\n');
     const result = spawnSync(
@@ -42,6 +65,16 @@ try {
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /explicitly declare/);
   });
+  test("format-only, skipped and mistyped metadata cannot bypass checking", () => {
+    for (const mode of [
+      "skip",
+      "syntax",
+      "run chec=run",
+      "run check=compile",
+    ]) {
+      assert.notEqual(check("assert_eq(1, 2)", mode).status, 0, mode);
+    }
+  });
   test("unknown modes fail instead of silently formatting", () => {
     const result = check('print("ok")', "rnu");
     assert.notEqual(result.status, 0);
@@ -50,7 +83,7 @@ try {
   test("explicit missing compiler never falls back to PATH or sibling builds", () => {
     const result = check(
       'print("ok")',
-      "syntax",
+      "compile",
       path.join(root, "missing-compiler"),
     );
     assert.notEqual(result.status, 0);
@@ -65,6 +98,103 @@ try {
     const valid = check("assert_eq(2 + 3, 5)", "run");
     assert.equal(valid.status, 0, valid.stderr);
   });
+  test("output examples compare the actual output instead of only the exit code", () => {
+    const file = path.join(root, "case.md");
+    function execute(expected) {
+      writeFileSync(
+        file,
+        '```fidan check=run expect=stdout\nprint("observed")\n```\n\n```text\n' +
+          expected +
+          "\n```\n",
+      );
+      return spawnSync(
+        process.execPath,
+        [
+          "scripts/check-fidan-docs.mjs",
+          "--docs-root",
+          root,
+          "--fidan-bin",
+          bin,
+        ],
+        { cwd, encoding: "utf8", timeout: 60000 },
+      );
+    }
+    assert.equal(execute("observed").status, 0);
+    const wrong = execute("invented");
+    assert.notEqual(wrong.status, 0);
+    assert.match(wrong.stderr, /Documented stdout differs/);
+  });
+  test("inline test examples execute test bodies", () => {
+    assert.equal(check('test "works" { assert_eq(2, 2) }', "test").status, 0);
+    assert.notEqual(
+      check('test "fails" { assert_eq(2, 3) }', "test").status,
+      0,
+    );
+  });
+  test("runtime-error cases require actual failure and the requested runtime diagnostic", () => {
+    assert.equal(
+      check('panic("expected")', "runtime-error error=R1002").status,
+      0,
+    );
+    assert.notEqual(
+      check('panic("wrong code")', "runtime-error error=R2001").status,
+      0,
+    );
+    assert.notEqual(
+      check('print("success")', "runtime-error error=R1002").status,
+      0,
+    );
+  });
+  test("context files cannot escape their isolated example", () => {
+    for (const name of [
+      "../escape.fdn",
+      "C:/escape.fdn",
+      "/escape",
+      "a/../../escape",
+      "a\\b",
+    ]) {
+      assert.throws(
+        () => applyContext("", { files: { [name]: "wrong" } }, root),
+        /Unsafe/,
+      );
+    }
+    assert.equal(
+      applyContext("assert_eq(value, 1)", { before: "var value = 1" }, root),
+      "var value = 1\nassert_eq(value, 1)\n",
+    );
+  });
+  test("case catalogs reject malformed argv and context data", () => {
+    assert.throws(
+      () =>
+        validateCases({ contexts: {}, examples: { bad: { argv: "--help" } } }),
+      /argv/,
+    );
+    assert.throws(
+      () =>
+        validateCases({
+          contexts: { bad: { files: { "a.fdn": 42 } } },
+          examples: {},
+        }),
+      /files/,
+    );
+    assert.throws(
+      () =>
+        validateCases({
+          contexts: { bad: { package: "unknown" } },
+          examples: {},
+        }),
+      /Unknown/,
+    );
+    writeFileSync(
+      path.join(root, "invalid.md"),
+      "```fidan check=compile expect=stdout\nprint(1)\n```",
+    );
+    assert.throws(
+      () => extractFences(path.join(root, "invalid.md")),
+      /requires run/,
+    );
+    rmSync(path.join(root, "invalid.md"));
+  });
   test(
     "published incompatible compiler is rejected clearly",
     {
@@ -75,7 +205,7 @@ try {
     () => {
       const result = check(
         'print("ok")',
-        "syntax",
+        "compile",
         process.env.FIDAN_INCOMPATIBLE_BIN,
       );
       assert.notEqual(result.status, 0);
@@ -85,6 +215,36 @@ try {
       );
     },
   );
+  test("landing-page concurrency program executes with the actual candidate", () => {
+    const { heroSnippet } = loadTypeScript(
+      new URL("../src/lib/data/site.ts", import.meta.url),
+    );
+    const file = path.join(root, "landing.fdn");
+    writeFileSync(file, heroSnippet);
+    for (const threshold of ["0", "1"]) {
+      const result = spawnSync(
+        bin,
+        ["run", file, "--jit-threshold", threshold],
+        {
+          cwd: root,
+          encoding: "utf8",
+          timeout: 30000,
+          windowsHide: true,
+          env: { ...process.env, FIDAN_HOME: path.join(root, ".fidan") },
+        },
+      );
+      assert.equal(result.status, 0, result.error || result.stderr);
+      const lines = result.stdout.trim().split(/\r?\n/);
+      assert.deepEqual(lines.slice(0, 2).sort(), [
+        "native work",
+        "real threads",
+      ]);
+      assert.deepEqual(lines.slice(2), [
+        "cooperative scheduling",
+        "Compiler-grounded tooling.",
+      ]);
+    }
+  });
 } finally {
   // Tests are registered synchronously; cleanup is deferred until test completion.
   process.on("exit", () => rmSync(root, { recursive: true, force: true }));

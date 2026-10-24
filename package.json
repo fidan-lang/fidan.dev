@@ -29,7 +29,9 @@
     "prepare": "node ./scripts/install-git-hooks.mjs",
     "docs:check:fidan": "node ./scripts/check-fidan-docs.mjs",
     "check:release-markdown": "node scripts/check-release-markdown.mjs",
-    "check:content": "node --test scripts/check-site-security.mjs"
+    "check:content": "node --test scripts/check-site-security.mjs",
+    "docs:check:links": "node scripts/check-documentation.mjs",
+    "docs:test": "node --test scripts/check-documentation.test.mjs scripts/check-fidan-docs.test.mjs scripts/verify-doc-dependencies.test.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5",

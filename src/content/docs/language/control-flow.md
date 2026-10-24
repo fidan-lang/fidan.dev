@@ -14,7 +14,7 @@ Fidan's control flow aims for readable source without hiding what the program ac
 
 Canonical form:
 
-```fidan check=syntax
+```fidan check=run context=score
 if score > 90 {
     print("great")
 } otherwise when score > 75 {
@@ -58,19 +58,19 @@ explicit preceding statement if it must run regardless of the Boolean result.
 
 Fidan supports expression-form conditionals:
 
-```fidan check=syntax
+```fidan check=run context=score
 var label = "pass" if score >= 5 else "fail"
 ```
 
 There is also an implicit-subject shorthand that reads naturally for null checks:
 
-```fidan check=syntax
+```fidan check=run context=nullable
 var actual = value if is not nothing else fallback
 ```
 
 Equivalent to:
 
-```fidan check=syntax
+```fidan check=run context=nullable
 var actual = value if (value != nothing) else fallback
 ```
 
@@ -78,7 +78,7 @@ var actual = value if (value != nothing) else fallback
 
 Loop over any iterable expression:
 
-```fidan check=syntax
+```fidan check=run context=items
 for item in items {
     print(item)
 }
@@ -104,7 +104,7 @@ for i in 0...10 {
 
 ## `while`
 
-```fidan check=syntax
+```fidan check=run context=loop
 while running {
     tick()
 }
@@ -121,7 +121,7 @@ Alias:
 
 - `stop` = `break`
 
-```fidan check=syntax
+```fidan check=run context=string-items
 for item in items {
     if item == "skip" {
         continue
@@ -138,7 +138,7 @@ Fidan's pattern-style multi-branch form is `check`.
 
 Statement form:
 
-```fidan check=syntax
+```fidan check=run context=status
 check code {
     200 => print("ok")
     404 => print("missing")
@@ -148,7 +148,7 @@ check code {
 
 Expression form:
 
-```fidan check=syntax
+```fidan check=run context=status
 var label = check code {
     200 => "ok"
     404 => "missing"
@@ -165,7 +165,7 @@ Wildcard spellings:
 
 Error-handling flow also belongs to control flow:
 
-```fidan check=syntax
+```fidan check=run context=errors
 attempt {
     risky()
 } catch error {
@@ -186,7 +186,7 @@ Aliases:
 
 Trigger an immediate runtime failure:
 
-```fidan check=compile
+```fidan check=runtime-error error=R1002
 panic("bad state")
 ```
 
@@ -245,7 +245,7 @@ In the editor, these warnings are marked as unnecessary so unreachable code can 
 
 Example:
 
-```fidan check=syntax
+```fidan check=run context=status
 var kind = check status {
     200 => "ok"
     404 => "not-found"

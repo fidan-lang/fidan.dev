@@ -12,7 +12,7 @@ Use `check` when multiple branches all revolve around the same scrutinee.
 
 ## Statement form
 
-```fidan check=syntax
+```fidan check=run context=status
 check status {
     200 => print("OK")
     404 => print("Not found")
@@ -22,7 +22,7 @@ check status {
 
 ## Expression form
 
-```fidan check=syntax
+```fidan check=run context=status
 var label = check status {
     200 => "ok"
     404 => "missing"
@@ -49,3 +49,7 @@ Use either:
 - simple boolean guard logic
 - short conditionals
 - branches driven by unrelated conditions
+
+## Enum payloads
+
+Identifier arguments in an enum variant pattern bind within that arm; literal arguments compare constructed enum values. See [payload examples and scope](/docs/language/collections-and-enums#payload-matching). Arm-local bindings do not leak into the surrounding module/action.

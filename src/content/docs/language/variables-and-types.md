@@ -99,7 +99,7 @@ The formatter normalizes this to `dynamic`.
 
 Fidan uses chained `oftype` rather than angle brackets:
 
-```fidan check=compile
+```fidan check=run
 var scores oftype list oftype integer = [1, 2, 3]
 var names oftype list oftype string
 var lookup oftype dict oftype (string, integer)
@@ -120,7 +120,7 @@ var pair = ("Ada", 37)
 
 Tuple destructuring:
 
-```fidan check=syntax
+```fidan check=run context=tuple
 var (name, age) = pair
 ```
 
@@ -142,7 +142,7 @@ var user = {"name": "Ada", "age": 37}
 
 You can make the intended type explicit when the literal shape alone is not enough:
 
-```fidan check=compile
+```fidan check=run
 var ids oftype list oftype integer = []
 var scores_by_name oftype dict oftype (string, integer) = {}
 ```
@@ -218,14 +218,14 @@ print(counter.get())
 
 `Pending` is the runtime handle type produced by `spawn` and `std.async` helpers:
 
-```fidan check=syntax
+```fidan check=run context=async
 var handle oftype Pending oftype string = spawn fetch_data()
 var data = await handle
 ```
 
 ### `WeakShared`
 
-`WeakShared` is part of the language/runtime type vocabulary, though it is not a top-level builtin constructor in the same way `Shared(...)` is.
+`WeakShared(shared)` is a top-level constructor, just like `Shared(value)`. It also accepts an existing weak handle. `weak.upgrade()` returns a Shared handle while the allocation is alive, otherwise `nothing`; `weak.isAlive()` inspects liveness. Weak handles do not keep the allocation alive. Invalid dynamic constructor arguments raise `R0001`.
 
 ## Recommended style
 
@@ -246,3 +246,31 @@ action load_user with (certain id oftype integer) returns dynamic {
     return {"id": id}
 }
 ```
+
+## Complete additional type-name catalog
+
+The scalar names above and the compiler metadata below form the supported type vocabulary. `action`, `callable` and `fn` name the same coarse callable type; parameter/return contracts live in action metadata, not in a richer signature type.
+
+<!-- compiler-api:start -->
+
+<!-- prettier-ignore -->
+| Additional type spelling | Shape | Meaning |
+| --- | --- | --- |
+| `action` | `action` | First-class callable value type (action, callable and fn are aliases). Concrete callable arity is validated at runtime when its signature is erased. |
+| `callable` | `callable` | First-class callable value type (action, callable and fn are aliases). Concrete callable arity is validated at runtime when its signature is erased. |
+| `fn` | `fn` | First-class callable value type (action, callable and fn are aliases). Concrete callable arity is validated at runtime when its signature is erased. |
+| `handle` | `handle` | Opaque native handle type used for extern interop and low-level OS or library handles. |
+| `list` | `list oftype T` | Ordered growable collection. Use `list oftype T` for typed lists or bare `list` when element type is dynamic. |
+| `dict` | `dict oftype (K, V)` | Key-value map type. Use `dict oftype (K, V)` for typed dictionaries or bare `dict` when both sides are dynamic. |
+| `map` | `map oftype (K, V)` | Alias for `dict`. Use `map oftype (K, V)` when you prefer map-style terminology. |
+| `hashset` | `hashset oftype T` | Unordered collection of unique, hashable values. Use `hashset oftype T` for typed sets or bare `hashset` for dynamic elements. |
+| `tuple` | `tuple or (T1, T2, ...)` | Fixed-position product type. Use bare `tuple` for an untyped tuple value or `(T1, T2, ...)` for a typed tuple shape. |
+| `Shared` | `Shared oftype T` | Thread-safe shared wrapper type for values used across parallel work. |
+| `WeakShared` | `WeakShared oftype T` | Non-owning weak reference to a `Shared` value. Upgrade it when the shared value is still alive. |
+| `Pending` | `Pending oftype T` | Handle type for asynchronous work that will eventually resolve to `T`. |
+
+<!-- compiler-api:end -->
+
+## Parameterization and aliasing
+
+`oftype` parameterizes built-in containers/wrappers. User-defined generic action/object type-parameter declarations are not implemented; do not infer them from `list oftype T` documentation placeholders. Numeric assignability and explicit conversions are distinct; use `integer(...)` or `float(...)` when the runtime representation matters. Lists, dicts and objects are mutable reference values: assignment can alias an existing value; a slice creates a new list container. `const var` prevents rebinding, not deep freezing of a referenced collection.

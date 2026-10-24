@@ -118,3 +118,7 @@ symbol has the same name. `@gpu` remains reserved and is rejected.
 This is a coordinated future-compiler capability. The published 1.0.16 compiler
 must not be assumed to implement custom decorator replacement or callable
 reflection merely because an editor extension recognizes the syntax.
+
+## Receiver methods
+
+A replacement for a decorated receiver method must preserve the implicit receiver as its first callback parameter, followed by the declared arguments. The caller still uses `instance.method(...)`; it does not manually pass `this`. Captured local closures remain normal callables. Replacement return values are checked through the original action contract; decoration is not permission to bypass typed returns.

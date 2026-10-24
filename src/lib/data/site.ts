@@ -80,7 +80,7 @@ action main {
         }
     }
 
-    io.print("Built for native speed.")
+    io.print("Compiler-grounded tooling.")
 }
 
 main()`;
@@ -138,19 +138,19 @@ export const proofStats = [
 export const switchCards = [
   {
     eyebrow: "Python → Fidan",
-    title: "Leave runtime drag behind.",
+    title: "Readable code, multiple execution paths.",
     description:
-      "Ship native binaries, keep a smaller syntax surface than systems languages, and stop treating packaging and deployment like a second project.",
+      "Explore readable syntax with an interpreter, selective JIT, and native AOT backends. Validate your workload rather than assuming a performance equivalence.",
   },
   {
     eyebrow: "Rust → Fidan",
-    title: "Keep the performance, drop the ceremony.",
+    title: "A different language and ownership model.",
     description:
-      "Fidan stays native-first, but gets there with faster iteration, fewer concepts to juggle, and one coherent toolchain.",
+      "Fidan combines static analysis with managed runtime values and native compilation. It does not claim Rust safety or performance guarantees.",
   },
   {
     eyebrow: "C++ → Fidan",
-    title: "Modern product feel without legacy baggage.",
+    title: "Native integration with explicit boundaries.",
     description:
       "You still target real native software, but with built-in diagnostics, formatting, LSP support, replay tooling, and a first-party package flow.",
   },
@@ -159,21 +159,21 @@ export const switchCards = [
 export const compareRows = [
   {
     name: "Python",
-    edge: "Native binaries, AOT compilation, and tighter packaging.",
+    edge: "Integrated AOT builds and package tooling.",
     nuance:
-      "Ideal when you want Python-level approachability with a far stronger deployment and performance story.",
+      "Consider the syntax, packaging and supported backends against your application requirements.",
   },
   {
     name: "Rust",
-    edge: "Far less syntax and concept overhead for day-to-day iteration.",
+    edge: "Different syntax and a managed runtime model.",
     nuance:
-      "Ideal when you want native performance and modern tooling with a much lighter everyday development experience.",
+      "Compare ownership, diagnostics, dependencies and measured behavior for your workload.",
   },
   {
     name: "C++",
-    edge: "A dramatically simpler language surface with modern tooling and built-in package flow.",
+    edge: "Human-readable language design with integrated tooling and package flow.",
     nuance:
-      "Ideal when you want native power, but with a cleaner language surface and a far more coherent product experience.",
+      "Use native interop where required, with explicit ABI and deployment checks.",
   },
 ] as const;
 
@@ -197,11 +197,11 @@ export const installCommands = [
 ] as const;
 
 export const marketingSections = {
-  whyHeading: "Why teams switch to Fidan",
+  whyHeading: "Why Fidan is designed this way",
   whyIntro:
-    "Fidan is built for people who want native performance, real deployment targets, integrated tooling, and AI-native workflows without getting dragged back into the old tradeoffs.",
+    "Fidan is an AI-native general-purpose programming language and compiler toolchain. Its design connects human-readable code, native backends and AI tools grounded in structured compiler knowledge.",
   reliability:
-    "The toolchain already ships with broad tests, multiple execution backends, tracing, replay, packaging workflows, and AI-assisted explain, fix, and improve paths grounded in diagnostics, inferred types, reads and writes, symbols, call graphs, and static traces. The point is not novelty. The point is a fast, coherent system that feels tight everywhere.",
+    "The toolchain already ships with broad tests, multiple execution backends, tracing, replay, packaging workflows, and AI-assisted explain, fix, and improve paths grounded in diagnostics, inferred types, reads and writes, symbols, call graphs, and static traces. The documentation distinguishes released functionality, upcoming candidate APIs and backend limitations.",
   ecosystem:
     "Dal gives Fidan a first-party package story, and the runtime stays open to native libraries through @extern so you are never boxed in.",
 } as const;

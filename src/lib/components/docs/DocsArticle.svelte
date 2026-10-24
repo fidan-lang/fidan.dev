@@ -37,32 +37,46 @@
     }, 1500);
   }
 
-  function handleTabs(event: MouseEvent) {
-    const target = event.target as HTMLElement | null;
-    const button = target?.closest<HTMLButtonElement>("[data-tab-trigger]");
-    if (!button) return;
-
+  function activateTab(button: HTMLButtonElement, focus = false) {
     const tabset = button.closest<HTMLElement>("[data-tabset]");
     if (!tabset) return;
-
-    const index = Number(button.dataset.tabIndex ?? "-1");
-    if (!Number.isFinite(index) || index < 0) return;
-
-    for (const trigger of tabset.querySelectorAll<HTMLButtonElement>(
-      "[data-tab-trigger]",
-    )) {
-      const active = Number(trigger.dataset.tabIndex ?? "-1") === index;
+    const triggers = Array.from(tabset.querySelectorAll<HTMLButtonElement>(
+      ":scope > .doc-tabs__list > [data-tab-trigger]",
+    ));
+    const index = triggers.indexOf(button);
+    if (index < 0) return;
+    for (const [position, trigger] of triggers.entries()) {
+      const active = position === index;
       trigger.classList.toggle("is-active", active);
-      trigger.setAttribute("aria-selected", active ? "true" : "false");
+      trigger.setAttribute("aria-selected", String(active));
+      trigger.tabIndex = active ? 0 : -1;
     }
-
-    for (const [panelIndex, panel] of Array.from(
-      tabset.querySelectorAll<HTMLElement>(".doc-tabs__panel"),
-    ).entries()) {
-      const active = panelIndex === index;
+    for (const [position, panel] of Array.from(tabset.querySelectorAll<HTMLElement>(
+      ":scope > .doc-tabs__panels > .doc-tabs__panel",
+    )).entries()) {
+      const active = position === index;
       panel.classList.toggle("is-active", active);
       panel.hidden = !active;
     }
+    if (focus) button.focus();
+  }
+
+  function handleArticleKeydown(event: KeyboardEvent) {
+    const button = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>("[data-tab-trigger]");
+    if (!button?.parentElement) return;
+    const triggers = Array.from(button.parentElement.querySelectorAll<HTMLButtonElement>(":scope > [data-tab-trigger]"));
+    const current = triggers.indexOf(button);
+    if (current < 0) return;
+    let next: number;
+    switch (event.key) {
+      case "ArrowRight": next = (current + 1) % triggers.length; break;
+      case "ArrowLeft": next = (current - 1 + triggers.length) % triggers.length; break;
+      case "Home": next = 0; break;
+      case "End": next = triggers.length - 1; break;
+      default: return;
+    }
+    event.preventDefault();
+    activateTab(triggers[next], true);
   }
 
   async function handleArticleClick(event: MouseEvent) {
@@ -72,9 +86,8 @@
       return;
     }
 
-    if (target?.closest("[data-tab-trigger]")) {
-      handleTabs(event);
-    }
+    const tab = target?.closest<HTMLButtonElement>("[data-tab-trigger]");
+    if (tab) activateTab(tab);
   }
 </script>
 
@@ -100,7 +113,7 @@
     role="presentation"
     tabindex="-1"
     onclick={handleArticleClick}
-    onkeydown={() => {}}
+    onkeydown={handleArticleKeydown}
   >
     {@html html}
   </div>

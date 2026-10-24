@@ -1,26 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
-import ts from "typescript";
-const require = createRequire(import.meta.url);
-function load(relative, overrides = {}) {
-  const filename = new URL(relative, import.meta.url);
-  const module = { exports: {} };
-  const code = ts.transpileModule(readFileSync(filename, "utf8"), {
-    compilerOptions: {
-      target: ts.ScriptTarget.ES2022,
-      module: ts.ModuleKind.CommonJS,
-      esModuleInterop: true,
-    },
-  }).outputText;
-  new Function("require", "module", "exports", code)(
-    (name) => (name in overrides ? overrides[name] : require(name)),
-    module,
-    module.exports,
-  );
-  return module.exports;
-}
+import { loadTypeScript } from "./load-typescript.mjs";
+const load = (relative, overrides) =>
+  loadTypeScript(new URL(relative, import.meta.url), overrides);
 const urls = load("../src/lib/server/release-url.ts");
 const fallback = {
   version: "1.0.16",
@@ -300,5 +283,51 @@ test("non-success release responses release their body before fallback", async (
         fails(503),
       );
     assert.equal(cancellations, status === 404 ? 2 : 1);
+  }
+});
+
+test("bundled stable fallback reflects the released hotfix rather than candidate APIs", () => {
+  const content = load("../src/lib/content/releases.ts");
+  assert.equal(content.latestRelease.version, "1.0.16");
+  assert.equal(content.releases.filter((item) => item.latest).length, 1);
+  assert.match(
+    content.latestRelease.summary,
+    /without language or runtime feature changes/,
+  );
+  assert.match(
+    content.latestRelease.body,
+    /not provided by the published 1.0.16 binary/,
+  );
+});
+
+test("release deadline bounds a stalled response body even when fetch wrappers ignore abort", async () => {
+  let stream;
+  let cancelled = 0;
+  const body = new ReadableStream({
+    start(controller) {
+      stream = controller;
+      controller.enqueue(new TextEncoder().encode("["));
+    },
+    cancel() {
+      cancelled++;
+    },
+  });
+  let safety;
+  try {
+    const result = await Promise.race([
+      releases().getReleaseNotes(async () => new Response(body)),
+      new Promise((_, reject) => {
+        safety = setTimeout(
+          () =>
+            reject(new Error("response body exceeded its release deadline")),
+          6500,
+        );
+      }),
+    ]);
+    assert.equal(result[0].version, "1.0.16");
+    assert.equal(cancelled, 1, "timed out body must be cancelled");
+  } finally {
+    clearTimeout(safety);
+    if (!cancelled) stream.close();
   }
 });

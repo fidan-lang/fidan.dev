@@ -29,3 +29,5 @@ practical baseline for native software.
 The stdlib catalog is backed by shared metadata in the main Fidan repo. That is
 also what powers hover, completions, and return-type hints in the language
 server.
+
+See [std.json](/docs/stdlib/json) for JSON parsing, serialization and soft-result helpers.

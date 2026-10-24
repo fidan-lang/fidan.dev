@@ -16,3 +16,12 @@ The reference section is for lookup, not for the first narrative introduction.
 - builtin catalogs
 - decorator catalogs
 - diagnostics references
+
+## Generated contract catalogs
+
+- [Every CLI command and option](/docs/reference/cli-options), from actual nested help
+- [Core builtins](/docs/reference/builtins), from compiler metadata
+- [Receiver methods and aliases](/docs/reference/receiver-methods), from the same metadata
+- [All stdlib modules](/docs/stdlib), including canonical signatures and aliases
+
+The source-candidate identity and capability probes are part of documentation CI; generation is not a claim that every possible program has backend parity.

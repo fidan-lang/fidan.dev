@@ -1,0 +1,145 @@
+{
+  "contexts": {
+    "modules": {
+      "before": "",
+      "after": "",
+      "files": {
+        "helpers.fdn": "action helper returns integer { return 1 }",
+        "net/client.fdn": "action client returns integer { return 1 }",
+        "other.fdn": "action other returns integer { return 1 }",
+        "utils/helpers.fdn": "action helper returns integer { return 1 }",
+        "local/module.fdn": "action helper returns integer { return 1 }"
+      }
+    },
+    "create-user": {
+      "before": "action create_user with (certain name oftype string, optional age oftype integer = 0) returns string { return name }",
+      "after": ""
+    },
+    "hash": {
+      "before": "action do_hash with (certain chunk oftype string) returns string { return chunk }",
+      "after": ""
+    },
+    "shared": {
+      "before": "var counter = Shared(0)",
+      "after": ""
+    },
+    "status": {
+      "before": "var status = 200\nvar code = 200",
+      "after": ""
+    },
+    "async": {
+      "before": "action fetch_user returns string { return \"Ada\" }\naction fetch_data returns string { return \"data\" }\naction load_user returns string { return \"Ada\" }\naction write_audit_log {}\naction first returns integer { return 1 }\naction second returns integer { return 2 }",
+      "after": ""
+    },
+    "parallel": {
+      "before": "action crunch_a {}\naction crunch_b {}\naction crunch_c {}\nvar items = [1, 2, 3]\nvar data = [1, 2, 3]\naction process with (certain item oftype integer) {}",
+      "after": ""
+    },
+    "items": {
+      "before": "var items = [1, 2, 3]",
+      "after": ""
+    },
+    "score": {
+      "before": "var score = 92\nvar temp = 34",
+      "after": ""
+    },
+    "nullable": {
+      "before": "var value oftype flexible = nothing\nvar maybe_value oftype flexible = nothing\nvar fallback = \"fallback\"",
+      "after": ""
+    },
+    "loop": {
+      "before": "var running = false\naction tick {}",
+      "after": ""
+    },
+    "string-items": {
+      "before": "var items = [\"skip\", \"done\"]",
+      "after": ""
+    },
+    "errors": {
+      "before": "action risky { panic(\"illustrative failure\") }\naction do_work {}\naction cleanup {}",
+      "after": ""
+    },
+    "retry": {
+      "before": "var retries = 2",
+      "after": ""
+    },
+    "io": {
+      "before": "use std.io as io",
+      "after": "",
+      "files": {
+        "config.json": "{}"
+      }
+    },
+    "animal": {
+      "before": "object Animal { var sound oftype string\n new with (certain sound oftype string) { this.sound = sound } }",
+      "after": ""
+    },
+    "parent": {
+      "before": "object Animal { var sound oftype string\n new with (certain sound oftype string) { this.sound = sound } }\nobject Dog extends Animal { new {",
+      "after": "}\n}"
+    },
+    "interpolation": {
+      "before": "use std.math as math\nvar name = \"Ada\"",
+      "after": ""
+    },
+    "tuple": {
+      "before": "var pair = (\"Ada\", 37)",
+      "after": ""
+    },
+    "pair": {
+      "before": "action pair { return (1, 2) }",
+      "after": ""
+    },
+    "assign": {
+      "before": "object Person { var name = \"initial\" }\nvar person = Person()\nvar items = [\"initial\"]\nvar value = 0",
+      "after": ""
+    },
+    "set": {
+      "before": "object Person { var name = \"initial\" }\nvar person = Person()\nvar name = \"initial\"",
+      "after": ""
+    },
+    "compound": {
+      "before": "var count = 0\nvar total = 3\nvar scale = 2",
+      "after": ""
+    },
+    "create": {
+      "before": "action create with (certain name oftype string, certain age oftype integer) {}",
+      "after": ""
+    },
+    "user": {
+      "before": "object User { var name oftype string\nnew with (certain name oftype string) { this.name = name } }",
+      "after": ""
+    },
+    "access": {
+      "before": "use std.math as math\nobject User { var name = \"Ada\" }\nvar user = User()\nvar queue = []",
+      "after": ""
+    },
+    "index": {
+      "before": "var items = [\"first\"]\nvar dict = {\"name\": \"Ada\"}",
+      "after": ""
+    },
+    "slice": {
+      "before": "var items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
+      "after": ""
+    },
+    "comprehension": {
+      "before": "var values = [1, 2, 3, 4]",
+      "after": ""
+    },
+    "args": {
+      "package": "args"
+    },
+    "dog": {
+      "before": "object Dog { var name = \"Rex\" }"
+    }
+  },
+  "examples": {
+    "args-greet": {},
+    "program-arguments": {
+      "argv": ["--verbose", "-v", "-V"]
+    },
+    "stdin-source": {
+      "input": "Ada\n"
+    }
+  }
+}

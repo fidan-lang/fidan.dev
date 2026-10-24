@@ -8,42 +8,38 @@ order: 255
 
 # std.json
 
-`std.json` handles JSON parsing and serialization without making JSON a global builtin.
+Invalid JSON raises `R3005` unless soft mode is explicitly true; soft file reads also return `nothing` for missing/unreadable input. JSON objects become dicts and arrays become lists. Tagged objects preserve non-string-key dicts, tuples and hashsets; runtime-only values use display strings. Never treat a soft `nothing` as a successfully parsed value.
 
-## Functions
+## Complete API
 
-- `loads(text, soft?) -> dynamic`
-- `parse(text, soft?) -> dynamic`
-- `load(path, soft?) -> dynamic`
-- `dumps(value) -> string`
-- `stringify(value) -> string`
-- `dump(value, path) -> boolean`
-- `pretty(value) -> string`
-- `isValid(text) -> boolean`
+Signatures and aliases below are generated from the same compiler-owned metadata used by the CLI and LSP. `?` marks optional parameters; `...` is variadic.
 
-## Notable aliases
+<!-- compiler-api:start -->
 
-- `parse` = `loads`
-- `load` / `readFile` / `read_file` read JSON text from disk and parse it
-- `stringify` = `dumps`
-- `dump` / `writeFile` / `write_file` serialize and write JSON to disk
-- `prettyPrint` / `pretty_print` = `pretty`
-- `is_valid` = `isValid`
+<!-- prettier-ignore -->
+| Signature | Aliases | Contract |
+| --- | --- | --- |
+| `std.json.loads(text oftype string, soft oftype boolean?) -> dynamic` | — | Parse JSON text into Fidan dynamic values using dict, list, string, number, boolean, and nothing. Raises `R3005` on invalid JSON unless `soft` is true, in which case it returns `nothing`. |
+| `std.json.parse(text oftype string, soft oftype boolean?) -> dynamic` | — | Parse JSON text into Fidan dynamic values using dict, list, string, number, boolean, and nothing. `parse` is a compatibility alias for `loads`. Raises `R3005` on invalid JSON unless `soft` is true, in which case it returns `nothing`. |
+| `std.json.load(path oftype string, soft oftype boolean?) -> dynamic` | `readFile`, `read_file` | Read a JSON file from disk and parse it into Fidan dynamic values. Raises `R3001`/`R3002` on file access failure and `R3005` on invalid JSON unless `soft` is true, in which case it returns `nothing`. |
+| `std.json.dumps(value oftype dynamic) -> string` | — | Serialize a JSON-compatible Fidan value into compact JSON text. Unsupported runtime-only values are stringified via their display form. |
+| `std.json.stringify(value oftype dynamic) -> string` | — | Serialize a JSON-compatible Fidan value into compact JSON text. `stringify` is a compatibility alias for `dumps`. Unsupported runtime-only values are stringified via their display form. |
+| `std.json.dump(value oftype dynamic, path oftype string) -> boolean` | `writeFile`, `write_file` | Serialize a JSON-compatible Fidan value and write it directly to a file path, returning whether the write succeeded. |
+| `std.json.pretty(value oftype dynamic) -> string` | `prettyPrint`, `pretty_print` | Serialize a JSON-compatible Fidan value into indented JSON text for logs, snapshots, and debugging output. |
+| `std.json.isValid(text oftype string) -> boolean` | `is_valid` | Return whether the provided string is valid JSON without materializing the parsed value. |
 
-## Parse text
+<!-- compiler-api:end -->
 
-```fidan wrap=none check=compile
+## Examples
+
+```fidan wrap=none check=run
 use std.json as json
 
 var data = json.loads("[1, 2, 3]")
 print(data[0])
 ```
 
-## Soft mode
-
-Invalid JSON raises `R3005` by default. Pass `true` as the optional soft flag when invalid input should become `nothing` instead.
-
-```fidan wrap=none check=compile
+```fidan wrap=none check=run
 use std.json as json
 
 var parsed = json.loads("not json", true)
@@ -52,11 +48,7 @@ if parsed is nothing {
 }
 ```
 
-For file reads, soft mode also returns `nothing` when the file is missing or cannot be read.
-
-## Serialize values
-
-```fidan wrap=none check=compile
+```fidan wrap=none check=run
 use std.json as json
 
 var payload = {"name": "Ada", "score": 99}
@@ -67,23 +59,9 @@ print(compact)
 print(readable)
 ```
 
-## File helpers
-
-```fidan wrap=none check=compile
+```fidan wrap=none check=run
 use std.json as json
 
 var ok = json.dump({"ready": true}, "state.json")
 var state = json.load("state.json", true)
 ```
-
-## Fidan value round-tripping
-
-Plain JSON objects become Fidan dicts, arrays become lists, strings and numbers keep their natural Fidan value types, booleans stay booleans, and JSON `null` becomes `nothing`.
-
-When serializing values that plain JSON cannot represent directly, Fidan uses tagged objects so important runtime shapes can round-trip:
-
-- dicts with non-string keys
-- hashsets
-- tuples
-
-Runtime-only values that cannot be represented structurally are serialized through their display form.

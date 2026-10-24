@@ -101,7 +101,7 @@ If no useful value is returned, use `returns nothing`.
 
 Fidan supports named calls:
 
-```fidan check=compile
+```fidan check=run
 action create_user with (
     certain name oftype string,
     optional age oftype integer = 18
@@ -117,7 +117,7 @@ create_user(name set "Ada", age set 37)
 
 Normal positional calls work as expected:
 
-```fidan check=syntax
+```fidan check=run context=create-user
 create_user("Ada", 37)
 create_user("Ada")
 ```
@@ -137,7 +137,7 @@ action parse_port with (text oftype string) returns integer {
 `action main` is a normal action declaration. It does not auto-run by itself;
 call `main()` explicitly in the module you want to execute.
 
-```fidan check=compile
+```fidan check=run
 action main {
     print("hello")
 }
@@ -147,7 +147,7 @@ main()
 
 Declarations are hoisted, so calls can appear before declaration text:
 
-```fidan check=compile
+```fidan check=run
 var value = square(8)
 
 action square with (certain x oftype integer) returns integer {
@@ -161,7 +161,7 @@ This is also where decorators like `@precompile` and `@extern` apply.
 
 Extension actions add behavior to an existing object without editing the original object body:
 
-```fidan check=compile
+```fidan check=compile context=dog
 action bark extends Dog returns nothing {
     print("{this.name} barks")
 }
@@ -176,7 +176,7 @@ Inside an extension action:
 
 You can declare a `parallel action`:
 
-```fidan check=syntax
+```fidan check=compile context=hash
 parallel action hash_chunk with (chunk oftype string) returns string {
     return do_hash(chunk)
 }
@@ -188,7 +188,7 @@ This marks the action for the parallel execution model rather than the ordinary 
 
 Actions are also first-class values through inline action expressions:
 
-```fidan check=compile
+```fidan check=run
 var double = action with (certain value oftype integer) returns integer {
     return value * 2
 }
@@ -203,7 +203,7 @@ This is especially useful for:
 
 Example:
 
-```fidan check=syntax
+```fidan check=run context=shared
 counter.update(action with (certain value oftype integer) returns integer {
     return value + 1
 })

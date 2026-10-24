@@ -35,7 +35,7 @@ That distinction is deliberate. Fidan does **not** pretend that all concurrency 
 
 `spawn` creates a pending handle for same-thread cooperative work:
 
-```fidan check=syntax
+```fidan check=run context=async
 var handle = spawn fetch_user()
 var user = await handle
 ```
@@ -46,7 +46,7 @@ The result is a `Pending` handle, not a thread.
 
 `await` resolves a `Pending` handle:
 
-```fidan check=syntax
+```fidan check=run context=async
 var handle = spawn fetch_user()
 var user = await handle
 ```
@@ -60,7 +60,7 @@ Use it:
 
 `concurrent` groups multiple same-thread tasks:
 
-```fidan check=syntax
+```fidan check=run context=async
 concurrent {
     task {
         var user = await spawn load_user()
@@ -82,7 +82,7 @@ Important properties:
 
 Interleaving sanity check:
 
-```fidan check=compile
+```fidan check=run
 use std.async
 
 concurrent {
@@ -112,7 +112,7 @@ This is cooperative same-thread scheduling, not thread-race ordering.
 
 `parallel` runs tasks on real worker threads:
 
-```fidan check=syntax
+```fidan check=run context=parallel
 parallel {
     task { crunch_a() }
     task { crunch_b() }
@@ -129,7 +129,7 @@ run because real worker threads are scheduled by the OS.
 
 Parallel iteration is built in:
 
-```fidan check=syntax
+```fidan check=run context=parallel
 parallel for item in items {
     process(item)
 }
@@ -171,7 +171,7 @@ If you try to mutate ordinary cross-thread state inside `parallel`, the compiler
 
 Example:
 
-```fidan check=compile
+```fidan check=run
 use std.async as async
 
 var one = async.sleep(100)
@@ -194,7 +194,7 @@ These are same-thread async helpers, not thread spawners.
 
 Example:
 
-```fidan wrap=none check=syntax
+```fidan wrap=none check=run context=items
 use std.parallel as par
 
 var out = par.parallelMap(items, action with (item) returns integer {
@@ -220,7 +220,7 @@ Use `parallel` / `parallel for` / `std.parallel` when:
 
 ### Same-thread
 
-```fidan check=syntax
+```fidan check=run context=async
 concurrent {
     task {
         var a = spawn first()
@@ -235,7 +235,7 @@ This is structured, cooperative scheduling.
 
 ### Real threads
 
-```fidan check=syntax
+```fidan check=run context=parallel
 var total = Shared(0)
 
 parallel for item in data {

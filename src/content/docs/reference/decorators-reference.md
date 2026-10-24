@@ -8,7 +8,7 @@ order: 630
 
 # Decorators reference
 
-Decorators are action-level annotations that affect compilation, diagnostics, or foreign interop.
+Decorators include compiler attributes and user-defined callable transformations. The upcoming candidate supports custom decorators in addition to the built-ins below. See [custom decorator evaluation and replacement](/docs/language/decorators).
 
 ## Current built-in decorators
 
@@ -73,11 +73,11 @@ action hot_inner_loop with (certain n oftype integer) returns integer {
 
 ## `@deprecated`
 
-### Meaning
+### Meaning: `@deprecated`
 
 Mark an action as deprecated so callers receive a warning and can migrate before removal.
 
-### Example
+### Example: `@deprecated`
 
 ```fidan check=compile
 @deprecated("Use fibonacci_fast instead")
@@ -102,11 +102,11 @@ Include a short migration hint in the message:
 
 ## `@extern`
 
-### Meaning
+### Meaning: `@extern`
 
 Declare a foreign action imported from a native library.
 
-### Example
+### Example: `@extern`
 
 ```fidan check=compile
 @extern("./mylib.dll", symbol = "add_i64")
@@ -130,7 +130,7 @@ action add_native with (a oftype integer, b oftype integer) returns integer
 
 ## `@unsafe`
 
-### Meaning
+### Meaning: `@unsafe`
 
 Acknowledge an intentionally unsafe boundary, usually around boxed Fidan ABI interop.
 
@@ -219,4 +219,4 @@ The compiler, LSP, and docs share decorator metadata, so the current built-in de
 - completion
 - diagnostics for unknown/reserved spellings
 
-That shared metadata is also why this page intentionally documents only the compiler-known decorators, not imagined future annotations.
+Built-in names come from shared compiler metadata. Custom decorator names resolve as ordinary callables; they are not reserved compiler attributes. A custom decorator receives the decorated callable first, followed by its explicit arguments. It may return a replacement callable; returning `nothing` preserves the original for compatibility. Decorator arguments execute once at declaration, and stacked transformations apply in source order.

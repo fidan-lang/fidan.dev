@@ -10,7 +10,7 @@ order: 440
 
 LLVM AOT is an optional native compilation backend. The current release toolchain
 uses LLVM 23.1.2 and helper 1.0.6; supported language/runtime behavior still
-needs backend-specific regression coverage.
+needs backend-specific regression coverage. The upcoming source candidate requires a protocol-8 helper built from its matching source; the public helper is not a substitute.
 
 ## Build example
 

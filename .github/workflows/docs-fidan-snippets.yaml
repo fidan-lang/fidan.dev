@@ -6,20 +6,22 @@ on:
     branches: [main]
     paths:
       [
-        "src/content/docs/**",
-        "scripts/check-fidan-docs*",
+        "src/**",
+        "scripts/**",
         "ci/**",
         "package.json",
+        "package-lock.json",
         ".github/workflows/docs-fidan-snippets.yaml",
       ]
   pull_request:
     branches: [main]
     paths:
       [
-        "src/content/docs/**",
-        "scripts/check-fidan-docs*",
+        "src/**",
+        "scripts/**",
         "ci/**",
         "package.json",
+        "package-lock.json",
         ".github/workflows/docs-fidan-snippets.yaml",
       ]
 permissions:
@@ -44,7 +46,7 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
           repository: fidan-lang/fidan-actions
-          ref: 9396a96100f75a8f9fdcaf7c97549bea7636523a
+          ref: d0599e1e8df6f6a2d96d89b57e17afa91848dd52
           path: audited-setup
           persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
@@ -63,6 +65,24 @@ jobs:
           path: compiler
           persist-credentials: false
       - run: node ../audited-setup/scripts/verify-candidate.mjs ci/compiler-candidate.json ../audited-setup ../compiler
+      - name: Validate exact args dependency before checkout
+        id: docs-dependency
+        run: node scripts/verify-doc-dependencies.mjs ci/compiler-candidate.json ../audited-setup
+      - name: Checkout exact args source (requires approved coordinated push)
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: ${{ steps.docs-dependency.outputs.args_repository }}
+          ref: ${{ steps.docs-dependency.outputs.args_sha }}
+          path: args
+          persist-credentials: false
+      - name: Checkout exact registry API source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: ${{ steps.docs-dependency.outputs.dal_repository }}
+          ref: ${{ steps.docs-dependency.outputs.dal_sha }}
+          path: dal
+          persist-credentials: false
+      - run: node scripts/verify-doc-dependencies.mjs ci/compiler-candidate.json ../audited-setup ../args ../dal
       - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec
       - name: Compiler system dependencies
         run: sudo apt-get update && sudo apt-get install -y libdbus-1-dev pkg-config
@@ -75,13 +95,38 @@ jobs:
           python -m pip install PyYAML==6.0.3
           python ../audited-setup/scripts/check-workflows.py . ../audited-setup
       - run: npm ci
+      - name: Compiler-owned API and CLI reference drift checks
+        run: |
+          mkdir -p target
+          cargo run --release --locked --manifest-path ../compiler/Cargo.toml -p fidan-stdlib --example documentation_catalog > target/compiler-api.json
+          node scripts/sync-api-reference.mjs target/compiler-api.json
+          node scripts/sync-cli-reference.mjs ../compiler/target/release/fidan
+          node scripts/sync-registry-reference.mjs ../dal
+      - name: Links, renderer and API drift regressions
+        env:
+          FIDAN_BIN: ${{ github.workspace }}/compiler/target/release/fidan
+          FIDAN_SETUP_ROOT: ${{ github.workspace }}/audited-setup
+        run: |
+          node --test scripts/check-documentation.test.mjs scripts/verify-doc-dependencies.test.mjs
+          node scripts/check-documentation.mjs
+          python scripts/check-doc-configs.py
       - name: Docs checker negative and runtime regressions
         env:
           FIDAN_BIN: ${{ github.workspace }}/compiler/target/release/fidan
+          FIDAN_ARGS_ROOT: ${{ github.workspace }}/args
           FIDAN_EXPECTED_VERSION: ${{ steps.candidate.outputs.compiler_version }}
         run: node --test scripts/check-fidan-docs.test.mjs
       - name: Verify every Fidan fence with the exact candidate
         env:
           FIDAN_BIN: ${{ github.workspace }}/compiler/target/release/fidan
+          FIDAN_ARGS_ROOT: ${{ github.workspace }}/args
           FIDAN_EXPECTED_VERSION: ${{ steps.candidate.outputs.compiler_version }}
         run: npm run docs:check:fidan
+
+      - name: Native candidate API guide execution (Cranelift)
+        env:
+          FIDAN_BIN: ${{ github.workspace }}/compiler/target/release/fidan
+          FIDAN_ARGS_ROOT: ${{ github.workspace }}/args
+        run: |
+          cargo build --release --locked --manifest-path ../compiler/Cargo.toml -p fidan-runtime
+          node scripts/check-fidan-docs.mjs --backend cranelift --pages language/callable-reflection.md,language/collections-and-enums.md,language/expressions-and-operators.md,dal/args-framework.md,reference/builtins.md,tools/cli.md,reference/receiver-methods.md

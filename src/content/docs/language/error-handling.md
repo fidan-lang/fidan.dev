@@ -14,7 +14,7 @@ Fidan is designed so failures stay visible and diagnosable instead of disappeari
 
 Use `panic(...)` when execution cannot sensibly continue:
 
-```fidan check=syntax
+```fidan check=run context=retry
 if retries > 3 {
     panic("too many retries")
 }
@@ -28,7 +28,7 @@ Alias:
 
 Structured handling:
 
-```fidan check=syntax
+```fidan check=run context=io
 attempt {
     var data = io.readFile("config.json")
     print(data)
@@ -48,7 +48,7 @@ Aliases:
 
 Typed catches are supported:
 
-```fidan check=syntax
+```fidan check=run context=errors
 attempt {
     risky()
 } catch error -> string {
@@ -75,10 +75,10 @@ The modes now differ intentionally rather than being cosmetic aliases.
 
 ## Replay
 
-Replay makes crash reproduction deterministic when input was involved:
+Replay reuses recorded stdin lines when input was involved:
 
 ```bash
 fidan run app.fdn --replay some.bundle
 ```
 
-Use replay when you want to reproduce an exact failing interactive session instead of manually retyping inputs.
+Replay avoids retyping inputs; it does not capture files, random values, clocks or external services. See [replay boundaries](/docs/tools/replay-and-tracing).

@@ -58,7 +58,7 @@ my-package/
 
 Typical import patterns:
 
-```fidan check=syntax
+```fidan check=run context=modules
 use helpers
 use net.client
 use std.io as io
