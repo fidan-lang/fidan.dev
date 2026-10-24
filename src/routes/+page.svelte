@@ -24,13 +24,13 @@
   <title
     >{data.host === "docs"
       ? "Fidan Docs"
-      : "Fidan — The AI-Native Language for Native Software"}</title
+      : marketingSections.seoTitle}</title
   >
   <meta
     name="description"
     content={data.host === "docs"
       ? "The Fidan documentation: language, stdlib, toolchains, DAL, and practical guides."
-      : "Fidan is the AI-native language for native software, with interpreter, JIT, Cranelift AOT, LLVM AOT, real concurrency, direct native interop, and built-in AI-assisted explain, fix, and improve workflows."}
+      : marketingSections.seoDescription}
   />
 </svelte:head>
 
@@ -54,24 +54,19 @@
             <span
               class="h-2 w-2 rounded-full bg-[var(--color-primary)] animate-glow-float"
             ></span>
-            AI-native language, native output
+            {marketingSections.heroBadge}
           </div>
           <h1
             class="mb-6 max-w-3xl text-4xl leading-[0.94] font-semibold tracking-[-0.06em] text-white sm:text-6xl lg:text-7xl"
           >
-            Build native software in <span class="gradient-text"
-              >a language designed for AI-native work.</span
+            {marketingSections.heroTitle} <span class="gradient-text"
+              ><span class="whitespace-nowrap">{marketingSections.heroAccentLabel}</span> {marketingSections.heroAccent}</span
             >
           </h1>
           <p
             class="mb-10 max-w-2xl text-base leading-7 text-[var(--color-text-muted)] sm:text-lg sm:leading-8"
           >
-            Fidan is an AI-native general-purpose language with human-readable
-            syntax and compiler-grounded tooling. Its execution paths include
-            interpreter, JIT, Cranelift AOT, and LLVM AOT in one coherent
-            toolchain, with real concurrency, direct native interop, tracing,
-            replay, and AI-assisted explain, fix, and improve workflows that
-            belong to the product instead of sitting beside it.
+            {marketingSections.heroLead}
           </p>
           <div class="mb-12 flex flex-col gap-3 sm:flex-row sm:gap-4">
             <a
@@ -90,7 +85,7 @@
               href="https://github.com/fidan-lang/fidan"
               class="inline-flex items-center justify-center rounded-full border border-white/10 px-6 py-3 text-sm font-semibold text-[var(--color-text-muted)] transition hover:border-white/20 hover:text-white"
             >
-              GitHub
+              Star on GitHub
             </a>
           </div>
           <div class="grid gap-4 sm:grid-cols-3">
@@ -126,17 +121,17 @@
         <div
           class="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-earth-light)]"
         >
-          Why people switch
+          Why developers try Fidan
         </div>
         <h2
           class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl"
         >
-          Fidan is built for shipping, not for ceremony.
+          From first idea to native software.
         </h2>
         <p class="text-lg leading-8 text-[var(--color-text-muted)]">
-          It is built to be the language you actually want to ship native
-          software with in {new Date().getFullYear()}: compact, direct, fast,
-          and designed like a product instead of a puzzle.
+          Start with readable code. Keep diagnostics, packages and native builds
+          close. Explore a language where compiler-grounded AI is part of the
+          development workflow from the start.
         </p>
       </div>
       <div class="grid gap-5 lg:grid-cols-3">
@@ -204,12 +199,12 @@
           <div
             class="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-earth-light)]"
           >
-            Reality check
+            Compiler-grounded AI
           </div>
           <h2
             class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl"
           >
-            Built-in tooling, not bolted-on AI.
+            Give AI more than source text.
           </h2>
           <p class="mb-6 text-base leading-8 text-[var(--color-text-muted)]">
             {marketingSections.reliability}
@@ -230,7 +225,7 @@
                 class="rounded-[var(--radius-lg)] border border-white/8 bg-white/2 p-5"
               >
                 <div class="mb-2 text-lg font-semibold text-white">
-                  Compared with {row.name}
+                  Coming from {row.name}
                 </div>
                 <div class="mb-2 text-sm text-[var(--color-primary-light)]">
                   {row.edge}
@@ -258,10 +253,15 @@
           Get from zero to native output quickly.
         </h2>
         <p class="text-base leading-8 text-[var(--color-text-muted)]">
-          Use the installer for the smooth path, or pull the release archive
-          directly if you want explicit artifact control.
+          Install the released CLI and start with a real program. For upcoming
+          callable, decorator and args APIs, follow the exact-source candidate
+          guide instead of assuming the stable installer includes them.
         </p>
       </div>
+      <p class="mb-8 text-sm leading-7 text-[var(--color-text-muted)]">
+        <a class="text-[var(--color-primary-light)] underline" href="https://docs.fidan.dev/getting-started/first-program">Write your first program</a>
+        · <a class="text-[var(--color-primary-light)] underline" href="https://docs.fidan.dev/getting-started/release-candidate">Stable and candidate compatibility</a>
+      </p>
       <div class="grid gap-5 lg:grid-cols-3">
         {#each installCommands as install}
           <div class="panel rounded-[var(--radius-lg)] p-6">

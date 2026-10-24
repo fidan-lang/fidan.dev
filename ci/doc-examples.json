@@ -131,6 +131,11 @@
     },
     "dog": {
       "before": "object Dog { var name = \"Rex\" }"
+    },
+    "io-file": {
+      "files": {
+        "config.json": "{}"
+      }
     }
   },
   "examples": {
@@ -140,6 +145,7 @@
     },
     "stdin-source": {
       "input": "Ada\n"
-    }
+    },
+    "short-circuit-effects": {}
   }
 }

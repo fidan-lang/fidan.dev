@@ -61,7 +61,9 @@ test.describe("mobile layout", () => {
   test("marketing home stays inside the viewport", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: /build native software in/i }),
+      page.getByRole("heading", {
+        name: /expressive code\. native software\./i,
+      }),
     ).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });

@@ -69,4 +69,8 @@ use std.collections as collections
 var ids = collections.range(1, 6)
 var indexed = collections.enumerate(ids)
 var grouped = collections.chunk(ids, 2)
+assert_eq(ids, [1, 2, 3, 4, 5])
+assert_eq(grouped, [[1, 2], [3, 4], [5]])
+assert_eq(indexed[0][0], 0)
+assert_eq(indexed[0][1], 1)
 ```

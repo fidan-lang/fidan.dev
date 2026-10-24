@@ -10,14 +10,20 @@ order: 135
 
 Use `check` when multiple branches all revolve around the same scrutinee.
 
+These examples use `status = 200`.
+
 ## Statement form
 
-```fidan check=run context=status
+```fidan check=run context=status expect=stdout
 check status {
     200 => print("OK")
     404 => print("Not found")
     otherwise => print("Other")
 }
+```
+
+```text
+OK
 ```
 
 ## Expression form
@@ -28,6 +34,7 @@ var label = check status {
     404 => "missing"
     otherwise => "other"
 }
+assert_eq(label, "ok")
 ```
 
 ## Wildcards

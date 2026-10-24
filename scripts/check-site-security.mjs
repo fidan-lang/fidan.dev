@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { readFileSync } from "node:fs";
+import {
+  readFileSync,
+  mkdirSync,
+  mkdtempSync,
+  writeFileSync,
+  rmSync,
+} from "node:fs";
+import path from "node:path";
 import { loadTypeScript } from "./load-typescript.mjs";
 const load = (relative, overrides) =>
   loadTypeScript(new URL(relative, import.meta.url), overrides);
@@ -331,3 +338,35 @@ test("release deadline bounds a stalled response body even when fetch wrappers i
     if (!cancelled) stream.close();
   }
 });
+
+test(
+  "patched local Wrangler/Miniflare proxy preserves binding round trips",
+  { timeout: 30000 },
+  async () => {
+    const { getPlatformProxy } = await import("wrangler");
+    const parent = path.resolve("target");
+    mkdirSync(parent, { recursive: true });
+    const root = mkdtempSync(path.join(parent, "platform-proxy-"));
+    const configPath = path.join(root, "wrangler.toml");
+    writeFileSync(
+      configPath,
+      'name = "local-dependency-probe"\ncompatibility_date = "2026-04-01"\n[[kv_namespaces]]\nbinding = "PROBE"\nid = "00000000000000000000000000000000"\n',
+    );
+    let proxy;
+    try {
+      proxy = await getPlatformProxy({
+        configPath,
+        persist: false,
+        remoteBindings: false,
+        envFiles: [],
+      });
+      await proxy.env.PROBE.put("fixture", "round trip");
+      assert.equal(await proxy.env.PROBE.get("fixture"), "round trip");
+      await proxy.env.PROBE.delete("fixture");
+      assert.equal(await proxy.env.PROBE.get("fixture"), null);
+    } finally {
+      await proxy?.dispose();
+      rmSync(root, { recursive: true, force: true });
+    }
+  },
+);

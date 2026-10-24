@@ -33,10 +33,14 @@ Signatures and aliases below are generated from the same compiler-owned metadata
 
 ## Examples
 
-```fidan check=run
+```fidan check=run expect=stdout
 use std.regex as regex
 
 if regex.test(r"^\d+$", "12345") {
     print("digits")
 }
+```
+
+```text
+digits
 ```

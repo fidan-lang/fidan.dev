@@ -98,31 +98,88 @@ try {
     const valid = check("assert_eq(2 + 3, 5)", "run");
     assert.equal(valid.status, 0, valid.stderr);
   });
-  test("output examples compare the actual output instead of only the exit code", () => {
+  test("output examples compare both application streams instead of only the exit code", () => {
     const file = path.join(root, "case.md");
-    function execute(expected) {
-      writeFileSync(
-        file,
-        '```fidan check=run expect=stdout\nprint("observed")\n```\n\n```text\n' +
-          expected +
-          "\n```\n",
-      );
-      return spawnSync(
-        process.execPath,
-        [
-          "scripts/check-fidan-docs.mjs",
-          "--docs-root",
-          root,
-          "--fidan-bin",
-          bin,
-        ],
-        { cwd, encoding: "utf8", timeout: 60000 },
+    for (const [channel, builtin] of [
+      ["stdout", "print"],
+      ["stderr", "eprint"],
+    ]) {
+      function execute(expected) {
+        writeFileSync(
+          file,
+          "```fidan check=run expect=" +
+            channel +
+            "\n" +
+            builtin +
+            '("observed")\n```\n\n```text\n' +
+            expected +
+            "\n```\n",
+        );
+        return spawnSync(
+          process.execPath,
+          [
+            "scripts/check-fidan-docs.mjs",
+            "--docs-root",
+            root,
+            "--fidan-bin",
+            bin,
+          ],
+          { cwd, encoding: "utf8", timeout: 60000 },
+        );
+      }
+      assert.equal(execute("observed").status, 0);
+      const wrong = execute("invented");
+      assert.notEqual(wrong.status, 0);
+      assert(
+        wrong.stderr.includes(`Documented ${channel} differs`),
+        wrong.stderr,
       );
     }
-    assert.equal(execute("observed").status, 0);
-    const wrong = execute("invented");
-    assert.notEqual(wrong.status, 0);
-    assert.match(wrong.stderr, /Documented stdout differs/);
+  });
+  test("control-flow tutorials verify output and side effects on the selected backend", () => {
+    const samples = extractFences(
+      path.join(cwd, "src/content/docs/language/control-flow.md"),
+    ).filter((fence) => fence.info.check === "run");
+    assert(samples.some((fence) => fence.info.id === "short-circuit-effects"));
+    // This focused native check selects runnable tutorials. The mandatory full
+    // catalog check still verifies every mode, including expected diagnostics.
+    const markdown = samples
+      .map((sample) => {
+        const metadata = Object.entries(sample.info)
+          .filter(([key]) => key !== "lang")
+          .map(([key, value]) => `${key}=${value}`)
+          .join(" ");
+        return (
+          "```fidan " +
+          metadata +
+          "\n" +
+          sample.code +
+          "\n```\n" +
+          (sample.expected === undefined
+            ? ""
+            : "\n```text\n" + sample.expected + "```\n")
+        );
+      })
+      .join("\n");
+    writeFileSync(path.join(root, "case.md"), markdown);
+    const result = spawnSync(
+      process.execPath,
+      [
+        "scripts/check-fidan-docs.mjs",
+        "--docs-root",
+        root,
+        "--fidan-bin",
+        bin,
+        "--backend",
+        process.env.FIDAN_DOC_TEST_BACKEND ?? "interpreter",
+      ],
+      { cwd, encoding: "utf8", timeout: 60000 },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert(
+      result.stdout.includes(`Checked ${samples.length} Fidan code fences`),
+      result.stdout,
+    );
   });
   test("inline test examples execute test bodies", () => {
     assert.equal(check('test "works" { assert_eq(2, 2) }', "test").status, 0);

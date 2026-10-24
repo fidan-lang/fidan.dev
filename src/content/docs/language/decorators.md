@@ -94,7 +94,9 @@ Computed and named arguments use normal call checking and evaluate once in sourc
 order. Nested declarations apply their decorators whenever that declaration runs.
 
 ```fidan check=run
+var applications = 0
 action validate_action with (certain callback oftype action) returns action {
+    applications += 1
     assert(len(callback.parameters) == 1)
     return callback
 }
@@ -106,6 +108,7 @@ action greet with (optional name oftype string = "Dal") returns string {
 
 assert_eq(greet("Ada"), "Hello, Ada")
 assert_eq(greet.invoke(["Ada"]), "Hello, Ada")
+assert_eq(applications, 1)
 ```
 
 A returned action replaces the current callable; returning `nothing` retains it

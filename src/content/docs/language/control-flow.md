@@ -12,9 +12,9 @@ Fidan's control flow aims for readable source without hiding what the program ac
 
 ## `if`
 
-Canonical form:
+Canonical form, with `score = 92`:
 
-```fidan check=run context=score
+```fidan check=run context=score expect=stdout
 if score > 90 {
     print("great")
 } otherwise when score > 75 {
@@ -22,6 +22,10 @@ if score > 90 {
 } otherwise {
     print("keep going")
 }
+```
+
+```text
+great
 ```
 
 Accepted spellings:
@@ -39,10 +43,21 @@ that will be skipped at runtime. Operands must be Boolean; a flexible value is
 checked when evaluated and does not use truthiness. An evaluated `nothing` is a
 runtime type error.
 
-```fidan check=run
+```fidan check=run id=short-circuit-effects
 var value oftype flexible = nothing
 var nonempty = value != nothing and len(value) > 0
 assert_eq(nonempty, false)
+var evaluated = 0
+action mark with (certain result oftype boolean) returns boolean {
+    evaluated += 1
+    return result
+}
+assert_eq(false and mark(true), false)
+assert_eq(true or mark(false), true)
+assert_eq(evaluated, 0)
+assert_eq(true and mark(true), true)
+assert_eq(false or mark(false), false)
+assert_eq(evaluated, 2)
 ```
 
 `false and rhs` returns false without evaluating `rhs`; `true or rhs` returns
@@ -60,28 +75,37 @@ Fidan supports expression-form conditionals:
 
 ```fidan check=run context=score
 var label = "pass" if score >= 5 else "fail"
+assert_eq(label, "pass")
 ```
 
 There is also an implicit-subject shorthand that reads naturally for null checks:
 
 ```fidan check=run context=nullable
 var actual = value if is not nothing else fallback
+assert_eq(actual, "fallback")
 ```
 
 Equivalent to:
 
 ```fidan check=run context=nullable
 var actual = value if (value != nothing) else fallback
+assert_eq(actual, "fallback")
 ```
 
 ## `for`
 
-Loop over any iterable expression:
+Loop over any iterable expression; this example uses `items = [1, 2, 3]`:
 
-```fidan check=run context=items
+```fidan check=run context=items expect=stdout
 for item in items {
     print(item)
 }
+```
+
+```text
+1
+2
+3
 ```
 
 ### Ranges
@@ -138,12 +162,18 @@ Fidan's pattern-style multi-branch form is `check`.
 
 Statement form:
 
-```fidan check=run context=status
+With `code = 200`:
+
+```fidan check=run context=status expect=stdout
 check code {
     200 => print("ok")
     404 => print("missing")
     otherwise => print("other")
 }
+```
+
+```text
+ok
 ```
 
 Expression form:
@@ -154,6 +184,7 @@ var label = check code {
     404 => "missing"
     otherwise => "other"
 }
+assert_eq(label, "ok")
 ```
 
 Wildcard spellings:
@@ -252,4 +283,5 @@ var kind = check status {
     500 => "server-error"
     otherwise => "other"
 }
+assert_eq(kind, "ok")
 ```

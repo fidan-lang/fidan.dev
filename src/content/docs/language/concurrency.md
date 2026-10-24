@@ -155,6 +155,7 @@ parallel for item in [1, 2, 3, 4] {
 }
 
 print(counter.get())
+assert_eq(counter.get(), 4)
 ```
 
 If you try to mutate ordinary cross-thread state inside `parallel`, the compiler reports a data-race error instead of hoping you get lucky.
@@ -200,6 +201,7 @@ use std.parallel as par
 var out = par.parallelMap(items, action with (item) returns integer {
     return item * 2
 })
+assert_eq(out, [2, 4, 6])
 ```
 
 ## Choosing the right model
@@ -243,6 +245,7 @@ parallel for item in data {
         return value + item
     })
 }
+assert_eq(total.get(), 6)
 ```
 
 This is real threaded execution and requires `Shared` for mutation.

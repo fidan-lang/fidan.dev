@@ -66,11 +66,16 @@ Signatures and aliases below are generated from the same compiler-owned metadata
 
 ## Examples
 
-```fidan check=run
+```fidan check=run expect=stdout
 use std.math as math
 
 print(math.sqrt(144))
 print(math.clamp(120, 0, 100))
+```
+
+```text
+12.0
+100
 ```
 
 ```fidan check=run
@@ -80,16 +85,23 @@ var angle = math.toRad(45)
 var x = math.cos(angle)
 var y = math.sin(angle)
 var safe = math.clamp(x, 0, 1)
+assert(math.abs(x - y) < 0.000000000001)
+assert_eq(safe, x)
 ```
 
-```fidan check=run
+```fidan check=run expect=stdout
 use std.math as math
 
 print(math.sqrt(144))
 print(math.pow(2, 10))
 ```
 
-```fidan check=run
+```text
+12.0
+1024.0
+```
+
+```fidan check=run expect=stdout
 use std.math as math
 
 print(math.floor(3.9))
@@ -97,9 +109,16 @@ print(math.ceil(3.1))
 print(math.round(3.5))
 ```
 
+```text
+3
+4
+4
+```
+
 ```fidan check=run
 use std.math as math
 
 var roll = math.randomInt(1, 7)
 print(roll)
+assert(roll >= 1 and roll < 7)
 ```

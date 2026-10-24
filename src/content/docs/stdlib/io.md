@@ -50,11 +50,15 @@ Signatures and aliases below are generated from the same compiler-owned metadata
 
 ## Examples
 
-```fidan check=run
+```fidan check=run expect=stdout
 use std.io as io
 
 io.writeFile("hello.txt", "Hello")
 print(io.readFile("hello.txt"))
+```
+
+```text
+Hello
 ```
 
 ```fidan check=run
@@ -66,20 +70,29 @@ if io.fileExists(path) {
     print(io.readFile(path))
 } otherwise {
     io.writeFile(path, "created")
+    assert_eq(io.readFile(path), "created")
 }
+assert(io.fileExists(path))
 ```
 
-```fidan check=run context=io
+For `config.json` containing `{}`:
+
+```fidan check=run context=io-file expect=stdout
 use std.io as io
 
 var content = io.readFile("config.json")
 print(content)
 ```
 
+```text
+{}
+```
+
 ```fidan check=run
 use std.io as io
 
 io.appendFile("app.log", "started\n")
+assert(io.readFile("app.log").endsWith("started\n"))
 ```
 
 ```fidan check=run

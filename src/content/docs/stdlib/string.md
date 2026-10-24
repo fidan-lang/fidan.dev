@@ -55,7 +55,7 @@ Signatures and aliases below are generated from the same compiler-owned metadata
 
 ## Examples
 
-```fidan check=run
+```fidan check=run expect=stdout
 use std.string as string
 
 var slug = string.toLower("Hello World")
@@ -63,23 +63,38 @@ slug = string.replace(slug, " ", "-")
 print(slug)
 ```
 
+```text
+hello-world
+```
+
 ```fidan check=run
 use std.string as string
 
 var port = string.parseInt("8080")
 var ratio = string.parseFloat("3.14")
+assert_eq(port, 8080)
+assert_eq(ratio, 3.14)
 ```
 
-```fidan check=run
+```fidan check=run expect=stdout
 use std.string as string
 
 var parts = string.split("a,b,c", ",")
 print(string.join(" | ", parts))
 ```
 
-```fidan check=run
+```text
+a | b | c
+```
+
+```fidan check=run expect=stdout
 use std.string as string
 
 print(string.charCode("A"))
 print(string.fromCharCode(65))
+```
+
+```text
+65
+A
 ```

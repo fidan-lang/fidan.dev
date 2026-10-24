@@ -1,6 +1,8 @@
 # fidan.dev
 
-The official website and documentation platform for the **Fidan** programming language.
+The official website and documentation platform for **Fidan — an AI-native, native-first programming language with expressive syntax, native execution backends and compiler-grounded AI tooling.**
+
+Fidan brings human-readable code, native builds and an integrated developer ecosystem together. AI tools can use structured diagnostics, inferred types, symbols and program relationships alongside source text. The homepage introduces that direction; the documentation verifies the actual APIs, release boundaries and backend scope.
 
 This repository powers:
 
@@ -143,3 +145,5 @@ Configuration and command recipes also have an executable syntax gate:
 `python scripts/check-doc-configs.py` (Python 3.11+, PyYAML 6.0.3 and Bash;
 set `BASH_BIN` for Git Bash on Windows). It parses TOML/YAML and runs Bash `-n`;
 it never executes installer/publish commands or claims remote-service success.
+
+See [the focused pre-PR polish report](PRE_PR_POLISH.md) for final positioning, output-verification and dependency-security evidence.

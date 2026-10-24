@@ -131,16 +131,24 @@ Examples:
 
 Module namespace:
 
-```fidan check=run
+```fidan check=run expect=stdout
 use std.math as math
 print(math.sqrt(144))
 ```
 
+```text
+12.0
+```
+
 Grouped imports:
 
-```fidan check=run
+```fidan check=run expect=stdout
 use std.math.{sqrt, floor}
 print(sqrt(144))
+```
+
+```text
+12.0
 ```
 
 Whole-module import without alias:

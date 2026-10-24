@@ -101,7 +101,7 @@ If no useful value is returned, use `returns nothing`.
 
 Fidan supports named calls:
 
-```fidan check=run
+```fidan check=run expect=stdout
 action create_user with (
     certain name oftype string,
     optional age oftype integer = 18
@@ -111,6 +111,11 @@ action create_user with (
 
 create_user(name = "Ada", age = 37)
 create_user(name set "Ada", age set 37)
+```
+
+```text
+Ada is 37
+Ada is 37
 ```
 
 ## Positional arguments
@@ -137,12 +142,16 @@ action parse_port with (text oftype string) returns integer {
 `action main` is a normal action declaration. It does not auto-run by itself;
 call `main()` explicitly in the module you want to execute.
 
-```fidan check=run
+```fidan check=run expect=stdout
 action main {
     print("hello")
 }
 
 main()
+```
+
+```text
+hello
 ```
 
 Declarations are hoisted, so calls can appear before declaration text:
@@ -153,6 +162,7 @@ var value = square(8)
 action square with (certain x oftype integer) returns integer {
     return x * x
 }
+assert_eq(value, 64)
 ```
 
 This is also where decorators like `@precompile` and `@extern` apply.
@@ -192,6 +202,7 @@ Actions are also first-class values through inline action expressions:
 var double = action with (certain value oftype integer) returns integer {
     return value * 2
 }
+assert_eq(double(6), 12)
 ```
 
 This is especially useful for:
@@ -207,6 +218,7 @@ Example:
 counter.update(action with (certain value oftype integer) returns integer {
     return value + 1
 })
+assert_eq(counter.get(), 1)
 ```
 
 ## Constructors

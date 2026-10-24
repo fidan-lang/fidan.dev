@@ -32,20 +32,28 @@ Signatures and aliases below are generated from the same compiler-owned metadata
 
 ## Examples
 
-```fidan wrap=none check=run
+```fidan wrap=none check=run expect=stdout
 use std.json as json
 
 var data = json.loads("[1, 2, 3]")
 print(data[0])
 ```
 
-```fidan wrap=none check=run
+```text
+1
+```
+
+```fidan wrap=none check=run expect=stdout
 use std.json as json
 
 var parsed = json.loads("not json", true)
 if parsed is nothing {
     print("invalid json")
 }
+```
+
+```text
+invalid json
 ```
 
 ```fidan wrap=none check=run
@@ -57,6 +65,8 @@ var readable = json.pretty(payload)
 
 print(compact)
 print(readable)
+assert_eq(json.loads(compact), payload)
+assert_eq(json.loads(readable), payload)
 ```
 
 ```fidan wrap=none check=run
@@ -64,4 +74,6 @@ use std.json as json
 
 var ok = json.dump({"ready": true}, "state.json")
 var state = json.load("state.json", true)
+assert_eq(ok, true)
+assert_eq(state, {"ready": true})
 ```

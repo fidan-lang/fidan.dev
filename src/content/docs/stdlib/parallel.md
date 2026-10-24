@@ -34,4 +34,5 @@ use std.parallel as par
 var doubled = par.parallelMap([1, 2, 3], action with (certain item oftype integer) returns integer {
     return item * 2
 })
+assert_eq(doubled, [2, 4, 6])
 ```

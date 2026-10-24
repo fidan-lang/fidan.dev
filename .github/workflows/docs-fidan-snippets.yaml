@@ -121,12 +121,16 @@ jobs:
           FIDAN_BIN: ${{ github.workspace }}/compiler/target/release/fidan
           FIDAN_ARGS_ROOT: ${{ github.workspace }}/args
           FIDAN_EXPECTED_VERSION: ${{ steps.candidate.outputs.compiler_version }}
-        run: npm run docs:check:fidan
+        run: |
+          npm run docs:check:fidan
+          node scripts/check-fidan-docs.mjs --jit-threshold 1
 
       - name: Native candidate API guide execution (Cranelift)
         env:
           FIDAN_BIN: ${{ github.workspace }}/compiler/target/release/fidan
           FIDAN_ARGS_ROOT: ${{ github.workspace }}/args
+          FIDAN_DOC_TEST_BACKEND: cranelift
         run: |
           cargo build --release --locked --manifest-path ../compiler/Cargo.toml -p fidan-runtime
-          node scripts/check-fidan-docs.mjs --backend cranelift --pages language/callable-reflection.md,language/collections-and-enums.md,language/expressions-and-operators.md,dal/args-framework.md,reference/builtins.md,tools/cli.md,reference/receiver-methods.md
+          node scripts/check-fidan-docs.mjs --backend cranelift --pages getting-started/first-program.md,language/actions.md,language/check.md,language/concurrency.md,language/decorators.md,language/strings-and-raw-strings.md,language/callable-reflection.md,language/collections-and-enums.md,stdlib/collections.md,stdlib/io.md,stdlib/json.md,stdlib/math.md,stdlib/overview.md,stdlib/parallel.md,stdlib/regex.md,stdlib/string.md,dal/args-framework.md,tools/cli.md,language/expressions-and-operators.md,reference/builtins.md,reference/receiver-methods.md
+          node --test --test-name-pattern "control-flow tutorials verify" scripts/check-fidan-docs.test.mjs

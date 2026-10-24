@@ -8,7 +8,7 @@ order: 10
 
 # Install Fidan
 
-Fidan ships as a native CLI toolchain.
+Fidan brings its AI-native, native-first workflow to a native CLI toolchain. One installation gives you the language runner, native build entry point, formatter, REPL and language server. AI-assisted commands additionally require a compatible analysis toolchain and provider; normal editing and builds do not.
 
 :::tip Recommended path
 Use the bootstrap install path first. It keeps the install story consistent with official releases and the update commands.

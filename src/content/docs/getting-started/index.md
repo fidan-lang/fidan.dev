@@ -8,6 +8,8 @@ order: 0
 
 # Getting Started
 
+Fidan is an AI-native, native-first programming language: readable code, native execution and compiler-grounded tooling in one developer ecosystem. Start with a small program, then use the same CLI for editor feedback, packages and native builds.
+
 This section is for your first real hour with Fidan.
 
 ## The quick path
