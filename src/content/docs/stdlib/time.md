@@ -46,7 +46,7 @@ Aliases:
 
 ## Example
 
-```fidan
+```fidan check=compile
 use std.time as time
 
 var start = time.now()
@@ -59,7 +59,7 @@ print(time.datetime())
 
 ### Measure elapsed time
 
-```fidan
+```fidan check=syntax
 use std.time as time
 
 var start = time.now()
@@ -69,7 +69,7 @@ print(time.elapsed(start))
 
 ### Block briefly
 
-```fidan
+```fidan check=compile
 use std.time as time
 
 time.sleep(250)
@@ -77,7 +77,7 @@ time.sleep(250)
 
 ### Format a date
 
-```fidan
+```fidan check=compile
 use std.time as time
 
 print(time.date())

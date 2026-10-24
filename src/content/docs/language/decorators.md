@@ -27,7 +27,7 @@ Reserved:
 
 Use `@precompile` when you want eager JIT compilation before the first hot-path call:
 
-```fidan
+```fidan check=compile
 @precompile
 action hot_inner_loop with (certain n oftype integer) returns integer {
     var sum = 0
@@ -42,7 +42,7 @@ action hot_inner_loop with (certain n oftype integer) returns integer {
 
 Mark an action as deprecated and help callers move:
 
-```fidan
+```fidan check=compile
 @deprecated("Use parse_user_v2 instead")
 action parse_user_v1 with (text oftype string) returns dynamic {
     return text
@@ -59,7 +59,7 @@ rejected rather than ignored. `@extern` retains its specialized literal argument
 
 Bridge to native code through a declared foreign action:
 
-```fidan
+```fidan check=compile
 @extern("./mylib.dll", symbol = "add_i64")
 action add_native with (a oftype integer, b oftype integer) returns integer
 ```
@@ -68,7 +68,7 @@ action add_native with (a oftype integer, b oftype integer) returns integer
 
 Use `@unsafe` to mark an intentionally unsafe boundary, especially boxed Fidan ABI externs:
 
-```fidan
+```fidan check=compile
 @unsafe
 @extern("./mylib.dll", symbol = "echo_boxed", abi = "fidan")
 action echo_boxed with (text oftype string) returns string
@@ -93,7 +93,7 @@ They are ordinary callable values, including imported actions and closures.
 Computed and named arguments use normal call checking and evaluate once in source
 order. Nested declarations apply their decorators whenever that declaration runs.
 
-```fidan check=compile
+```fidan check=run
 action validate_action with (certain callback oftype action) returns action {
     assert(len(callback.parameters) == 1)
     return callback

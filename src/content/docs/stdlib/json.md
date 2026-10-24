@@ -32,7 +32,7 @@ order: 255
 
 ## Parse text
 
-```fidan wrap=none
+```fidan wrap=none check=compile
 use std.json as json
 
 var data = json.loads("[1, 2, 3]")
@@ -43,7 +43,7 @@ print(data[0])
 
 Invalid JSON raises `R3005` by default. Pass `true` as the optional soft flag when invalid input should become `nothing` instead.
 
-```fidan wrap=none
+```fidan wrap=none check=compile
 use std.json as json
 
 var parsed = json.loads("not json", true)
@@ -56,7 +56,7 @@ For file reads, soft mode also returns `nothing` when the file is missing or can
 
 ## Serialize values
 
-```fidan wrap=none
+```fidan wrap=none check=compile
 use std.json as json
 
 var payload = {"name": "Ada", "score": 99}
@@ -69,7 +69,7 @@ print(readable)
 
 ## File helpers
 
-```fidan wrap=none
+```fidan wrap=none check=compile
 use std.json as json
 
 var ok = json.dump({"ready": true}, "state.json")

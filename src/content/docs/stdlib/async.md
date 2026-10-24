@@ -26,7 +26,7 @@ order: 220
 
 ## Example
 
-```fidan
+```fidan check=compile
 use std.async as async
 
 var a = async.sleep(100)
@@ -44,7 +44,7 @@ This module is cooperative and same-thread. It is not a thread pool.
 
 ### Wrap an already-available value
 
-```fidan
+```fidan check=compile
 use std.async as async
 
 var handle = async.ready("done")
@@ -53,7 +53,7 @@ print(await handle)
 
 ### Wait for the first completion
 
-```fidan
+```fidan check=compile
 use std.async as async
 
 var first = async.waitAny([async.sleep(50), async.sleep(100)])

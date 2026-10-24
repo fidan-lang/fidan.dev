@@ -12,7 +12,7 @@ order: 170
 
 ## Native scalar ABI example
 
-```fidan
+```fidan check=compile
 @extern("./mylib.dll", symbol = "add_i64")
 action add_native with (a oftype integer, b oftype integer) returns integer
 ```
@@ -31,7 +31,7 @@ The native ABI supports scalar/native-handle style values such as:
 
 For richer runtime values, use the boxed Fidan ABI and mark the boundary unsafe:
 
-```fidan
+```fidan check=compile
 @unsafe
 @extern("./mylib.dll", symbol = "echo_boxed", abi = "fidan")
 action echo_boxed with (text oftype string) returns string
@@ -49,7 +49,7 @@ action echo_boxed with (text oftype string) returns string
 
 For AOT builds, you may need explicit link metadata:
 
-```fidan
+```fidan check=compile
 @extern("./mylib.dll", symbol = "add_i64", link = "./mylib.lib")
 action add_native with (a oftype integer, b oftype integer) returns integer
 ```

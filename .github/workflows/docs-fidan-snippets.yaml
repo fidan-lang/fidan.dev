@@ -5,44 +5,83 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/content/docs/**"
-      - "scripts/check-fidan-docs.mjs"
-      - "package.json"
-      - ".github/workflows/docs-fidan-snippets.yaml"
+      [
+        "src/content/docs/**",
+        "scripts/check-fidan-docs*",
+        "ci/**",
+        "package.json",
+        ".github/workflows/docs-fidan-snippets.yaml",
+      ]
   pull_request:
     branches: [main]
     paths:
-      - "src/content/docs/**"
-      - "scripts/check-fidan-docs.mjs"
-      - "package.json"
-      - ".github/workflows/docs-fidan-snippets.yaml"
-
+      [
+        "src/content/docs/**",
+        "scripts/check-fidan-docs*",
+        "ci/**",
+        "package.json",
+        ".github/workflows/docs-fidan-snippets.yaml",
+      ]
+permissions:
+  contents: read
 jobs:
   verify-doc-fences:
-    name: Verify Fidan docs fences
+    name: Verify docs against exact compiler source candidate
     runs-on: ubuntu-latest
-
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: website
     steps:
-      - name: Checkout website repo
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-
-      - name: Setup Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      - name: Checkout website
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          path: website
+          persist-credentials: false
+      # This exact local audit commit must be pushed before dependent PR CI.
+      # Checkout failure is intentional until then; no old-action fallback.
+      - name: Checkout audited Setup Action and security gates
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: fidan-lang/fidan-actions
+          ref: c2d12d6c910bd250ebe9bdfc07d0761ffe2c41c3
+          path: audited-setup
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Setup Fidan
-        id: setup-fidan
-        uses: fidan-lang/fidan-actions/setup@ac9b0694edb6c4a6cbef3c2642e3f3aafacfd820 # v1
+          cache-dependency-path: website/package-lock.json
+      - name: Validate immutable candidate contract and installer source
+        id: candidate
+        run: node ../audited-setup/scripts/verify-candidate.mjs ci/compiler-candidate.json ../audited-setup
+      - name: Checkout exact compiler candidate (not the public latest)
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
-          version: latest
-
-      - name: Install website dependencies
-        run: npm ci
-
-      - name: Verify Fidan docs code fences
+          repository: fidan-lang/fidan
+          ref: ${{ steps.candidate.outputs.compiler_sha }}
+          path: compiler
+          persist-credentials: false
+      - run: node ../audited-setup/scripts/verify-candidate.mjs ci/compiler-candidate.json ../audited-setup ../compiler
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec
+      - name: Compiler system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libdbus-1-dev pkg-config
+      - name: Build the selected compiler without updating its lockfile
+        run: cargo build --manifest-path ../compiler/Cargo.toml -p fidan-cli --release --locked
+      - name: Audited installer regressions against actual candidate bytes
+        run: node ../audited-setup/scripts/check-built-candidate.mjs ../compiler/target/release/fidan
+      - name: Workflow and dependency security gate
+        run: |
+          python -m pip install PyYAML==6.0.3
+          python ../audited-setup/scripts/check-workflows.py . ../audited-setup
+      - run: npm ci
+      - name: Docs checker negative and runtime regressions
         env:
-          FIDAN_BIN: ${{ steps.setup-fidan.outputs.fidan-bin }}
+          FIDAN_BIN: ${{ github.workspace }}/compiler/target/release/fidan
+          FIDAN_EXPECTED_VERSION: ${{ steps.candidate.outputs.compiler_version }}
+        run: node --test scripts/check-fidan-docs.test.mjs
+      - name: Verify every Fidan fence with the exact candidate
+        env:
+          FIDAN_BIN: ${{ github.workspace }}/compiler/target/release/fidan
+          FIDAN_EXPECTED_VERSION: ${{ steps.candidate.outputs.compiler_version }}
         run: npm run docs:check:fidan

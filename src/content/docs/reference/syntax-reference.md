@@ -30,7 +30,7 @@ At a glance, Fidan programs are made from:
 
 Use `#` for a line comment:
 
-```fidan
+```fidan check=compile
 var port = 8080  # local dev server
 ```
 
@@ -38,7 +38,7 @@ var port = 8080  # local dev server
 
 Use `#/` to start and `/#` to end a block comment. These comments are nestable:
 
-```fidan
+```fidan check=compile
 #/
 outer comment
     #/
@@ -60,16 +60,16 @@ These all separate statements:
 
 Examples:
 
-```fidan
+```fidan check=compile
 var x = 1
 var y = 2
 ```
 
-```fidan
+```fidan check=compile
 var x = 1; var y = 2
 ```
 
-```fidan
+```fidan check=compile
 var x = 1 sep var y = 2
 ```
 
@@ -94,7 +94,7 @@ Accepted forms:
 - hex: `0xFF`
 - binary: `0b101010`
 
-```fidan
+```fidan check=compile
 var a = 42
 var b = 1_000
 var c = 0x2A
@@ -103,7 +103,7 @@ var d = 0b101010
 
 ### Floats
 
-```fidan
+```fidan check=compile
 var pi = 3.14159
 var big = 1_000.25
 var exp = 6.02e23
@@ -124,7 +124,7 @@ The formatter prefers lowercase.
 
 `nothing` is the language null-like value:
 
-```fidan
+```fidan check=compile
 var maybe_name = nothing
 ```
 
@@ -132,7 +132,7 @@ var maybe_name = nothing
 
 Normal strings support interpolation and escape sequences:
 
-```fidan
+```fidan check=compile
 var name = "Ada"
 print("Hello, {name}")
 ```
@@ -151,14 +151,14 @@ Supported escapes in normal strings:
 
 Raw strings start with `r"` and do **not** process escapes or interpolation:
 
-```fidan
+```fidan check=compile
 var pattern = r"\d+\s+items"
 var literal = r"{name} stays literal"
 ```
 
 Use normal strings when you need embedded quotes:
 
-```fidan
+```fidan check=compile
 var quote = "\""
 ```
 
@@ -166,7 +166,7 @@ var quote = "\""
 
 Regular identifiers:
 
-```fidan
+```fidan check=compile
 var total = 0
 action build_report { }
 object TaskRunner { }
@@ -174,7 +174,7 @@ object TaskRunner { }
 
 After a dot, Fidan also allows keyword-like field names:
 
-```fidan
+```fidan check=syntax
 obj.set()
 obj.new()
 ```
@@ -185,7 +185,7 @@ That is why stdlib calls like `math.pow()` and APIs like `queue.top()` work clea
 
 ### Mutable declarations
 
-```fidan
+```fidan check=compile
 var name = "Ada"
 var count oftype integer = 10
 var pending_value oftype Pending oftype string
@@ -195,7 +195,7 @@ var pending_value oftype Pending oftype string
 
 Use `const var` for single-assignment variables:
 
-```fidan
+```fidan check=compile
 const var retries = 3
 const var use_cache = true
 ```
@@ -204,13 +204,13 @@ const var use_cache = true
 
 Canonical form:
 
-```fidan
+```fidan check=compile
 var count oftype integer
 ```
 
 Also accepted:
 
-```fidan
+```fidan check=compile
 var count -> integer
 ```
 
@@ -218,7 +218,7 @@ var count -> integer
 
 Tuple destructuring works in declarations:
 
-```fidan
+```fidan check=syntax
 var (left, right) = pair()
 ```
 
@@ -226,7 +226,7 @@ var (left, right) = pair()
 
 ### Canonical assignment
 
-```fidan
+```fidan check=syntax
 value = 10
 person.name = "Ada"
 items[0] = "first"
@@ -236,7 +236,7 @@ items[0] = "first"
 
 `set` is accepted as an infix assignment/operator synonym in the same slot where you would normally write `=`:
 
-```fidan
+```fidan check=syntax
 var value set 10
 person.name set "Ada"
 name set "Ada"
@@ -254,7 +254,7 @@ Supported:
 - `/=`
 - `%=`
 
-```fidan
+```fidan check=syntax
 count += 1
 total *= scale
 ```
@@ -269,7 +269,7 @@ Supported parameter modes:
 - `certain`: required and non-null by contract
 - `optional`: may be omitted and can have a default
 
-```fidan
+```fidan check=compile
 action greet with (
     certain name oftype string,
     age oftype integer,
@@ -283,7 +283,7 @@ action greet with (
 
 Canonical:
 
-```fidan
+```fidan check=compile
 action build with (certain name oftype string, optional age oftype integer = 18) returns nothing {
 }
 ```
@@ -295,7 +295,7 @@ Separators accepted inside parameter and argument lists:
 
 Example:
 
-```fidan
+```fidan check=compile
 action create with (certain name oftype string also optional age oftype integer = 18) returns nothing {
 }
 ```
@@ -304,13 +304,13 @@ action create with (certain name oftype string also optional age oftype integer 
 
 Positional:
 
-```fidan
+```fidan check=syntax
 create("Ada", 37)
 ```
 
 Named arguments:
 
-```fidan
+```fidan check=syntax
 create(name = "Ada", age = 37)
 create(name set "Ada", age set 37)
 ```
@@ -319,7 +319,7 @@ create(name set "Ada", age set 37)
 
 ### Top-level action
 
-```fidan
+```fidan check=compile
 action add with (certain a oftype integer, certain b oftype integer) returns integer {
     return a + b
 }
@@ -327,7 +327,7 @@ action add with (certain a oftype integer, certain b oftype integer) returns int
 
 ### Parallel action
 
-```fidan
+```fidan check=syntax
 parallel action hash_chunk with (chunk oftype string) returns string {
     return do_hash(chunk)
 }
@@ -335,7 +335,7 @@ parallel action hash_chunk with (chunk oftype string) returns string {
 
 ### Extension action
 
-```fidan
+```fidan check=compile
 action bark extends Dog returns nothing {
     print("{this.name} barks")
 }
@@ -345,8 +345,8 @@ action bark extends Dog returns nothing {
 
 Inline actions are expressions:
 
-```fidan
-items.map(action with (value oftype integer) returns integer {
+```fidan check=syntax
+items.map(action with (certain value oftype integer) returns integer {
     return value * 2
 })
 ```
@@ -355,7 +355,7 @@ items.map(action with (value oftype integer) returns integer {
 
 ### Basic object
 
-```fidan
+```fidan check=compile
 object User {
     var name oftype string
 
@@ -371,7 +371,7 @@ object User {
 
 ### Inheritance
 
-```fidan
+```fidan check=syntax
 object Admin extends User {
     new with (certain name oftype string) {
         parent(name = name)
@@ -389,7 +389,7 @@ object Admin extends User {
 
 Fidan supports `enum` declarations with simple or payload-bearing variants.
 
-```fidan
+```fidan check=compile
 enum Result {
     Ok
     Err(message oftype string)
@@ -404,7 +404,7 @@ Pattern-style handling is typically done with `check`.
 
 Canonical:
 
-```fidan
+```fidan check=syntax
 if score > 90 {
     print("great")
 } otherwise when score > 75 {
@@ -425,25 +425,25 @@ Accepted spellings:
 
 Form:
 
-```fidan
+```fidan check=syntax
 var label = "hot" if temp > 30 else "cold"
 ```
 
 Fidan also supports the implicit-subject shorthand:
 
-```fidan
+```fidan check=syntax
 var actual = value if is not nothing else fallback
 ```
 
 Equivalent to:
 
-```fidan
+```fidan check=syntax
 var actual = value if (value != nothing) else fallback
 ```
 
 ### `for`
 
-```fidan
+```fidan check=syntax
 for item in items {
     print(item)
 }
@@ -454,7 +454,7 @@ Ranges:
 - `1..10` exclusive end
 - `1...10` inclusive end
 
-```fidan
+```fidan check=compile
 for i in 0..10 {
     print(i)
 }
@@ -462,7 +462,7 @@ for i in 0..10 {
 
 ### `while`
 
-```fidan
+```fidan check=syntax
 while running {
     tick()
 }
@@ -483,7 +483,7 @@ Alias:
 
 ### `attempt`
 
-```fidan
+```fidan check=syntax
 attempt {
     do_work()
 } catch error {
@@ -502,7 +502,7 @@ Accepted aliases:
 
 Typed catches:
 
-```fidan
+```fidan check=syntax
 attempt {
     risky()
 } catch error -> string {
@@ -514,7 +514,7 @@ attempt {
 
 Canonical:
 
-```fidan
+```fidan check=compile
 panic("boom")
 ```
 
@@ -526,7 +526,7 @@ Alias:
 
 Statement form:
 
-```fidan
+```fidan check=syntax
 check code {
     200 => print("ok")
     404 => print("missing")
@@ -536,7 +536,7 @@ check code {
 
 Expression form:
 
-```fidan
+```fidan check=syntax
 var label = check code {
     200 => "ok"
     404 => "missing"
@@ -553,14 +553,14 @@ Wildcard spellings:
 
 ### Same-thread cooperative work
 
-```fidan
+```fidan check=syntax
 var handle = spawn fetch_data()
 var result = await handle
 ```
 
 ### Structured concurrent block
 
-```fidan
+```fidan check=syntax
 concurrent {
     task {
         load_user()
@@ -574,7 +574,7 @@ concurrent {
 
 ### Real thread parallelism
 
-```fidan
+```fidan check=syntax
 parallel {
     task { crunch_a() }
     task { crunch_b() }
@@ -583,7 +583,7 @@ parallel {
 
 ### Parallel iteration
 
-```fidan
+```fidan check=syntax
 parallel for item in items {
     process(item)
 }
@@ -593,7 +593,7 @@ parallel for item in items {
 
 ### Module import
 
-```fidan
+```fidan check=syntax
 use std.math
 use std.math as math
 use utils.helpers
@@ -602,13 +602,13 @@ use "./local/module.fdn" as module
 
 ### Grouped import
 
-```fidan
+```fidan check=compile
 use std.math.{sqrt, floor, ceil}
 ```
 
 ### Re-export
 
-```fidan
+```fidan check=compile
 export use std.math
 ```
 
@@ -616,7 +616,7 @@ export use std.math
 
 ### Field access and calls
 
-```fidan
+```fidan check=syntax
 user.name
 math.sqrt(144)
 queue.push(10)
@@ -624,7 +624,7 @@ queue.push(10)
 
 ### Indexing
 
-```fidan
+```fidan check=syntax
 items[0]
 dict["name"]
 ```
@@ -633,7 +633,7 @@ dict["name"]
 
 Examples:
 
-```fidan
+```fidan check=syntax
 items[1..5]
 items[1...5]
 items[..5]
@@ -644,7 +644,7 @@ items[0..10 step 2]
 
 ### Lists, dicts, and tuples
 
-```fidan
+```fidan check=compile
 var list = [1, 2, 3]
 var dict = {"name": "Ada", "age": 37}
 var pair = ("Ada", 37)
@@ -652,7 +652,7 @@ var pair = ("Ada", 37)
 
 ### Comprehensions
 
-```fidan
+```fidan check=syntax
 var doubled = [x * 2 for x in values]
 var filtered = [x for x in values if x % 2 == 0]
 var lookup = {x: x * x for x in values}
@@ -720,7 +720,7 @@ Readable aliases:
 
 ### Null-aware operator
 
-```fidan
+```fidan check=syntax
 var actual = maybe_value ?? fallback
 ```
 
@@ -763,12 +763,12 @@ Accepted primitive/type aliases:
 
 Example:
 
-```fidan
+```fidan check=compile
 var id oftype int
 var ratio oftype decimal
 var enabled oftype bool
 var label oftype text
-var values oftype map oftype string
+var values oftype map oftype (string, dynamic)
 ```
 
 ### Generic-like chained `oftype`
@@ -777,7 +777,7 @@ Fidan uses `oftype` chaining rather than angle brackets:
 
 ```text
 list oftype integer
-dict oftype string oftype integer
+dict oftype (string, integer)
 Shared oftype integer
 Pending oftype string
 ```
@@ -808,7 +808,7 @@ Reserved spelling:
 
 Decorators appear immediately above actions:
 
-```fidan
+```fidan check=compile
 @precompile
 action hot_path returns nothing {
 }

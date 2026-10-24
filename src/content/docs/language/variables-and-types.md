@@ -12,7 +12,7 @@ Fidan is statically typed, but it tries hard not to make you annotate everything
 
 ## Basic declarations
 
-```fidan
+```fidan check=run
 var count = 42
 var name = "Ada"
 var active = true
@@ -25,7 +25,7 @@ In ordinary local code, inference should carry most of the load.
 
 Use `oftype` when the type matters to the reader or the compiler cannot infer exactly what you want:
 
-```fidan
+```fidan check=run
 var count oftype integer = 42
 var name oftype string = "Ada"
 var maybe_user oftype dynamic = nothing
@@ -33,7 +33,7 @@ var maybe_user oftype dynamic = nothing
 
 The parser also accepts `->` as a type annotation introducer:
 
-```fidan
+```fidan check=run
 var count -> integer
 ```
 
@@ -43,7 +43,7 @@ The formatter generally prefers `oftype`.
 
 Immutable declarations use `const var`:
 
-```fidan
+```fidan check=run
 const var retries = 3
 const var host = "127.0.0.1"
 ```
@@ -58,7 +58,7 @@ This is especially useful for:
 
 Variables without an initializer default to `nothing`:
 
-```fidan
+```fidan check=run
 var name oftype string
 ```
 
@@ -89,7 +89,7 @@ Accepted alias spellings:
 
 `flexible` is accepted as a synonym for `dynamic`:
 
-```fidan
+```fidan check=run
 var value oftype flexible = 42
 ```
 
@@ -99,11 +99,11 @@ The formatter normalizes this to `dynamic`.
 
 Fidan uses chained `oftype` rather than angle brackets:
 
-```fidan
+```fidan check=compile
 var scores oftype list oftype integer = [1, 2, 3]
 var names oftype list oftype string
-var lookup oftype dict oftype string oftype integer
-var alt_lookup oftype map oftype string
+var lookup oftype dict oftype (string, integer)
+var alt_lookup oftype map oftype (string, dynamic)
 var counter oftype Shared oftype integer = Shared(0)
 var handle oftype Pending oftype string
 ```
@@ -114,19 +114,19 @@ This is the current generic-like style. Fidan does **not** currently use forms l
 
 Tuple values:
 
-```fidan
+```fidan check=run
 var pair = ("Ada", 37)
 ```
 
 Tuple destructuring:
 
-```fidan
+```fidan check=syntax
 var (name, age) = pair
 ```
 
 Tuple types:
 
-```fidan
+```fidan check=run
 var pair oftype (string, integer)
 var anything_tuple oftype tuple
 ```
@@ -135,16 +135,16 @@ var anything_tuple oftype tuple
 
 ## Lists and dicts
 
-```fidan
+```fidan check=run
 var nums = [1, 2, 3]
 var user = {"name": "Ada", "age": 37}
 ```
 
 You can make the intended type explicit when the literal shape alone is not enough:
 
-```fidan
+```fidan check=compile
 var ids oftype list oftype integer = []
-var scores_by_name oftype dict oftype string oftype integer = {}
+var scores_by_name oftype dict oftype (string, integer) = {}
 ```
 
 ## `certain`, `optional`, and nullability
@@ -157,7 +157,7 @@ These keywords apply to **parameters**, not ordinary local variables, but they m
 
 Example:
 
-```fidan
+```fidan check=compile
 action greet with (
     certain name oftype string,
     age oftype integer,
@@ -196,7 +196,7 @@ Top-level conversion helpers:
 
 Example:
 
-```fidan
+```fidan check=run
 var port = integer("8080")
 var banner = string(port)
 print(type(port))
@@ -208,7 +208,7 @@ print(type(port))
 
 Use `Shared` for values that need safe mutation across real parallel work:
 
-```fidan
+```fidan check=run
 var counter = Shared(0)
 counter.set(10)
 print(counter.get())
@@ -218,7 +218,7 @@ print(counter.get())
 
 `Pending` is the runtime handle type produced by `spawn` and `std.async` helpers:
 
-```fidan
+```fidan check=syntax
 var handle oftype Pending oftype string = spawn fetch_data()
 var data = await handle
 ```
@@ -238,7 +238,7 @@ Good default style:
 
 Example:
 
-```fidan
+```fidan check=compile
 var retries = 3
 var names oftype list oftype string = []
 

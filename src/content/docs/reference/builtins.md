@@ -36,7 +36,7 @@ These names are reserved globally by the language and the toolchain.
 
 Print values to stdout followed by a newline.
 
-```fidan
+```fidan check=syntax
 print("Hello")
 print("User:", name, "Score:", score)
 ```
@@ -45,7 +45,7 @@ print("User:", name, "Score:", score)
 
 Print values to stderr followed by a newline.
 
-```fidan
+```fidan check=syntax
 eprint("fatal:", message)
 ```
 
@@ -53,7 +53,7 @@ eprint("fatal:", message)
 
 Read one line of input, optionally after showing a prompt.
 
-```fidan
+```fidan check=compile
 var name = input("Your name: ")
 ```
 
@@ -61,7 +61,7 @@ var name = input("Your name: ")
 
 Return the length of a string, list, or other countable runtime value.
 
-```fidan
+```fidan check=run
 assert_eq(len("Ada"), 3)
 assert_eq(len([1, 2, 3]), 3)
 ```
@@ -70,7 +70,7 @@ assert_eq(len([1, 2, 3]), 3)
 
 Return the runtime type name of a value.
 
-```fidan
+```fidan check=run
 print(type(42))
 print(type(["a", "b"]))
 ```
@@ -93,7 +93,7 @@ Convert a value to a floating-point number when possible.
 
 Convert a value to a boolean truth value.
 
-```fidan
+```fidan check=run
 var a = string(42)
 var b = integer("42")
 var c = float("3.14")
@@ -104,11 +104,11 @@ var d = boolean(1)
 
 Create a thread-safe shared wrapper. Use this when parallel work needs to mutate or observe the same state safely.
 
-```fidan
+```fidan check=run
 var counter = Shared(0)
 
 parallel for item in [1, 2, 3, 4] {
-    counter.update(action with (value oftype integer) returns integer {
+    counter.update(action with (certain value oftype integer) returns integer {
         return value + 1
     })
 }
@@ -130,7 +130,7 @@ Fail immediately when the two values are not equal.
 
 Fail immediately when the two values are equal.
 
-```fidan
+```fidan check=syntax
 assert(score > 0)
 assert_eq(name, "Ada")
 assert_ne(status, "failed")
@@ -161,7 +161,7 @@ Use `std.*` modules for:
 
 Example:
 
-```fidan
+```fidan check=compile
 use std.io as io
 use std.math as math
 
@@ -201,14 +201,16 @@ That is why the builtin list is intentionally curated and centralized.
 
 Prefer the builtin forms for quick, direct code:
 
-```fidan
+```fidan check=run
+use std.env as env
+
 print("Hello")
 var argv_len = len(env.args())
 ```
 
 Reach for `std.*` when the code becomes more domain-specific:
 
-```fidan
+```fidan check=compile
 use std.string as string
 use std.regex as regex
 ```

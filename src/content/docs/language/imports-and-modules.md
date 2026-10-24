@@ -14,7 +14,7 @@ Fidan supports both top-level builtins and explicit module imports. The language
 
 Examples:
 
-```fidan
+```fidan check=compile
 use std.env as env
 use std.math
 use std.math.{sqrt, floor, ceil}
@@ -25,7 +25,7 @@ use std.async as async
 
 Examples:
 
-```fidan
+```fidan check=syntax
 use helpers
 use net.client
 use "./other.fdn" as other
@@ -40,7 +40,7 @@ Typical resolution targets:
 
 Use `as` when a shorter namespace reads better:
 
-```fidan
+```fidan check=compile
 use std.io as io
 use std.string as string
 ```
@@ -49,7 +49,7 @@ use std.string as string
 
 Import only selected exports:
 
-```fidan
+```fidan check=compile
 use std.math.{sqrt, floor}
 ```
 
@@ -59,7 +59,7 @@ This flattens those names into local scope.
 
 Use `export use` to re-export an import from your module:
 
-```fidan
+```fidan check=compile
 export use std.math
 ```
 

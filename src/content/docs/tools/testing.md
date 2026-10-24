@@ -14,7 +14,7 @@ Fidan treats testing as a normal part of the language workflow.
 
 Inline test blocks keep simple checks close to the code they exercise:
 
-```fidan
+```fidan check=compile
 test "basic addition" {
     assert_eq(2 + 2, 4)
 }

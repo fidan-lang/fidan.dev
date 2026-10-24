@@ -32,7 +32,7 @@ Reserved spelling:
 
 Example:
 
-```fidan
+```fidan check=compile
 @deprecated("Use parse_user_v2 instead")
 action parse_user with (source oftype string) returns dynamic {
     return source
@@ -55,7 +55,7 @@ Use `@precompile` when:
 
 ### Example
 
-```fidan
+```fidan check=compile
 @precompile
 action hot_inner_loop with (certain n oftype integer) returns integer {
     var sum = 0
@@ -79,7 +79,7 @@ Mark an action as deprecated so callers receive a warning and can migrate before
 
 ### Example
 
-```fidan
+```fidan check=compile
 @deprecated("Use fibonacci_fast instead")
 action fibonacci_old with (certain n oftype integer) returns integer {
     return n
@@ -108,7 +108,7 @@ Declare a foreign action imported from a native library.
 
 ### Example
 
-```fidan
+```fidan check=compile
 @extern("./mylib.dll", symbol = "add_i64")
 action add_native with (a oftype integer, b oftype integer) returns integer
 ```
@@ -136,7 +136,7 @@ Acknowledge an intentionally unsafe boundary, usually around boxed Fidan ABI int
 
 ### Typical use
 
-```fidan
+```fidan check=compile
 @unsafe
 @extern("./mylib.dll", symbol = "echo_boxed", abi = "fidan")
 action echo_boxed with (text oftype string) returns string
@@ -160,20 +160,20 @@ The spelling is held for future offload/GPU work so early ecosystem code does no
 
 ### Valid
 
-```fidan
+```fidan check=compile
 @deprecated("Use v2")
 action old_api returns nothing {
 }
 ```
 
-```fidan
+```fidan check=compile
 @precompile
 action hot_path returns integer {
     return 1
 }
 ```
 
-```fidan
+```fidan check=compile
 @unsafe
 @extern("./mylib.dll", symbol = "do_boxed", abi = "fidan")
 action do_boxed with (value oftype string) returns string
@@ -183,7 +183,7 @@ action do_boxed with (value oftype string) returns string
 
 `@precompile` with `@extern`:
 
-```fidan
+```fidan check=error error=E0304
 @precompile
 @extern("./mylib.dll", symbol = "native")
 action native_call returns integer
@@ -191,14 +191,14 @@ action native_call returns integer
 
 `parallel action` with `@extern`:
 
-```fidan
+```fidan check=error error=E0304
 @extern("./mylib.dll", symbol = "native")
 parallel action native_call returns integer
 ```
 
 Boxed Fidan ABI without `@unsafe`:
 
-```fidan
+```fidan check=error error=E0304
 @extern("./mylib.dll", symbol = "echo_boxed", abi = "fidan")
 action echo_boxed with (value oftype string) returns string
 ```

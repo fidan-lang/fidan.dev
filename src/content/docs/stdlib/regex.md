@@ -35,7 +35,7 @@ order: 280
 
 ## Example
 
-```fidan
+```fidan check=compile
 use std.regex as regex
 
 if regex.test(r"^\d+$", "12345") {

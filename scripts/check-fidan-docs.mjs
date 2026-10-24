@@ -7,7 +7,7 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
+import { pathToFileURL } from "node:url";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -25,50 +25,22 @@ function parseArgs(argv) {
       out.fidanBin = argv[++i];
     } else if (arg === "--verbose") {
       out.verbose = true;
+    } else {
+      throw new Error(`Unknown documentation checker option: ${arg}`);
     }
   }
   return out;
 }
 
-function candidateBins(cwd) {
-  const names =
-    process.platform === "win32" ? ["fidan.exe", "fidan"] : ["fidan"];
-  const candidates = [];
-  if (process.env.FIDAN_BIN) candidates.push(process.env.FIDAN_BIN);
-  for (const name of names) candidates.push(name);
-  const sibling = path.resolve(cwd, "..", "fidan");
-  for (const name of names) {
-    candidates.push(path.join(sibling, "target", "debug", name));
-    candidates.push(path.join(sibling, "target", "release", name));
-  }
-  const localMainRepo = path.resolve(cwd, "..", "..", "Rust", "Fidan");
-  for (const name of names) {
-    candidates.push(path.join(localMainRepo, "target", "debug", name));
-    candidates.push(path.join(localMainRepo, "target", "release", name));
-  }
-  return candidates;
-}
-
 function resolveFidanBin(explicit, cwd) {
-  const candidates = explicit
-    ? [explicit, ...candidateBins(cwd)]
-    : candidateBins(cwd);
-  for (const candidate of candidates) {
-    if (!candidate) continue;
-    if (candidate.includes(path.sep)) {
-      try {
-        if (statSync(candidate).isFile()) return candidate;
-      } catch {
-        // ignore
-      }
-    } else {
-      const probe = spawnSync(candidate, ["--help"], { encoding: "utf8" });
-      if (probe.status === 0 || probe.status === 2) return candidate;
-    }
-  }
-  throw new Error(
-    "Unable to resolve a Fidan CLI binary. Pass --fidan-bin or set FIDAN_BIN.",
-  );
+  if (!explicit)
+    throw new Error(
+      "Select the compiler candidate explicitly with --fidan-bin or FIDAN_BIN; PATH/latest fallback is disabled.",
+    );
+  const selected = path.resolve(cwd, explicit);
+  if (!statSync(selected).isFile())
+    throw new Error("Selected compiler is not a regular file");
+  return selected;
 }
 
 function walkMarkdownFiles(root) {
@@ -89,13 +61,25 @@ function parseFenceInfo(info) {
   if (tokens.length === 0) return null;
   const lang = tokens[0].toLowerCase();
   if (lang !== "fidan" && lang !== "fdn") return null;
+  if (!tokens.some((token) => token.startsWith("check=")))
+    throw new Error(
+      "Fidan fences must explicitly declare check=syntax/compile/run/error/skip",
+    );
   const meta = { lang, check: "syntax", wrap: "auto" };
   for (const token of tokens.slice(1)) {
     const [key, value] = token.split("=");
     if (!value) continue;
     if (key === "check") meta.check = value;
     if (key === "wrap") meta.wrap = value;
+    if (key === "error") meta.error = value;
   }
+  if (!["syntax", "compile", "run", "error", "skip"].includes(meta.check))
+    throw new Error(`Unknown fence check mode: ${meta.check}`);
+  if (meta.check === "error" && !/^E[0-9]{4}$/.test(meta.error ?? ""))
+    throw new Error("Expected-error fence requires error=E....");
+  if (!["auto", "none", "main"].includes(meta.wrap))
+    throw new Error(`Unknown fence wrap mode: ${meta.wrap}`);
+  if (meta.check !== "syntax" && meta.wrap === "auto") meta.wrap = "none";
   return meta;
 }
 
@@ -140,7 +124,15 @@ function buildCandidates(code, wrapMode) {
 }
 
 function runCommand(bin, args, cwd) {
-  return spawnSync(bin, args, { cwd, encoding: "utf8" });
+  const result = spawnSync(bin, args, {
+    cwd,
+    encoding: "utf8",
+    timeout: 20000,
+    maxBuffer: 4 * 1024 * 1024,
+    windowsHide: true,
+  });
+  if (result.error) result.stderr = String(result.error);
+  return result;
 }
 
 function syntaxCheck(bin, filePath, cwd) {
@@ -151,12 +143,56 @@ function compileCheck(bin, filePath, cwd) {
   return runCommand(bin, ["check", filePath, "--max-errors", "1"], cwd);
 }
 
+function runtimeCheck(bin, filePath, cwd) {
+  return runCommand(bin, ["run", filePath, "--jit-threshold", "0"], cwd);
+}
+
+// Capability checks intentionally test behavior: the source candidate still has
+// the old package version, so a --version check alone cannot establish support.
+function verifyCapabilities(bin, tempRoot, cwd) {
+  if (process.env.FIDAN_EXPECTED_VERSION) {
+    const version = runCommand(bin, ["--version"], cwd);
+    if (
+      version.status !== 0 ||
+      version.stdout.trim() !== `fidan ${process.env.FIDAN_EXPECTED_VERSION}`
+    )
+      throw new Error(
+        "Incompatible compiler version: selected candidate contract does not match binary",
+      );
+  }
+  const probe = path.join(tempRoot, "compiler-contract.fdn");
+  writeFileSync(
+    probe,
+    `action increment with (certain value oftype integer) returns integer { return value + 1 }
+var callback oftype action = increment
+assert_eq(callback.parameters[0]["name"], "value")
+assert_eq(callback.invoke([4]), 5)
+action replacement with (certain value oftype integer) returns integer { return value + 2 }
+action replace_action with (certain callback oftype action) returns action { return replacement }
+@replace_action
+action decorated with (certain value oftype integer) returns integer { return value + 1 }
+assert_eq(decorated(4), 6)
+`,
+    "utf8",
+  );
+  const result = runtimeCheck(bin, probe, cwd);
+  if (result.status !== 0)
+    throw new Error(
+      `Incompatible compiler candidate: callable reflection/invocation and decorator replacement capability check failed. Select the exact ci/compiler-candidate.json source commit.\n${result.stderr || result.stdout}`,
+    );
+}
+
 function verifyFence(bin, tempRoot, cwd, fence, verbose) {
   if (fence.info.check === "skip") {
     return { ok: true, skipped: true };
   }
   const candidates = buildCandidates(fence.code, fence.info.wrap);
-  const checker = fence.info.check === "compile" ? compileCheck : syntaxCheck;
+  const checker = {
+    compile: compileCheck,
+    error: compileCheck,
+    run: runtimeCheck,
+    syntax: syntaxCheck,
+  }[fence.info.check];
   const failures = [];
   for (let i = 0; i < candidates.length; i += 1) {
     const candidate = candidates[i];
@@ -171,7 +207,15 @@ function verifyFence(bin, tempRoot, cwd, fence, verbose) {
         `checked ${path.relative(cwd, fence.filePath)}:${fence.line} with candidate ${i + 1} -> ${result.status}\n`,
       );
     }
-    if (result.status === 0) {
+    if (
+      fence.info.check === "error"
+        ? result.status !== null &&
+          result.status !== 0 &&
+          new RegExp(`(?:^|\\n)error\\[${fence.info.error}\\]:`).test(
+            result.stderr || "",
+          )
+        : result.status === 0
+    ) {
       return { ok: true, skipped: false };
     }
     failures.push({
@@ -189,13 +233,15 @@ function main() {
   const cwd = process.cwd();
   const docsRoot = path.resolve(cwd, options.docsRoot);
   const fidanBin = resolveFidanBin(options.fidanBin, cwd);
-  const tempRoot = mkdtempSync(path.join(tmpdir(), "fidan-docs-check-"));
-  mkdirSync(tempRoot, { recursive: true });
+  mkdirSync(path.join(cwd, "target"), { recursive: true });
+  const tempRoot = mkdtempSync(path.join(cwd, "target", "fidan-docs-check-"));
   try {
+    verifyCapabilities(fidanBin, tempRoot, cwd);
     const files = walkMarkdownFiles(docsRoot);
     const fences = files.flatMap(extractFences);
     let checked = 0;
     let skipped = 0;
+    const modes = { syntax: 0, compile: 0, run: 0, error: 0 };
     const failures = [];
     for (const fence of fences) {
       const result = verifyFence(
@@ -210,6 +256,7 @@ function main() {
         continue;
       }
       checked += 1;
+      modes[fence.info.check] += 1;
       if (!result.ok) {
         failures.push({ fence, failures: result.failures });
       }
@@ -230,14 +277,18 @@ function main() {
       console.error(
         `Checked ${checked} Fidan code fences, skipped ${skipped}, failed ${failures.length}.`,
       );
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     console.log(
-      `Checked ${checked} Fidan code fences with ${path.basename(fidanBin)}. Skipped ${skipped}.`,
+      `Checked ${checked} Fidan code fences with ${path.basename(fidanBin)}. Skipped ${skipped}. Modes: ${JSON.stringify(modes)}.`,
     );
   } finally {
     rmSync(tempRoot, { recursive: true, force: true });
   }
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
+  main();
+
+export { extractFences, compileCheck, runCommand };

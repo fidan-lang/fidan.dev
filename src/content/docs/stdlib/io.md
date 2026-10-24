@@ -10,7 +10,7 @@ order: 250
 
 `std.io` is the explicit I/O and filesystem module.
 
-```fidan
+```fidan check=compile
 use std.io as io
 
 io.writeFile("hello.txt", "Hello")
@@ -103,7 +103,7 @@ Top-level convenience builtins:
 
 ## Example
 
-```fidan
+```fidan check=compile
 use std.io as io
 
 var path = io.joinPath(io.cwd(), "notes.txt")
@@ -119,7 +119,7 @@ if io.fileExists(path) {
 
 ### Read a whole file
 
-```fidan
+```fidan check=compile
 use std.io as io
 
 var content = io.readFile("config.json")
@@ -128,7 +128,7 @@ print(content)
 
 ### Append a log line
 
-```fidan
+```fidan check=compile
 use std.io as io
 
 io.appendFile("app.log", "started\n")
@@ -136,7 +136,7 @@ io.appendFile("app.log", "started\n")
 
 ### List a directory
 
-```fidan
+```fidan check=compile
 use std.io as io
 
 for entry in io.listDir(io.cwd()) {
@@ -146,7 +146,7 @@ for entry in io.listDir(io.cwd()) {
 
 ### Build a path safely
 
-```fidan
+```fidan check=compile
 use std.io as io
 
 var path = io.joinPath(io.cwd(), "data", "users.json")

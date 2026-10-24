@@ -14,7 +14,7 @@ Strings are one of the places where Fidan is deliberately ergonomic.
 
 Normal strings use double quotes:
 
-```fidan
+```fidan check=run
 var name = "Ada"
 print("Hello, {name}")
 ```
@@ -29,7 +29,7 @@ Normal strings support:
 
 Use `{...}` inside a normal string:
 
-```fidan
+```fidan check=run
 var name = "Ada"
 var score = 42
 
@@ -40,7 +40,7 @@ print("2 + 2 = {2 + 2}")
 
 Interpolated expressions can be richer than plain variable lookups:
 
-```fidan
+```fidan check=syntax
 print("Upper: {name.toUpper()}")
 print("Sqrt: {math.sqrt(144)}")
 ```
@@ -59,7 +59,7 @@ Normal strings understand:
 
 Examples:
 
-```fidan
+```fidan check=run
 print("line1\nline2")
 print("quote: \"")
 print("slash: \\")
@@ -70,7 +70,7 @@ print("literal braces: \{name\}")
 
 Because `{...}` starts interpolation, use escaped braces for literal braces:
 
-```fidan
+```fidan check=run
 print("literal \{name\} stays literal")
 ```
 
@@ -80,7 +80,7 @@ If you want the entire string to stay literal, a raw string is often cleaner.
 
 Raw strings use the `r"..."` form:
 
-```fidan
+```fidan check=run
 var pattern = r"\d+\s+items"
 var literal = r"{name} stays literal"
 ```
@@ -109,7 +109,7 @@ That means:
 
 So when you need embedded quotes, use a normal string instead:
 
-```fidan
+```fidan check=run
 var quote = "\""
 ```
 
@@ -117,7 +117,7 @@ var quote = "\""
 
 Most code should prefer normal interpolation:
 
-```fidan
+```fidan check=syntax
 print("Hello, {name}")
 ```
 
@@ -132,7 +132,7 @@ But Fidan also provides `std.string.format(template, value...)` when you want pl
 
 Example:
 
-```fidan
+```fidan check=run
 var user = "Ada"
 var query = r"^\w+\s+\d+$"
 

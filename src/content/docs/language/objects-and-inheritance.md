@@ -12,7 +12,7 @@ Fidan supports objects because some problems really do want state plus attached 
 
 ## Basic object
 
-```fidan
+```fidan check=compile
 object Animal {
     var sound oftype string
 
@@ -30,7 +30,7 @@ object Animal {
 
 Constructors use `new`:
 
-```fidan
+```fidan check=compile
 object User {
     var name oftype string
 
@@ -51,7 +51,7 @@ Inside object actions:
 
 Use `extends` when there is a real parent-child relationship:
 
-```fidan
+```fidan check=syntax
 object Dog extends Animal {
     var name oftype string
 
@@ -66,7 +66,7 @@ object Dog extends Animal {
 
 Use `parent(...)` inside `new` to invoke the parent constructor:
 
-```fidan
+```fidan check=syntax
 parent(sound = "Woof")
 ```
 
@@ -74,7 +74,7 @@ parent(sound = "Woof")
 
 You can add behavior without editing the original object body:
 
-```fidan
+```fidan check=compile
 action bark extends Dog returns nothing {
     print("{this.name} goes WOOF")
 }

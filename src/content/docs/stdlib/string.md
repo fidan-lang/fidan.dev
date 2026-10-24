@@ -99,7 +99,7 @@ Aliases:
 
 ## Example
 
-```fidan
+```fidan check=run
 use std.string as string
 
 var slug = string.toLower("Hello World")
@@ -111,7 +111,7 @@ print(slug)
 
 ### Parse text into numbers
 
-```fidan
+```fidan check=run
 use std.string as string
 
 var port = string.parseInt("8080")
@@ -120,7 +120,7 @@ var ratio = string.parseFloat("3.14")
 
 ### Split and join
 
-```fidan
+```fidan check=run
 use std.string as string
 
 var parts = string.split("a,b,c", ",")
@@ -129,7 +129,7 @@ print(string.join(" | ", parts))
 
 ### Character/codepoint helpers
 
-```fidan
+```fidan check=run
 use std.string as string
 
 print(string.charCode("A"))

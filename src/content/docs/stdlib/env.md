@@ -18,7 +18,7 @@ order: 240
 
 ## Typical usage
 
-```fidan
+```fidan check=compile
 use std.env as env
 
 var home = env.get("HOME")

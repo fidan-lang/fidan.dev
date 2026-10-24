@@ -14,7 +14,7 @@ Fidan is designed so failures stay visible and diagnosable instead of disappeari
 
 Use `panic(...)` when execution cannot sensibly continue:
 
-```fidan
+```fidan check=syntax
 if retries > 3 {
     panic("too many retries")
 }
@@ -28,7 +28,7 @@ Alias:
 
 Structured handling:
 
-```fidan
+```fidan check=syntax
 attempt {
     var data = io.readFile("config.json")
     print(data)
@@ -48,7 +48,7 @@ Aliases:
 
 Typed catches are supported:
 
-```fidan
+```fidan check=syntax
 attempt {
     risky()
 } catch error -> string {

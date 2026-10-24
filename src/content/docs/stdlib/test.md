@@ -35,7 +35,7 @@ Aliases:
 
 ## Example
 
-```fidan wrap=none
+```fidan wrap=none check=run
 use std.test as tests
 
 tests.assertEq(2 + 2, 4)

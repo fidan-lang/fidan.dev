@@ -12,7 +12,7 @@ Use `check` when multiple branches all revolve around the same scrutinee.
 
 ## Statement form
 
-```fidan
+```fidan check=syntax
 check status {
     200 => print("OK")
     404 => print("Not found")
@@ -22,7 +22,7 @@ check status {
 
 ## Expression form
 
-```fidan
+```fidan check=syntax
 var label = check status {
     200 => "ok"
     404 => "missing"

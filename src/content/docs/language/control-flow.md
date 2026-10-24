@@ -14,7 +14,7 @@ Fidan's control flow aims for readable source without hiding what the program ac
 
 Canonical form:
 
-```fidan
+```fidan check=syntax
 if score > 90 {
     print("great")
 } otherwise when score > 75 {
@@ -39,7 +39,7 @@ that will be skipped at runtime. Operands must be Boolean; a flexible value is
 checked when evaluated and does not use truthiness. An evaluated `nothing` is a
 runtime type error.
 
-```fidan
+```fidan check=run
 var value oftype flexible = nothing
 var nonempty = value != nothing and len(value) > 0
 assert_eq(nonempty, false)
@@ -58,19 +58,19 @@ explicit preceding statement if it must run regardless of the Boolean result.
 
 Fidan supports expression-form conditionals:
 
-```fidan
+```fidan check=syntax
 var label = "pass" if score >= 5 else "fail"
 ```
 
 There is also an implicit-subject shorthand that reads naturally for null checks:
 
-```fidan
+```fidan check=syntax
 var actual = value if is not nothing else fallback
 ```
 
 Equivalent to:
 
-```fidan
+```fidan check=syntax
 var actual = value if (value != nothing) else fallback
 ```
 
@@ -78,7 +78,7 @@ var actual = value if (value != nothing) else fallback
 
 Loop over any iterable expression:
 
-```fidan
+```fidan check=syntax
 for item in items {
     print(item)
 }
@@ -88,7 +88,7 @@ for item in items {
 
 Exclusive end:
 
-```fidan
+```fidan check=run
 for i in 0..10 {
     print(i)
 }
@@ -96,7 +96,7 @@ for i in 0..10 {
 
 Inclusive end:
 
-```fidan
+```fidan check=run
 for i in 0...10 {
     print(i)
 }
@@ -104,7 +104,7 @@ for i in 0...10 {
 
 ## `while`
 
-```fidan
+```fidan check=syntax
 while running {
     tick()
 }
@@ -121,7 +121,7 @@ Alias:
 
 - `stop` = `break`
 
-```fidan
+```fidan check=syntax
 for item in items {
     if item == "skip" {
         continue
@@ -138,7 +138,7 @@ Fidan's pattern-style multi-branch form is `check`.
 
 Statement form:
 
-```fidan
+```fidan check=syntax
 check code {
     200 => print("ok")
     404 => print("missing")
@@ -148,7 +148,7 @@ check code {
 
 Expression form:
 
-```fidan
+```fidan check=syntax
 var label = check code {
     200 => "ok"
     404 => "missing"
@@ -165,7 +165,7 @@ Wildcard spellings:
 
 Error-handling flow also belongs to control flow:
 
-```fidan
+```fidan check=syntax
 attempt {
     risky()
 } catch error {
@@ -186,7 +186,7 @@ Aliases:
 
 Trigger an immediate runtime failure:
 
-```fidan
+```fidan check=compile
 panic("bad state")
 ```
 
@@ -203,12 +203,12 @@ Fidan uses newline-aware statement separation. You can also use:
 
 Examples:
 
-```fidan
+```fidan check=run
 var x = 1
 var y = 2
 ```
 
-```fidan
+```fidan check=run
 var x = 1; var y = 2
 ```
 
@@ -226,7 +226,7 @@ The compiler and LSP detect structural dead code, including:
 - `while false { ... }`
 - constant and `const var` boolean cases such as:
 
-```fidan
+```fidan check=run
 const var enabled = false
 
 if enabled {
@@ -245,7 +245,7 @@ In the editor, these warnings are marked as unnecessary so unreachable code can 
 
 Example:
 
-```fidan
+```fidan check=syntax
 var kind = check status {
     200 => "ok"
     404 => "not-found"

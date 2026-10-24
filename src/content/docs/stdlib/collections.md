@@ -77,7 +77,7 @@ Common alias forms:
 
 ## Example
 
-```fidan
+```fidan check=compile
 use std.collections as collections
 
 var ids = collections.range(1, 6)

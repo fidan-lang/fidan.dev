@@ -10,7 +10,7 @@ order: 260
 
 `std.math` contains the numeric helpers you would expect from a core language module.
 
-```fidan
+```fidan check=run
 use std.math as math
 
 print(math.sqrt(144))
@@ -114,7 +114,7 @@ Aliases:
 
 ## Typical usage
 
-```fidan
+```fidan check=run
 use std.math as math
 
 var angle = math.toRad(45)
@@ -127,7 +127,7 @@ var safe = math.clamp(x, 0, 1)
 
 ### Root and power math
 
-```fidan
+```fidan check=run
 use std.math as math
 
 print(math.sqrt(144))
@@ -136,7 +136,7 @@ print(math.pow(2, 10))
 
 ### Rounding
 
-```fidan
+```fidan check=run
 use std.math as math
 
 print(math.floor(3.9))
@@ -146,7 +146,7 @@ print(math.round(3.5))
 
 ### Random integer
 
-```fidan
+```fidan check=compile
 use std.math as math
 
 var roll = math.randomInt(1, 7)

@@ -129,21 +129,21 @@ Examples:
 
 Module namespace:
 
-```fidan
+```fidan check=compile
 use std.math as math
 print(math.sqrt(144))
 ```
 
 Grouped imports:
 
-```fidan
+```fidan check=compile
 use std.math.{sqrt, floor}
 print(sqrt(144))
 ```
 
 Whole-module import without alias:
 
-```fidan
+```fidan check=compile
 use std.time
 print(time.now())
 ```
@@ -152,7 +152,7 @@ print(time.now())
 
 Prefer namespaced stdlib usage in app/library code:
 
-```fidan
+```fidan check=compile
 use std.io as io
 use std.string as string
 use std.time as time
