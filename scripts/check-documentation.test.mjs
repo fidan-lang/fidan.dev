@@ -112,3 +112,35 @@ test("real CLI reference traverses every command family instead of the first hel
     assert(commands.includes(command), `Missing command: ${command}`);
   assert(!commands.some((command) => command.endsWith(" help")));
 });
+
+test("Windows Git checkout retains formatter-compatible Vite configuration", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const { readFileSync } = await import("node:fs");
+  const { fileURLToPath } = await import("node:url");
+  const { check } = await import("prettier");
+  const root = fileURLToPath(new URL("../", import.meta.url));
+  const target = path.join(root, "target");
+  mkdirSync(target, { recursive: true });
+  const scratch = mkdtempSync(path.join(target, "windows-checkout-"));
+  try {
+    execFileSync(
+      "git",
+      [
+        "-c",
+        "core.autocrlf=true",
+        "checkout-index",
+        `--prefix=${scratch.replaceAll("\\", "/")}/`,
+        "--",
+        "vite.config.mts",
+      ],
+      { cwd: root },
+    );
+    const content = readFileSync(path.join(scratch, "vite.config.mts"), "utf8");
+    assert(
+      await check(content, { filepath: path.join(root, "vite.config.mts") }),
+      "Windows checkout changed formatting of the tracked Vite configuration",
+    );
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+});
