@@ -1,10 +1,10 @@
 {
   "compiler_repository": "fidan-lang/fidan",
-  "compiler_sha": "3e20e0a88524accb1baead3f6208f8ef7bed60e4",
+  "compiler_sha": "c636c1d53c76bd538d8694923da87f04b48e0e31",
   "compiler_version": "1.0.16",
   "setup_sha": "a1800c42f9fba633b78ab6a96c204952ebca5ff5",
   "args_repository": "fidan-lang/args",
-  "args_sha": "5d5f16405a43f6f83eab4f24e054c1d7bfe25a58",
+  "args_sha": "27063db107eadac136b214ba06a2bab09adcd6c3",
   "dal_repository": "fidan-lang/dal",
   "dal_sha": "8a4a352c9fea4cb2303d9c13bab7c798b9c0a959"
 }
