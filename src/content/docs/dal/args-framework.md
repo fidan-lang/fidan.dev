@@ -46,7 +46,7 @@ For a real process, omit `argv` and `run` reads `std.env.args()`. For example, `
 | `command(callback)` / `@command`                                                 | Validate the signature and return the same action                                                     |
 | `run(callback, argv?, program?, version?, description?, settings?)`              | Invoke the callback; return its result, or `nothing` when help/version/completion handled the request |
 | `help(callback, program?, version?, description?, settings?)`                    | Return plain help text without executing defaults                                                     |
-| `complete(callback, words, settings?)`                                           | Return completion candidates without running handlers/validators/defaults                             |
+| `complete(callback, words, settings?, version?)`                                 | Return completion candidates without running handlers/validators/defaults                             |
 | `CommandOption(parameter, aliases?, env?, choices?, validator?, separator?)`     | Extra single-command parameter policy, passed through `settings`                                      |
 | `App(program?, version?, description?)`                                          | Construct an independent command application                                                          |
 | `app.add(name, callback, description?, aliases?)`                                | Register a command; return its `CommandDefinition`                                                    |
@@ -78,7 +78,7 @@ Hello, Ada!
 release
 ```
 
-Compose nested applications with `app.group("admin", child, description, aliases)`. A group's global flags precede that group's command token. Every level must parse successfully before any global hook runs. Hooks execute outermost first, followed by the leaf. Help, version and failures do not execute hooks. Child groups inherit a version if they do not define one. Duplicate names, aliases and group cycles are rejected.
+Compose nested applications with `app.group("admin", child, description, aliases)`. A group's global flags precede that group's command token. Every level must parse successfully before any global hook runs. Hooks execute outermost first, followed by the leaf. Help, version and failures do not execute hooks. Child groups inherit a version if they do not define one. Help and completion advertise `--version`/`-V` only when a nonblank version is configured or inherited. An explicit version request without that metadata raises `ArgumentError`; handlers and defaults do not run. For standalone `complete`, supply the optional `version` metadata when version completion is supported. Duplicate names, aliases and group cycles are rejected.
 
 ## Policies, defaults and validation
 
