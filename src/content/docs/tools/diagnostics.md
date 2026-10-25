@@ -75,3 +75,17 @@ Use `--strict` when you want selected warnings to become build-blocking errors. 
 ## Dead code and unnecessary code
 
 Structural dead code warnings are also tagged as unnecessary in the LSP so editors can dim unreachable code instead of only showing a warning squiggle.
+
+## Source-candidate backend contract
+
+The upcoming candidate retains diagnostic codes through interpreter, selective
+JIT and native execution. Uncaught user panics report R1002; call-depth/stack
+reserve exhaustion reports R1001; fatal task-group aggregates report R9001.
+Regular arithmetic, bounds, I/O and sandbox errors keep their own codes.
+See [error handling](/docs/language/error-handling#runtime-diagnostic-identity)
+for catchability and the distinction from internal/foreign process failures.
+
+Informational notes such as unused imports retain their W code and LSP
+informational severity. Registered codes reserved for inactive checks are not a
+promise that every backend or editor emits them. LSP diagnostics come from
+static analysis, not executing runtime failures.
