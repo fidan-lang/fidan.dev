@@ -138,12 +138,8 @@ checked using `node scripts/sync-cli-reference.mjs <actual-fidan-binary>`. Both
 accept explicit `--write` for reviewed synchronization; CI only checks drift.
 Local link checks use the actual Markdown renderer and reject missing docs routes,
 anchors and static assets. They do not certify the availability of external sites.
-See `DOCUMENTATION_RECONCILIATION.md` for the page-by-page evidence and remaining
-external gates.
 
 Configuration and command recipes also have an executable syntax gate:
 `python scripts/check-doc-configs.py` (Python 3.11+, PyYAML 6.0.3 and Bash;
 set `BASH_BIN` for Git Bash on Windows). It parses TOML/YAML and runs Bash `-n`;
 it never executes installer/publish commands or claims remote-service success.
-
-See [the focused pre-PR polish report](PRE_PR_POLISH.md) for final positioning, output-verification and dependency-security evidence.

@@ -66,7 +66,7 @@ Yanking prevents new normal resolution but preserves immutable downloads and val
 
 DAL uses PostgreSQL, S3-compatible storage, Cognito-compatible authentication, optional SQS worker processing and a SvelteKit frontend. Use the repository's `.env.example` and disposable `docker-compose.test.yml`; never copy production credentials into tests. The local runner `node scripts/test-local.mjs --with-cognito --e2e` clears cloud credential sources and targets loopback services.
 
-Public metadata/download issuance currently has no general application-wide bulk-download quota. Auth-route limits do not protect every public route, and edge rules on the API cannot control traffic to a signed R2 S3 hostname after redirect. The repository's [registry security checklist](https://github.com/fidan-lang/dal/blob/main/docs/REGISTRY_SECURITY.md) separates implemented controls from unapplied Cloudflare operator steps. CORS, robots.txt and this documentation are not anti-scraping controls. No production configuration is changed by local tests.
+Public metadata/download issuance currently has no general application-wide bulk-download quota. Auth-route limits do not protect every public route, and edge rules on the API cannot control traffic to a signed R2 S3 hostname after redirect. CORS, robots.txt and this documentation are not anti-scraping controls. No production configuration is changed by local tests.
 
 ## JSON request fields
 
