@@ -61,6 +61,7 @@ The published LLVM 23.1.2 toolchain and helper 1.0.6 belong to the released
 compiler contract. The Dal relaunch source branch introduces internal LLVM backend protocol 8
 for package-module/export identity, callable metadata and optional scalar parameter
 ABI support, plus thread-local native global ownership and worker snapshots. It rejects older protocol 5/6/7 helpers.
-It requires a future owner-approved compiler/helper patch pair. Do not overwrite
+The selected release pair is Fidan 1.1.0 stable and LLVM helper 1.1.0; publication
+still requires separate approval. Do not overwrite
 published 1.0.16/1.0.6 artifacts or mix an audit compiler with an older helper. The
 private audit helper is test evidence, not an available public release.

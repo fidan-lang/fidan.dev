@@ -13,7 +13,7 @@ The publicly released **Fidan 1.0.16** remains the stable Windows hotfix release
 
 The candidate source currently still reports package version `1.0.16`; therefore `--version` alone cannot establish compatibility. Website CI selects the full immutable compiler SHA in `ci/compiler-candidate.json`, verifies the actual clean checkout identity, builds with `--locked`, and runs a behavioral reflection/decorator probe before checking examples. The recorded SHA must be remotely available before coordinated GitHub CI can fetch it.
 
-The proposed coordinated version overlay is recorded in the compiler's `config/release-candidate.json`. It is not a claim that that version has been approved or published. The upcoming LLVM helper uses **backend protocol 8**; a previously published helper is not interchangeable merely because its package version looks familiar.
+The proposed coordinated version overlay is recorded in the compiler's `config/release-candidate.json`. The owner has selected the 1.1.0 stable target; release publication is not yet approved or performed. The upcoming LLVM helper uses **backend protocol 8**; a previously published helper is not interchangeable merely because its package version looks familiar.
 
 ## Isolated source build
 
