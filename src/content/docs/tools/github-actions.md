@@ -15,15 +15,15 @@ The Setup Action installs a release archive selected from the configured release
 steps:
   - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
   # Requires the audited action commit to be available remotely.
-  - uses: fidan-lang/fidan-actions/setup@d0599e1e8df6f6a2d96d89b57e17afa91848dd52
+  - uses: fidan-lang/fidan-actions/setup@096d2a496cfd03b31fb0e67e4cdbb34f23f98df3
     with:
-      version: "1.0.16"
+      version: "1.1.0"
       cache: "true"
   - run: fidan check .
   - run: fidan test .
 ```
 
-This installs the **released** compiler; do not use this job to certify new callable/decorator APIs.
+Use this release job **after Fidan 1.1.0 stable is published**. Before publication, build the exact source candidate below; do not substitute 1.0.16 or `latest`.
 
 ## Action inputs and outputs
 

@@ -35,3 +35,14 @@ Normal editing with the released extension does not require AI configuration. Fo
 ## Migration notes
 
 Boolean `and`/`or` now skip the unnecessary right operand. Remove dependencies on RHS side effects. Both operands still receive static diagnostics. The formatter canonicalizes bracket slices to colon syntax while preserving range aliases as input. Normal run output stays on stdout; optional `-v` diagnostics use stderr. Review the [operators](/docs/language/expressions-and-operators) and [CLI](/docs/tools/cli) guides before migrating automation.
+
+## Planned stable release order
+
+The selected target is **Fidan 1.1.0 stable**, **LLVM helper 1.1.0** (protocol 8)
+and **args 0.1.0**, with no intermediate public RC. Engineering/merge gates come
+first, then stable compiler/helper artifacts, production DAL readiness and launch,
+args publication, and the approved editor/website/distribution updates.
+The args source sentinel remains until the compiler and registry gates are met.
+Source-candidate CI still expects the actual reported source version; preparation
+applies the stable versions only in an isolated release copy. Existing stable
+artifacts are never overwritten to add new APIs.
