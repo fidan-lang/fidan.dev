@@ -12,7 +12,7 @@ Fidan supports objects because some problems really do want state plus attached 
 
 ## Basic object
 
-```fidan
+```fidan check=compile
 object Animal {
     var sound oftype string
 
@@ -30,7 +30,7 @@ object Animal {
 
 Constructors use `new`:
 
-```fidan
+```fidan check=compile
 object User {
     var name oftype string
 
@@ -51,7 +51,7 @@ Inside object actions:
 
 Use `extends` when there is a real parent-child relationship:
 
-```fidan
+```fidan check=compile context=animal
 object Dog extends Animal {
     var name oftype string
 
@@ -66,7 +66,7 @@ object Dog extends Animal {
 
 Use `parent(...)` inside `new` to invoke the parent constructor:
 
-```fidan
+```fidan check=run context=parent
 parent(sound = "Woof")
 ```
 
@@ -74,7 +74,7 @@ parent(sound = "Woof")
 
 You can add behavior without editing the original object body:
 
-```fidan
+```fidan check=compile context=dog
 action bark extends Dog returns nothing {
     print("{this.name} goes WOOF")
 }
@@ -97,3 +97,7 @@ This is useful when:
 - stateless transforms
 - simple utilities
 - logic that does not naturally belong to a receiver
+
+## Native implementation boundary
+
+Native AOT currently represents objects with branded Dict-backed storage, while the interpreter has its own object representation. That is an implementation detail, not permission to call arbitrary Dict methods on an object. Use declared fields, constructors and methods. Representative inheritance, named/default calls, receiver decoration and identity cases have dedicated backend fixtures; this is not a claim of universal interpreter/native object reflection parity.

@@ -1,4 +1,23 @@
 import { marked } from "marked";
+import sanitizeHtml from "sanitize-html";
+
+// Checked-in docs are reviewed, but raw Markdown HTML is not executable content.
+// Trusted callout SVG/tab wrappers are constructed outside the sanitized user HTML.
+function sanitizeMarkdownHtml(html: string): string {
+  return sanitizeHtml(html, {
+    allowedTags: [...sanitizeHtml.defaults.allowedTags, "img", "button"],
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      "*": ["class", "id"],
+      img: ["src", "alt", "title", "loading", "width", "height"],
+      button: ["type", "class", "data-copy"],
+    },
+    allowedSchemes: ["http", "https", "mailto"],
+    allowProtocolRelative: false,
+    nestingLimit: 64,
+    parseStyleAttributes: false,
+  });
+}
 
 export type TocItem = {
   id: string;
@@ -113,7 +132,7 @@ function renderPlainMarkdown(markdown: string): string {
     renderer: createRenderer(),
   });
 
-  return marked.parse(markdown) as string;
+  return sanitizeMarkdownHtml(marked.parse(markdown) as string);
 }
 
 function renderCallout(
@@ -171,14 +190,14 @@ function renderTabs(markdown: string): string {
   const triggers = tabs
     .map(
       (tab, index) =>
-        `<button type="button" class="doc-tabs__trigger${index === 0 ? " is-active" : ""}" role="tab" aria-selected="${index === 0 ? "true" : "false"}" aria-controls="${tabsetId}-panel-${index}" id="${tabsetId}-tab-${index}" data-tab-trigger data-tabset-id="${tabsetId}" data-tab-index="${index}">${escapeHtml(tab.label)}</button>`,
+        `<button type="button" class="doc-tabs__trigger${index === 0 ? " is-active" : ""}" role="tab" tabindex="${index === 0 ? "0" : "-1"}" aria-selected="${index === 0 ? "true" : "false"}" aria-controls="${tabsetId}-panel-${index}" id="${tabsetId}-tab-${index}" data-tab-trigger data-tabset-id="${tabsetId}" data-tab-index="${index}">${escapeHtml(tab.label)}</button>`,
     )
     .join("");
 
   const panels = tabs
     .map(
       (tab, index) =>
-        `<div class="doc-tabs__panel${index === 0 ? " is-active" : ""}" role="tabpanel" id="${tabsetId}-panel-${index}" aria-labelledby="${tabsetId}-tab-${index}" ${index === 0 ? "" : "hidden"}>${renderRichMarkdown(tab.content)}</div>`,
+        `<div class="doc-tabs__panel${index === 0 ? " is-active" : ""}" role="tabpanel" tabindex="0" id="${tabsetId}-panel-${index}" aria-labelledby="${tabsetId}-tab-${index}" ${index === 0 ? "" : "hidden"}>${renderRichMarkdown(tab.content)}</div>`,
     )
     .join("");
 
@@ -257,7 +276,7 @@ export function renderInlineMarkdown(markdown: string): string {
     renderer: createRenderer(),
   });
 
-  return marked.parseInline(markdown) as string;
+  return sanitizeMarkdownHtml(marked.parseInline(markdown) as string);
 }
 
 export function renderMarkdown(markdown: string): string {

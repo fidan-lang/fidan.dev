@@ -4,16 +4,30 @@ import {
   pickLatestRelease,
   type ReleaseNote,
 } from "$lib/content/releases";
+import {
+  officialGitHubReleaseUrl,
+  releaseVersion,
+} from "$lib/server/release-url";
 import { error } from "@sveltejs/kit";
 
 const GITHUB_RELEASES_API =
   "https://api.github.com/repos/fidan-lang/fidan/releases";
 const DEFAULT_INSTALL_NOTES = [
   "Use the installer for your platform or download the release archive.",
-  "If you need portable binaries, keep the default target CPU or pass --target-cpu explicitly.",
-  "If you need maximum local performance, use --release.",
+  "For portable distribution, select --target-cpu generic explicitly.",
+  "Use --release for the host-tuned optimization preset; benchmark your workload.",
 ] as const;
 const RELEASE_CACHE_TTL_MS = 5 * 60 * 1000;
+// Release pages must retain their bundled fallback during upstream outages.
+const RELEASE_REQUEST_TIMEOUT_MS = 5000;
+const RELEASE_RESPONSE_MAX_BYTES = 2 * 1024 * 1024;
+const RELEASE_DETAIL_CACHE_LIMIT = 64;
+// Catalog is deliberately the latest 30; exact detail lookup is independent of it.
+const RELEASE_CATALOG_SIZE = 30;
+const cachedDetails = new Map<
+  string,
+  { expiresAt: number; release: ReleaseNote | null }
+>();
 
 type GitHubRelease = {
   tag_name: string;
@@ -22,7 +36,6 @@ type GitHubRelease = {
   draft: boolean;
   prerelease: boolean;
   published_at: string | null;
-  html_url: string;
 };
 
 let cachedReleases:
@@ -33,7 +46,7 @@ let cachedReleases:
   | undefined;
 
 function normalizeVersion(tag: string): string {
-  return tag.trim().replace(/^v/i, "");
+  return releaseVersion(tag);
 }
 
 function stripMarkdown(value: string): string {
@@ -112,53 +125,135 @@ function normalizeGitHubRelease(
       highlights.length > 0 ? highlights : (fallback?.highlights ?? []),
     installNotes: fallback?.installNotes ?? [...DEFAULT_INSTALL_NOTES],
     body,
-    githubUrl: release.html_url,
+    githubUrl: officialGitHubReleaseUrl(release.tag_name),
     latest: version === stableLatestVersion,
   };
+}
+
+function parseRelease(value: unknown): GitHubRelease {
+  if (!value || typeof value !== "object")
+    throw new Error("Invalid release response");
+  const item = value as Record<string, unknown>;
+  releaseVersion(typeof item.tag_name === "string" ? item.tag_name : "");
+  if (
+    typeof item.draft !== "boolean" ||
+    typeof item.prerelease !== "boolean" ||
+    !["name", "body", "published_at"].every(
+      (key) => item[key] === null || typeof item[key] === "string",
+    )
+  ) {
+    throw new Error("Invalid release response");
+  }
+  return item as GitHubRelease;
+}
+
+async function requestGitHub(
+  fetchFn: typeof fetch,
+  suffix: string,
+): Promise<unknown | null> {
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "fidan.dev",
+  };
+  const token =
+    env.GITHUB_RELEASES_TOKEN?.trim() ||
+    env.GITHUB_TOKEN?.trim() ||
+    env.GITHUB_API_TOKEN?.trim();
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const controller = new AbortController();
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timeout = setTimeout(() => {
+      const reason = new DOMException(
+        "Release request timed out",
+        "TimeoutError",
+      );
+      controller.abort(reason);
+      // Wrapped fetch implementations may not abort their response body.
+      void reader?.cancel().catch(() => {});
+      reject(reason);
+    }, RELEASE_REQUEST_TIMEOUT_MS);
+  });
+  const readResponse = async (): Promise<unknown | null> => {
+    // Only a fixed GitHub origin; redirects must never carry a server credential.
+    const response = await fetchFn(`${GITHUB_RELEASES_API}${suffix}`, {
+      headers,
+      redirect: "error",
+      signal: controller.signal,
+    });
+    if (controller.signal.aborted) {
+      void response.body?.cancel().catch(() => {});
+      throw controller.signal.reason;
+    }
+    if (!response.ok) {
+      await response.body?.cancel();
+      if (response.status === 404) return null;
+      throw new Error(`GitHub releases HTTP ${response.status}`);
+    }
+    const bodyReader = response.body?.getReader();
+    reader = bodyReader;
+    if (!bodyReader) throw new Error("Missing release body");
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    try {
+      while (true) {
+        const { done, value } = await bodyReader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > RELEASE_RESPONSE_MAX_BYTES)
+          throw new Error("Release response exceeds limit");
+        chunks.push(value);
+      }
+    } finally {
+      // Cleanup must not turn a completed or failed read into another unbounded wait.
+      void bodyReader.cancel().catch(() => {});
+      bodyReader.releaseLock();
+    }
+    const bytes = new Uint8Array(size);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+  };
+  try {
+    return await Promise.race([readResponse(), deadline]);
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function fetchGitHubReleases(
   fetchFn: typeof fetch,
 ): Promise<ReleaseNote[]> {
-  const headers: Record<string, string> = {
-    Accept: "application/vnd.github+json",
-    "User-Agent": "fidan.dev",
-  };
-
-  const githubToken =
-    env.GITHUB_RELEASES_TOKEN?.trim() ||
-    env.GITHUB_TOKEN?.trim() ||
-    env.GITHUB_API_TOKEN?.trim();
-  if (githubToken) {
-    headers.Authorization = `Bearer ${githubToken}`;
-  }
-
-  const response = await fetchFn(GITHUB_RELEASES_API, {
-    headers,
-  });
-
-  if (!response.ok) {
-    const detail = response.headers.get("x-ratelimit-remaining")
-      ? ` (remaining ${response.headers.get("x-ratelimit-remaining")})`
-      : "";
-    throw new Error(
-      `GitHub releases request failed with ${response.status}${detail}`,
-    );
-  }
-
-  const payload = (await response.json()) as GitHubRelease[];
-  const published = payload.filter((release) => !release.draft);
-  if (published.length === 0) {
-    throw new Error("GitHub returned no published releases");
-  }
-
-  const latestStableVersion = normalizeVersion(
-    (published.find((release) => !release.prerelease) ?? published[0]).tag_name,
+  const payload = await requestGitHub(
+    fetchFn,
+    `?per_page=${RELEASE_CATALOG_SIZE}&page=1`,
   );
-
+  if (!Array.isArray(payload)) throw new Error("Invalid release catalog");
+  const published = payload
+    .map(parseRelease)
+    .filter((release) => !release.draft);
+  if (published.length === 0) throw new Error("No published releases");
+  const stable = published.find((release) => !release.prerelease);
   return published.map((release) =>
-    normalizeGitHubRelease(release, latestStableVersion),
+    normalizeGitHubRelease(
+      release,
+      stable ? normalizeVersion(stable.tag_name) : undefined,
+    ),
   );
+}
+
+function cacheDetail(version: string, release: ReleaseNote | null): void {
+  cachedDetails.delete(version);
+  if (cachedDetails.size >= RELEASE_DETAIL_CACHE_LIMIT)
+    cachedDetails.delete(cachedDetails.keys().next().value!);
+  cachedDetails.set(version, {
+    release,
+    expiresAt: Date.now() + RELEASE_CACHE_TTL_MS,
+  });
 }
 
 function fallbackReleaseNotes(): ReleaseNote[] {
@@ -185,7 +280,7 @@ export async function getReleaseNotes(
     return releases;
   } catch (error) {
     console.warn(
-      `[fidan.dev] Falling back to bundled release notes: ${error instanceof Error ? error.message : String(error)}`,
+      "[fidan.dev] Upstream unavailable; using bundled release notes.",
     );
     const releases = fallbackReleaseNotes();
     cachedReleases = {
@@ -206,12 +301,47 @@ export async function getReleaseByVersion(
   fetchFn: typeof fetch,
   version: string,
 ): Promise<ReleaseNote> {
-  const normalizedVersion = normalizeVersion(version);
-  const releases = await getReleaseNotes(fetchFn);
-  const release = releases.find((entry) => entry.version === normalizedVersion);
-  if (!release) {
+  let normalized: string;
+  try {
+    normalized = releaseVersion(version);
+  } catch {
     throw error(404, "Release not found");
   }
-
-  return release;
+  const cached = cachedDetails.get(normalized);
+  if (cached && cached.expiresAt > Date.now()) {
+    if (!cached.release) throw error(404, "Release not found");
+    return cached.release;
+  }
+  let found: ReleaseNote | null = null;
+  try {
+    // Fidan tags use v; bare tags remain supported with at most one extra request.
+    for (const tag of [`v${normalized}`, normalized]) {
+      const payload = await requestGitHub(
+        fetchFn,
+        `/tags/${encodeURIComponent(tag)}`,
+      );
+      if (payload === null) continue;
+      const release = parseRelease(payload);
+      if (normalizeVersion(release.tag_name) !== normalized)
+        throw new Error("Release identity mismatch");
+      if (!release.draft) {
+        const latest =
+          cachedReleases?.releases.find((item) => item.latest)?.version ??
+          pickLatestRelease(fallbackReleaseNotes()).version;
+        found = normalizeGitHubRelease(release, latest);
+      }
+      break;
+    }
+  } catch {
+    const fallback = fallbackReleaseNotes().find(
+      (item) => item.version === normalized,
+    );
+    if (!fallback)
+      throw error(503, "Release information temporarily unavailable");
+    cacheDetail(normalized, fallback);
+    return fallback;
+  }
+  cacheDetail(normalized, found);
+  if (!found) throw error(404, "Release not found");
+  return found;
 }

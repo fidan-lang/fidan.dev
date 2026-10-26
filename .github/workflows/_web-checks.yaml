@@ -10,20 +10,38 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
 
+      - name: Verify license and attribution
+        run: |
+          echo 'cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30  LICENSE' | sha256sum --check
+          node --input-type=module -e "import assert from 'node:assert/strict'; import fs from 'node:fs'; assert.equal(JSON.parse(fs.readFileSync('package.json')).license, 'Apache-2.0'); assert(fs.readFileSync('NOTICE', 'utf8').includes('Copyright'));"
+
       - name: Install dependencies
         run: npm ci
 
+      # Known low Kit-2 findings remain visible; new moderate/high findings block CI.
+      - name: Dependency security
+        run: npm audit --audit-level=moderate
+
       - name: Typecheck
         run: npm run check
+
+      - name: Lint and formatting
+        run: npm run lint
+
+      - name: Exact release lookup and documentation security
+        run: npm run check:content
+
+      - name: Untrusted release Markdown regression
+        run: npm run check:release-markdown
 
       - name: Production build
         run: npm run build

@@ -35,7 +35,7 @@ That distinction is deliberate. Fidan does **not** pretend that all concurrency 
 
 `spawn` creates a pending handle for same-thread cooperative work:
 
-```fidan
+```fidan check=run context=async
 var handle = spawn fetch_user()
 var user = await handle
 ```
@@ -46,7 +46,7 @@ The result is a `Pending` handle, not a thread.
 
 `await` resolves a `Pending` handle:
 
-```fidan
+```fidan check=run context=async
 var handle = spawn fetch_user()
 var user = await handle
 ```
@@ -60,7 +60,7 @@ Use it:
 
 `concurrent` groups multiple same-thread tasks:
 
-```fidan
+```fidan check=run context=async
 concurrent {
     task {
         var user = await spawn load_user()
@@ -82,7 +82,7 @@ Important properties:
 
 Interleaving sanity check:
 
-```fidan
+```fidan check=run
 use std.async
 
 concurrent {
@@ -112,7 +112,7 @@ This is cooperative same-thread scheduling, not thread-race ordering.
 
 `parallel` runs tasks on real worker threads:
 
-```fidan
+```fidan check=run context=parallel
 parallel {
     task { crunch_a() }
     task { crunch_b() }
@@ -129,7 +129,7 @@ run because real worker threads are scheduled by the OS.
 
 Parallel iteration is built in:
 
-```fidan
+```fidan check=run context=parallel
 parallel for item in items {
     process(item)
 }
@@ -145,16 +145,17 @@ This is the clearest choice when:
 
 Real threaded parallelism requires safe shared state. In Fidan, that means `Shared`.
 
-```fidan
+```fidan check=run
 var counter = Shared(0)
 
 parallel for item in [1, 2, 3, 4] {
-    counter.update(action with (value oftype integer) returns integer {
+    counter.update(action with (certain value oftype integer) returns integer {
         return value + 1
     })
 }
 
 print(counter.get())
+assert_eq(counter.get(), 4)
 ```
 
 If you try to mutate ordinary cross-thread state inside `parallel`, the compiler reports a data-race error instead of hoping you get lucky.
@@ -171,7 +172,7 @@ If you try to mutate ordinary cross-thread state inside `parallel`, the compiler
 
 Example:
 
-```fidan
+```fidan check=run
 use std.async as async
 
 var one = async.sleep(100)
@@ -194,12 +195,13 @@ These are same-thread async helpers, not thread spawners.
 
 Example:
 
-```fidan wrap=none
+```fidan wrap=none check=run context=items
 use std.parallel as par
 
 var out = par.parallelMap(items, action with (item) returns integer {
     return item * 2
 })
+assert_eq(out, [2, 4, 6])
 ```
 
 ## Choosing the right model
@@ -220,7 +222,7 @@ Use `parallel` / `parallel for` / `std.parallel` when:
 
 ### Same-thread
 
-```fidan
+```fidan check=run context=async
 concurrent {
     task {
         var a = spawn first()
@@ -235,14 +237,15 @@ This is structured, cooperative scheduling.
 
 ### Real threads
 
-```fidan
+```fidan check=run context=parallel
 var total = Shared(0)
 
 parallel for item in data {
-    total.update(action with (value oftype integer) returns integer {
+    total.update(action with (certain value oftype integer) returns integer {
         return value + item
     })
 }
+assert_eq(total.get(), 6)
 ```
 
 This is real threaded execution and requires `Shared` for mutation.

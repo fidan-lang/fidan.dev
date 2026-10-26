@@ -7,6 +7,7 @@
 *.mjs text eol=lf
 *.cjs text eol=lf
 *.ts text eol=lf
+*.mts text eol=lf
 *.svelte text eol=lf
 *.css text eol=lf
 *.html text eol=lf
@@ -18,3 +19,8 @@
 
 *.ps1 text eol=crlf
 *.bat text eol=crlf
+
+# Keep the standard license byte-identical in checkouts and packages.
+LICENSE text eol=lf
+
+static/LICENSE.txt text eol=lf

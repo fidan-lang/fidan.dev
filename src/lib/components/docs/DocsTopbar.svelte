@@ -2,7 +2,7 @@
   import BrandMark from "$lib/components/BrandMark.svelte";
   import { docsBySection } from "$lib/utils/docs";
 
-  let { currentPath = "/" } = $props<{ currentPath?: string }>();
+  let { currentPath = "/" }: { currentPath?: string } = $props();
 </script>
 
 <header

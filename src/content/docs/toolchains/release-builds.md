@@ -73,3 +73,7 @@ Cranelift release build:
 ```bash
 fidan build src/main.fdn --release --backend cranelift
 ```
+
+## Optimization is a policy, not a speed guarantee
+
+The CLI accepts `O0`, `O1`, `O2`, `O3`, `Os` and `Oz`. Higher optimization levels enable different compiler/backend policies; `O3` is not guaranteed to make every program faster than `O2`. Measure representative workloads. Cranelift maps both size modes to SpeedAndSize. With LLVM 23, both use the O2 pipeline with `optsize` function attributes, and Oz also sets `minsize`. They retain a real size policy rather than referring to removed LLVM pass-pipeline spellings. Cranelift and LLVM do not implement identical native pass pipelines. Full LTO is an LLVM capability; selecting a preset does not create LLVM LTO inside Cranelift.

@@ -8,21 +8,28 @@ order: 240
 
 # std.env
 
-`std.env` is the narrow process-environment module.
+`args()` returns only application arguments, excluding the source filename/executable and the Fidan wrapper. Missing environment variables return `nothing`. `set` changes this process, not a parent shell. Sandbox environment access requires `--allow-env`; never store credentials in examples or logs.
 
-## Functions
+## Complete API
 
-- `get(key) -> dynamic`
-- `set(key, value) -> nothing`
-- `args() -> list`
+Signatures and aliases below are generated from the same compiler-owned metadata used by the CLI and LSP. `?` marks optional parameters; `...` is variadic.
 
-## Typical usage
+<!-- compiler-api:start -->
 
-```fidan
+<!-- prettier-ignore -->
+| Signature | Aliases | Contract |
+| --- | --- | --- |
+| `std.env.get(key oftype string) -> string` | `getVar`, `get_var` | Read an environment variable and return `nothing` when it is unset. |
+| `std.env.set(key oftype string, value oftype string) -> nothing` | `setVar`, `set_var` | Set an environment variable in the current process. |
+| `std.env.args() -> list oftype string` | — | Return the current program arguments passed to the Fidan script. |
+
+<!-- compiler-api:end -->
+
+## Examples
+
+```fidan check=run
 use std.env as env
 
 var home = env.get("HOME")
 var argv = env.args()
 ```
-
-`args()` returns the script-facing argument list, not the raw host CLI wrapper.

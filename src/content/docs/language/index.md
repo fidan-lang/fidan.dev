@@ -26,3 +26,7 @@ languages, but it still covers the real product path:
 3. [Control flow](/docs/language/control-flow)
 4. [Concurrency](/docs/language/concurrency)
 5. [Extern interop](/docs/language/extern-native-interop)
+
+## Complete language reference path
+
+Continue with [operators and evaluation order](/docs/language/expressions-and-operators), [callable reflection](/docs/language/callable-reflection), [collections and enums](/docs/language/collections-and-enums), [custom decorators](/docs/language/decorators), [modules](/docs/language/imports-and-modules) and [error handling](/docs/language/error-handling). Built-in container parameterization and the absence of user-defined generic declarations are distinguished in the type guide.

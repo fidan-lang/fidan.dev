@@ -43,8 +43,8 @@ Every registered diagnostic code in the codebase is expected to have a correspon
 ## CLI lookup
 
 ```bash
-fidan explain E0401
-fidan explain W2006
+fidan explain --diagnostic E0401
+fidan explain --diagnostic W2006
 ```
 
 ## Suppression

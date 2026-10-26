@@ -1,0 +1,7 @@
+Fidan Web Platform
+Copyright © 2026 Kaan Gönüldinc
+
+Fidan™ and Dal™ are trademarks of Kaan Gönüldinc (AppSolves).
+
+This repository contains the source for the official Fidan website and
+documentation platform.

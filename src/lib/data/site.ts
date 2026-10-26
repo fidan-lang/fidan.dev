@@ -80,16 +80,16 @@ action main {
         }
     }
 
-    io.print("Built for native speed.")
+    io.print("Compiler-grounded tooling.")
 }
 
 main()`;
 
 export const featureCards = [
   {
-    title: "Native without the ceremony",
+    title: "Native builds, one continuous workflow",
     description:
-      "Fidan keeps the language surface compact, but still gives you interpreter, JIT, Cranelift AOT, and LLVM AOT in one toolchain.",
+      "Keep your iteration loop short, then build a native executable. Interpreter, selective JIT, Cranelift AOT and optional LLVM AOT share one toolchain.",
     eyebrow: "Execution",
   },
   {
@@ -105,9 +105,9 @@ export const featureCards = [
     eyebrow: "Interop",
   },
   {
-    title: "Tooling built into the language story",
+    title: "AI that starts with compiler knowledge",
     description:
-      "Tracing, replay, packaging, diagnostics, formatting, LSP support, and compiler-grounded AI explain/fix/improve workflows are part of the product, not an afterthought.",
+      "Give explain, fix and improve workflows structured diagnostics, types, symbols and program relationships. Formatting, LSP, tracing and replay stay close at hand.",
     eyebrow: "Tooling",
   },
 ] as const;
@@ -138,42 +138,48 @@ export const proofStats = [
 export const switchCards = [
   {
     eyebrow: "Python → Fidan",
-    title: "Leave runtime drag behind.",
+    title: "Keep the flow. Go native.",
     description:
-      "Ship native binaries, keep a smaller syntax surface than systems languages, and stop treating packaging and deployment like a second project.",
+      "Start with expressive, human-readable code, iterate with the interpreter and selective JIT, then build a native executable. Diagnostics, formatting and packages follow the same workflow.",
   },
   {
     eyebrow: "Rust → Fidan",
-    title: "Keep the performance, drop the ceremony.",
+    title: "Native builds. Less ceremony.",
     description:
-      "Fidan stays native-first, but gets there with faster iteration, fewer concepts to juggle, and one coherent toolchain.",
+      "Make intent explicit with readable types, actions and concurrency. Managed runtime values and compiler-backed tooling offer a different route to native software.",
   },
   {
-    eyebrow: "C++ → Fidan",
-    title: "Modern product feel without legacy baggage.",
+    eyebrow: "Go → Fidan",
+    title: "A familiar toolchain mindset. An AI-native direction.",
     description:
-      "You still target real native software, but with built-in diagnostics, formatting, LSP support, replay tooling, and a first-party package flow.",
+      "Bring a toolchain-first mindset to expressive actions and collections, native builds, explicit parallel work and DAL packages. Let AI workflows use the compiler knowledge behind your code.",
   },
 ] as const;
 
 export const compareRows = [
   {
     name: "Python",
-    edge: "Native binaries, AOT compilation, and tighter packaging.",
+    edge: "Take readable code from an interactive run to a native build.",
     nuance:
-      "Ideal when you want Python-level approachability with a far stronger deployment and performance story.",
+      "Keep exploration, diagnostics and packaging in the same workflow as your program grows.",
   },
   {
     name: "Rust",
-    edge: "Far less syntax and concept overhead for day-to-day iteration.",
+    edge: "Express native intent with a managed runtime model.",
     nuance:
-      "Ideal when you want native performance and modern tooling with a much lighter everyday development experience.",
+      "Try readable declarations, explicit concurrency and integrated AI analysis with a different ownership model.",
+  },
+  {
+    name: "Go",
+    edge: "Build around a compiler-grounded AI workflow.",
+    nuance:
+      "Explore expressive actions, collection syntax, explicit parallel work and integrated packages in an AI-native language.",
   },
   {
     name: "C++",
-    edge: "A dramatically simpler language surface with modern tooling and built-in package flow.",
+    edge: "Human-readable language design with integrated tooling and package flow.",
     nuance:
-      "Ideal when you want native power, but with a cleaner language surface and a far more coherent product experience.",
+      "Use native interop where required, with explicit ABI and deployment checks.",
   },
 ] as const;
 
@@ -197,11 +203,20 @@ export const installCommands = [
 ] as const;
 
 export const marketingSections = {
-  whyHeading: "Why teams switch to Fidan",
+  seoTitle: "Fidan — AI-Native, Native-First Programming",
+  seoDescription:
+    "An AI-native, native-first programming language with expressive syntax, native execution backends and compiler-grounded AI tooling in one developer ecosystem.",
+  heroBadge: "AI-native by design. Native-first by architecture.",
+  heroTitle: "Expressive code. Native software.",
+  heroAccentLabel: "AI-native",
+  heroAccent: "from the compiler up.",
+  heroLead:
+    "Write human-readable code and take it from a quick run to a native binary in one toolchain. Fidan connects expressive syntax, native execution and an integrated developer ecosystem with AI tools that can work from compiler knowledge, alongside source text.",
+  whyHeading: "More from your language. Less around it.",
   whyIntro:
-    "Fidan is built for people who want native performance, real deployment targets, integrated tooling, and AI-native workflows without getting dragged back into the old tradeoffs.",
+    "Fidan brings expressive code, native execution and compiler-grounded AI into one developer ecosystem. Spend less effort connecting tools and more time expressing what your software should do.",
   reliability:
-    "The toolchain already ships with broad tests, multiple execution backends, tracing, replay, packaging workflows, and AI-assisted explain, fix, and improve paths grounded in diagnostics, inferred types, reads and writes, symbols, call graphs, and static traces. The point is not novelty. The point is a fast, coherent system that feels tight everywhere.",
+    "AI-native means giving development tools access to diagnostics, inferred types, symbols, reads and writes, call graphs and static traces. Explain, fix and improve can work from that structured compiler knowledge alongside source text.",
   ecosystem:
-    "Dal gives Fidan a first-party package story, and the runtime stays open to native libraries through @extern so you are never boxed in.",
+    "Move from editor feedback to packages and native libraries without leaving the ecosystem: LSP support, DAL, a REPL, build tools and @extern interop are part of the same development story.",
 } as const;

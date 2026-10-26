@@ -8,37 +8,39 @@ order: 280
 
 # std.regex
 
-`std.regex` gives regular-expression helpers without pushing regex onto the builtin surface.
+Patterns use the Rust regex engine: backreferences and look-around are not part of that engine. Prefer raw strings for patterns. `test` answers whether a match exists; capture/match functions have different result shapes, described below. Invalid patterns are errors unless using the explicit validity helper. Replacement syntax belongs to the regex engine, not Fidan string interpolation.
 
-## Functions
+## Complete API
 
-- `test(pattern, subject) -> boolean`
-- `match(pattern, subject) -> dynamic`
-- `findAll(pattern, subject) -> list`
-- `capture(pattern, subject) -> list`
-- `captureAll(pattern, subject) -> list`
-- `replace(pattern, subject, replacement) -> string`
-- `replaceAll(pattern, subject, replacement) -> string`
-- `split(pattern, subject) -> list`
-- `isValid(pattern) -> boolean`
+Signatures and aliases below are generated from the same compiler-owned metadata used by the CLI and LSP. `?` marks optional parameters; `...` is variadic.
 
-## Notable aliases
+<!-- compiler-api:start -->
 
-- `isMatch` / `is_match` = `test`
-- `find` / `find_first` = `match`
-- `matches` = `findAll`
-- `exec` = `capture`
-- `execAll` / `exec_all` = `captureAll`
-- `replaceFirst` / `replace_first` / `sub` = `replace`
-- `replace_all` / `gsub` = `replaceAll`
-- `is_valid` = `isValid`
+<!-- prettier-ignore -->
+| Signature | Aliases | Contract |
+| --- | --- | --- |
+| `std.regex.test(pattern oftype string, subject oftype string) -> boolean` | `isMatch`, `is_match` | Return whether the pattern matches the subject string. |
+| `std.regex.match(pattern oftype string, subject oftype string) -> string` | `find`, `find_first` | Return the first match or `nothing` when no match exists. |
+| `std.regex.findAll(pattern oftype string, subject oftype string) -> list oftype string` | `find_all`, `matches` | Return every match as a list of strings. |
+| `std.regex.capture(pattern oftype string, subject oftype string) -> list oftype dynamic` | `exec` | Return the first match and capture groups as a list. |
+| `std.regex.captureAll(pattern oftype string, subject oftype string) -> list oftype list oftype dynamic` | `capture_all`, `execAll`, `exec_all` | Return all match capture groups as a list of lists. |
+| `std.regex.replace(pattern oftype string, subject oftype string, replacement oftype string) -> string` | `replaceFirst`, `replace_first`, `sub` | Replace the first regex match in a string. |
+| `std.regex.replaceAll(pattern oftype string, subject oftype string, replacement oftype string) -> string` | `replace_all`, `gsub` | Replace every regex match in a string. |
+| `std.regex.split(pattern oftype string, subject oftype string) -> list oftype string` | — | Split a string by a regex pattern. |
+| `std.regex.isValid(pattern oftype string) -> boolean` | `is_valid` | Return whether a regex pattern compiles successfully. |
 
-## Example
+<!-- compiler-api:end -->
 
-```fidan
+## Examples
+
+```fidan check=run expect=stdout
 use std.regex as regex
 
 if regex.test(r"^\d+$", "12345") {
     print("digits")
 }
+```
+
+```text
+digits
 ```

@@ -2,23 +2,23 @@
 title: "Target CPU and portability"
 sidebarLabel: "Target CPU"
 description: "How Fidan chooses `generic`, `native`, or custom CPU specs, and how portability and feature strings interact with LLVM and Cranelift."
-summary: "Portable by default, host-tuned when you ask for it."
+summary: "Choose a CPU policy explicitly for distribution."
 order: 460
 ---
 
 # Target CPU and portability
 
-Fidan defaults to portable builds, then lets you opt into host tuning.
+CPU tuning is backend-specific. Use an explicit `generic` policy when preparing portable distribution artifacts. This does not enable cross-OS or cross-architecture compilation.
 
 ## Default behavior
 
-If you do not specify a target CPU, builds stay portable:
+An omitted CPU uses the backend default: LLVM uses `generic`; Cranelift selects the host ISA. For reproducible portable builds, specify the policy:
 
 ```bash
-fidan build app.fdn
+fidan build app.fdn --target-cpu generic
 ```
 
-That means the default CPU choice is effectively `generic`.
+`--release` selects `native` unless explicitly overridden. CPU tuning does not supply a target sysroot, cross-linker or target runtime.
 
 ## `native`
 
@@ -78,12 +78,7 @@ LLVM has the richer target-CPU implementation today:
 
 ### Cranelift
 
-Cranelift currently treats:
-
-- omitted target CPU
-- `native`
-
-as the supported host-ISA path, and rejects richer custom CPU names for now.
+Cranelift supports `generic`, host `native`, and recognized CPU presets/features. Unsupported CPU or feature names produce an actionable error. Its accepted preset names/features differ from LLVM; validate the chosen backend rather than assuming their vocabularies are identical.
 
 ## Recommended usage
 

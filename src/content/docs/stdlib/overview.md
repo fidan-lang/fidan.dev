@@ -98,6 +98,8 @@ Top-level builtins stay intentionally small:
 - `float`
 - `boolean`
 - `Shared`
+- `WeakShared`
+- `hashset`
 - `assert`
 - `assert_eq`
 - `assert_ne`
@@ -129,21 +131,29 @@ Examples:
 
 Module namespace:
 
-```fidan
+```fidan check=run expect=stdout
 use std.math as math
 print(math.sqrt(144))
 ```
 
+```text
+12.0
+```
+
 Grouped imports:
 
-```fidan
+```fidan check=run expect=stdout
 use std.math.{sqrt, floor}
 print(sqrt(144))
 ```
 
+```text
+12.0
+```
+
 Whole-module import without alias:
 
-```fidan
+```fidan check=run
 use std.time
 print(time.now())
 ```
@@ -152,7 +162,7 @@ print(time.now())
 
 Prefer namespaced stdlib usage in app/library code:
 
-```fidan
+```fidan check=run
 use std.io as io
 use std.string as string
 use std.time as time

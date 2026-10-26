@@ -26,3 +26,7 @@ Editor-specific integrations live in the dedicated **Editors** section so the la
 Fidan's AI-assisted explain, fix, improve, and MCP workflows live in the official toolchain because they depend on real compiler context: diagnostics, type information, reads and writes, symbols, call graphs, and static traces.
 
 Start with [AI-native tooling](/docs/tools/ai-native-tooling) when you want the concrete command flow.
+
+## Operational guides
+
+Use the [CLI guide](/docs/tools/cli) for verbosity, argument forwarding and stderr/stdout contracts; [GitHub Actions](/docs/tools/github-actions) for exact-source CI; [troubleshooting](/docs/tools/troubleshooting) for compiler, package, linker and editor diagnosis. [Testing](/docs/tools/testing) distinguishes frontend checking, inline tests and native execution.

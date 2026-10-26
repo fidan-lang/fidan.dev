@@ -5,15 +5,16 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "e2e",
   fullyParallel: true,
+  workers: 2,
   retries: process.env.CI ? 1 : 0,
   use: {
-    baseURL: "http://127.0.0.1:4174",
+    baseURL: "http://localhost:4174",
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npx vite dev --host 127.0.0.1 --port 4174",
+    command: "npm run e2e:serve",
     port: 4174,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
   },
   projects: [
     {

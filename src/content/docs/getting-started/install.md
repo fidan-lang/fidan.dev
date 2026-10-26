@@ -8,7 +8,7 @@ order: 10
 
 # Install Fidan
 
-Fidan ships as a native CLI toolchain.
+Fidan brings its AI-native, native-first workflow to a native CLI toolchain. One installation gives you the language runner, native build entry point, formatter, REPL and language server. AI-assisted commands additionally require a compatible analysis toolchain and provider; normal editing and builds do not.
 
 :::tip Recommended path
 Use the bootstrap install path first. It keeps the install story consistent with official releases and the update commands.
@@ -58,7 +58,7 @@ If the CLI resolves and prints a version, your install is working.
 
 ## Portable vs host-tuned builds
 
-- default builds stay portable
+- choose `--target-cpu generic` explicitly for portable distribution; omitted CPU defaults differ by backend
 - `--release` enables the aggressive performance build policy
 - `--target-cpu` lets you override the default when you need portability or a
   specific CPU/features target
@@ -81,3 +81,7 @@ fidan build app.fdn --release
 :::warning Portability reminder
 `--release` defaults to `native` CPU tuning. If the produced binary must run on other machines, override it explicitly with `--target-cpu generic` or another compatible CPU target.
 :::
+
+## Upcoming source candidate
+
+The public installer installs released artifacts. It does not provide unreleased reflection/decorator/logging changes. Follow [stable versus candidate compatibility](/docs/getting-started/release-candidate) for an isolated exact-source build and matching protocol-8 helper.

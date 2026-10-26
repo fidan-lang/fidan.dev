@@ -12,9 +12,9 @@ Fidan's control flow aims for readable source without hiding what the program ac
 
 ## `if`
 
-Canonical form:
+Canonical form, with `score = 92`:
 
-```fidan
+```fidan check=run context=score expect=stdout
 if score > 90 {
     print("great")
 } otherwise when score > 75 {
@@ -24,6 +24,10 @@ if score > 90 {
 }
 ```
 
+```text
+great
+```
+
 Accepted spellings:
 
 - `otherwise`
@@ -31,41 +35,84 @@ Accepted spellings:
 - `otherwise when`
 - `else if`
 
+## Logical operators: short-circuit evaluation
+
+In the upcoming compiler candidate, `and` (`&&`) and `or` (`||`) evaluate from
+left to right. Both expressions are statically checked, including an expression
+that will be skipped at runtime. Operands must be Boolean; a flexible value is
+checked when evaluated and does not use truthiness. An evaluated `nothing` is a
+runtime type error.
+
+```fidan check=run id=short-circuit-effects
+var value oftype flexible = nothing
+var nonempty = value != nothing and len(value) > 0
+assert_eq(nonempty, false)
+var evaluated = 0
+action mark with (certain result oftype boolean) returns boolean {
+    evaluated += 1
+    return result
+}
+assert_eq(false and mark(true), false)
+assert_eq(true or mark(false), true)
+assert_eq(evaluated, 0)
+assert_eq(true and mark(true), true)
+assert_eq(false or mark(false), false)
+assert_eq(evaluated, 2)
+```
+
+`false and rhs` returns false without evaluating `rhs`; `true or rhs` returns
+true without evaluating `rhs`. `true and rhs` and `false or rhs` evaluate `rhs`
+exactly once and propagate its errors. Ternaries likewise evaluate only their
+selected branch; `??` evaluates its fallback only when the left value is nothing.
+
+This is an intentional compatibility change from the previous eager logical
+implementation, not a feature of the published 1.0.16 binary. Move work into an
+explicit preceding statement if it must run regardless of the Boolean result.
+
 ## Ternary expressions
 
 Fidan supports expression-form conditionals:
 
-```fidan
+```fidan check=run context=score
 var label = "pass" if score >= 5 else "fail"
+assert_eq(label, "pass")
 ```
 
 There is also an implicit-subject shorthand that reads naturally for null checks:
 
-```fidan
+```fidan check=run context=nullable
 var actual = value if is not nothing else fallback
+assert_eq(actual, "fallback")
 ```
 
 Equivalent to:
 
-```fidan
+```fidan check=run context=nullable
 var actual = value if (value != nothing) else fallback
+assert_eq(actual, "fallback")
 ```
 
 ## `for`
 
-Loop over any iterable expression:
+Loop over any iterable expression; this example uses `items = [1, 2, 3]`:
 
-```fidan
+```fidan check=run context=items expect=stdout
 for item in items {
     print(item)
 }
+```
+
+```text
+1
+2
+3
 ```
 
 ### Ranges
 
 Exclusive end:
 
-```fidan
+```fidan check=run
 for i in 0..10 {
     print(i)
 }
@@ -73,7 +120,7 @@ for i in 0..10 {
 
 Inclusive end:
 
-```fidan
+```fidan check=run
 for i in 0...10 {
     print(i)
 }
@@ -81,7 +128,7 @@ for i in 0...10 {
 
 ## `while`
 
-```fidan
+```fidan check=run context=loop
 while running {
     tick()
 }
@@ -98,7 +145,7 @@ Alias:
 
 - `stop` = `break`
 
-```fidan
+```fidan check=run context=string-items
 for item in items {
     if item == "skip" {
         continue
@@ -115,7 +162,9 @@ Fidan's pattern-style multi-branch form is `check`.
 
 Statement form:
 
-```fidan
+With `code = 200`:
+
+```fidan check=run context=status expect=stdout
 check code {
     200 => print("ok")
     404 => print("missing")
@@ -123,14 +172,19 @@ check code {
 }
 ```
 
+```text
+ok
+```
+
 Expression form:
 
-```fidan
+```fidan check=run context=status
 var label = check code {
     200 => "ok"
     404 => "missing"
     otherwise => "other"
 }
+assert_eq(label, "ok")
 ```
 
 Wildcard spellings:
@@ -142,7 +196,7 @@ Wildcard spellings:
 
 Error-handling flow also belongs to control flow:
 
-```fidan
+```fidan check=run context=errors
 attempt {
     risky()
 } catch error {
@@ -163,7 +217,7 @@ Aliases:
 
 Trigger an immediate runtime failure:
 
-```fidan
+```fidan check=runtime-error error=R1002
 panic("bad state")
 ```
 
@@ -180,12 +234,12 @@ Fidan uses newline-aware statement separation. You can also use:
 
 Examples:
 
-```fidan
+```fidan check=run
 var x = 1
 var y = 2
 ```
 
-```fidan
+```fidan check=run
 var x = 1; var y = 2
 ```
 
@@ -203,7 +257,7 @@ The compiler and LSP detect structural dead code, including:
 - `while false { ... }`
 - constant and `const var` boolean cases such as:
 
-```fidan
+```fidan check=run
 const var enabled = false
 
 if enabled {
@@ -222,11 +276,12 @@ In the editor, these warnings are marked as unnecessary so unreachable code can 
 
 Example:
 
-```fidan
+```fidan check=run context=status
 var kind = check status {
     200 => "ok"
     404 => "not-found"
     500 => "server-error"
     otherwise => "other"
 }
+assert_eq(kind, "ok")
 ```

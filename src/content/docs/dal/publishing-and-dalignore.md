@@ -48,7 +48,7 @@ Dal only allows a controlled top-level package layout such as:
 - `docs/`
 - `assets/`
 - `README*`
-- `LICENSE*`
+- `LICENSE*`, `NOTICE*`
 - `CHANGELOG.md`
 - `.dalignore`
 - `dal.toml`
@@ -91,3 +91,15 @@ Packaging refuses to let you ignore critical package files like:
 - declared CLI entry
 
 That is intentional. A package should not be able to hide its own required contract.
+
+## Relaunch candidate integrity and reproducibility
+
+The matching compiler/registry audit candidate verifies sparse-index SHA-256 before extraction, checks package/version/compiler identity, bounds decompression, rejects links/traversal/duplicate destination paths, and commits installation through a sibling staging directory. An existing cache must match the verified archive; use `--force` to repair differences. The HTTPS registry/index remains a trusted checksum source; this is integrity checking, not publisher signing.
+
+`dal.lock` schema1 gains optional `checksum` and `fidan` fields without breaking legacy locks. New resolutions exclude yanked versions. An existing checksum-bearing lock may retain its exact yanked version and checksum, and immutable downloads remain available. Legacy locks do not grant a checksum-free yank exception. Yank and unyank preserve artifacts. Version/constraint changes re-resolve when the previous graph no longer satisfies them; ordinary add preserves still-compatible locked choices.
+
+`[package].include` and `.exclude` narrow the allowed surface. Git metadata, build caches and `.env` files are excluded automatically. Required init/manifest/lock/declared readme/CLI paths still apply. Review the local archive before publishing. Do not put tokens in command arguments or archives; prefer `FIDAN_DAL_API_TOKEN` in CI.
+
+## Local args candidate
+
+`args@0.1.0` is prepared locally and is not published. Its owner-approved API uses `@command` and `run(callback)`: parameter names, types and defaults come from compiler metadata, and parse failures throw `ArgumentError` objects. Flags, typed value options, positionals and `--` pass-through are tested locally. It requires the audit compiler candidate and LLVM helper protocol 8; published Fidan 1.0.16 does not yet expose that metadata/invocation API. Public `fidan dal add args` examples become valid only after the owner approves its registry publication and coordinated compiler/helper release. Test it first against the disposable local Dal gate; no production publish is part of this audit.

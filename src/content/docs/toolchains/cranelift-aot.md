@@ -20,11 +20,11 @@ fidan build app.fdn --backend cranelift --output app
 
 - fast native compile times
 - no optional external LLVM toolchain required
-- strong runtime performance with a simpler install story
+- a native backend integrated into the standard compiler build
 
 ## Target CPU note
 
-Cranelift currently treats omitted target CPU and `native` as the supported host-ISA path. Rich custom CPU plus feature specifications are currently an LLVM-only strength.
+Cranelift supports host `native`, `generic`, and recognized CPU presets/features. An omitted CPU selects the host ISA. Specify `--target-cpu generic` for distribution; unsupported presets/features are errors. CPU tuning is not cross-OS compilation. See [target CPU](/docs/toolchains/target-cpu-and-portability).
 
 ## Typical usage
 

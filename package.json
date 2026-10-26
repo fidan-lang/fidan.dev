@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "author": {
-    "name": "Kaan Gönüldinc",
+    "name": "Kaan G\u00f6n\u00fcldinc",
     "email": "contact@appsolves.dev",
     "url": "https://appsolves.dev"
   },
@@ -16,6 +16,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "prebuild": "npm run sync-legal",
+    "sync-legal": "node -e \"const fs=require('fs'); for (const name of ['LICENSE','NOTICE']) fs.copyFileSync(name, 'static/'+name+'.txt');\"",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "lint": "prettier --check . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -25,16 +27,21 @@
     "format:all": "npm exec -- prettier --write .",
     "format:all:check": "npm exec -- prettier --check .",
     "prepare": "node ./scripts/install-git-hooks.mjs",
-    "docs:check:fidan": "node ./scripts/check-fidan-docs.mjs"
+    "docs:check:fidan": "node ./scripts/check-fidan-docs.mjs",
+    "check:release-markdown": "node scripts/check-release-markdown.mjs",
+    "check:content": "node --test scripts/check-site-security.mjs",
+    "docs:check:links": "node scripts/check-documentation.mjs",
+    "docs:test": "node --test scripts/check-documentation.test.mjs scripts/check-fidan-docs.test.mjs scripts/verify-doc-dependencies.test.mjs"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260402.1",
+    "@cloudflare/workers-types": "^5",
     "@playwright/test": "^1.59.1",
     "@sveltejs/adapter-cloudflare": "^7.2.8",
     "@sveltejs/kit": "^2.55.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
     "@tailwindcss/vite": "^4.0.0",
     "@types/node": "^25.5.0",
+    "@types/sanitize-html": "^2.16.2",
     "marked": "^17.0.4",
     "prettier": "^3.3.3",
     "prettier-plugin-svelte": "^3.2.6",
@@ -43,5 +50,18 @@
     "tailwindcss": "^4.0.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1"
-  }
+  },
+  "overrides": {
+    "@sveltejs/kit": {
+      "cookie": "^0.7.2"
+    },
+    "miniflare": {
+      "undici": "7.30.1"
+    }
+  },
+  "dependencies": {
+    "sanitize-html": "^2.18.1"
+  },
+  "license": "Apache-2.0",
+  "description": "An AI-native, native-first programming language with expressive syntax, native execution backends and compiler-grounded AI tooling in one developer ecosystem."
 }

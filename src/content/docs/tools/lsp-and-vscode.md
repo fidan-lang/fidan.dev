@@ -58,3 +58,12 @@ Use the official clients when possible, but keep the mental model clear:
 - the **editor integration** is the local shell around it
 
 That split is what lets Fidan stay coherent as more editor integrations are added.
+
+## Candidate operational logging
+
+With the new compiler candidate, `fidan -vvv lsp --stdio` writes internal diagnostics
+to stderr while stdout remains JSON-RPC. The official extension can select this
+through `fidan.server.extraArgs: ["-vvv"]`; its output channel receives stderr.
+This differs from `fidan.trace.server`, which controls client-side protocol traces.
+Neither logging nor an AI provider is needed for normal editing. The published
+1.0.16 CLI does not support these new operational flags.

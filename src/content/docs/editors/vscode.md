@@ -98,7 +98,6 @@ The extension surfaces the AI-enabled CLI flows directly:
 
 - `Fidan: AI Fix File`
 - `Fidan: AI Improve File`
-- `Fidan: Explain Diagnostic Code with AI`
 - `Fidan: Explain Current Line(s) with AI`
 
 These commands still go through the official `fidan` binary, so editor behavior stays aligned with the same toolchain you use in CI and in the terminal.
@@ -106,3 +105,9 @@ These commands still go through the official `fidan` binary, so editor behavior 
 ## Recommendation
 
 Use the official VS Code extension if you want the docs, compiler, formatter, and LSP metadata to stay aligned.
+
+## Stable and candidate configuration
+
+Normal LSP editing requires Fidan, not an AI provider. AI-assisted source explain/fix/improve additionally require a compatible `ai-analysis` helper and provider setup. Diagnostic-code explanation is deterministic: the CLI rejects `--diagnostic` combined with `--ai`.
+
+Set `fidan.server.path` to the actual candidate executable when using candidate-only APIs. `fidan.server.extraArgs` can include verbosity flags; logs remain on stderr while JSON-RPC uses stdout. Restart the language server after changing its binary. The run error limit defaults to `1`; choose `0` for unlimited errors. The selected run trace mode is also passed explicitly to REPL. Build uses the available selected AOT backend (`auto` may choose LLVM); `obj` is a build emit target, not a run target. Network/process sandbox flags are not supported.

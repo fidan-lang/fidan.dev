@@ -2,7 +2,7 @@
   import BrandMark from "$lib/components/BrandMark.svelte";
   import type { NavLink } from "$lib/data/site";
 
-  let { links } = $props<{ links: NavLink[] }>();
+  let { links }: { links: NavLink[] } = $props();
   let mobileOpen = $state(false);
 
   function closeMobileMenu() {

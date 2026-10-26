@@ -21,3 +21,7 @@ Dal exists to cover:
 - search and discovery
 - archive validation
 - publishing
+
+## Practical guides
+
+Start with [package layout](/docs/dal/package-basics) and [dal.toml](/docs/dal/dal-toml). Continue with [publishing](/docs/dal/publishing-and-dalignore), [authentication and service API](/docs/dal/registry-and-authentication), and the signature-driven [args framework](/docs/dal/args-framework). Ordinary public downloads need no account; publishing requires appropriate authorization. The official public service is intended to remain free to use.

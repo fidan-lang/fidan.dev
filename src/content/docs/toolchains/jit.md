@@ -35,7 +35,7 @@ Meaning:
 
 Use `@precompile` to request eager compilation of a specific action:
 
-```fidan
+```fidan check=compile
 @precompile
 action hot_inner_loop with (certain n oftype integer) returns integer {
     var sum = 0

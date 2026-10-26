@@ -2,7 +2,6 @@
   import Footer from "$lib/components/marketing/Footer.svelte";
   import Nav from "$lib/components/marketing/Nav.svelte";
   import { primaryNav } from "$lib/data/site";
-  import { renderMarkdown } from "$lib/utils/markdown";
 
   let { data } = $props();
 </script>
@@ -57,7 +56,7 @@
         <li>{note}</li>
       {/each}
     </ul>
-    {@html renderMarkdown(data.release.body)}
+    {@html data.bodyHtml}
   </div>
 
   {#if data.release.githubUrl}

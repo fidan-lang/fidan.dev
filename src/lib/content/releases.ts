@@ -12,6 +12,35 @@ export type ReleaseNote = {
 
 export const releases: ReleaseNote[] = [
   {
+    version: "1.0.16",
+    date: "2026-10-07",
+    title: "Fidan 1.0.16 — Windows release hotfix",
+    summary:
+      "Windows startup and release-distribution fixes, without language or runtime feature changes.",
+    highlights: [
+      "Published Windows binaries no longer incur release-time UPX packing startup latency.",
+      "Installer packaging verifies that the compiled executable remains byte-for-byte unchanged.",
+      "WinGet submission can be retried for published artifacts without rebuilding or retagging.",
+    ],
+    installNotes: [
+      "Use the stable installer or the existing v1.0.16 release archive.",
+      "Unreleased callable/decorator/logging APIs require the separately selected source candidate.",
+      "Choose --target-cpu generic explicitly when distributing native builds.",
+    ],
+    body: `## Windows release hotfix
+
+Fidan 1.0.16 removes release-time UPX modification of the Windows CLI binary and verifies that bootstrap-installer packaging leaves it unchanged. It adds no language, runtime or standard-library features.
+
+## Distribution infrastructure
+
+The release includes a reusable WinGet retry workflow for already published artifacts. Subsequent CI repairs do not replace or retag those release assets. Current publication infrastructure uses standalone WingetCreate; users do not need to rebuild Fidan to retry registry submission.
+
+## Candidate compatibility
+
+New compiler work is documented separately and is not provided by the published 1.0.16 binary. See [stable and candidate compatibility](https://docs.fidan.dev/getting-started/release-candidate).`,
+    latest: true,
+  },
+  {
     version: "1.0.0",
     date: "2026-04-01",
     title: "Fidan 1.0.0",
@@ -25,8 +54,8 @@ export const releases: ReleaseNote[] = [
     ],
     installNotes: [
       "Use the installer for your platform or download the release archive.",
-      "If you need portable binaries, keep the default target CPU or pass --target-cpu explicitly.",
-      "If you need maximum local performance, use --release.",
+      "For portable distribution, select --target-cpu generic explicitly.",
+      "Use --release for the host-tuned optimization preset; benchmark your workload.",
     ],
     body: `## Stable foundation
 
@@ -42,7 +71,7 @@ Fidan 1.0.0 is about coherence. The language, the toolchains, the package story,
 ## What this release is not
 
 It is not a promise that the language will stop evolving. It is a promise that the foundation is solid enough to build on.`,
-    latest: true,
+    latest: false,
   },
 ];
 

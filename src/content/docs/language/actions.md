@@ -12,7 +12,7 @@ Actions are Fidan's primary callable unit. If you come from another language, th
 
 ## Basic action
 
-```fidan
+```fidan check=compile
 action greet with (certain name oftype string) returns nothing {
     print("Hello, {name}")
 }
@@ -42,7 +42,7 @@ Parts:
 
 Required, but not automatically non-null:
 
-```fidan
+```fidan check=compile
 action log_value with (value oftype dynamic) returns nothing {
     print(value)
 }
@@ -52,7 +52,7 @@ action log_value with (value oftype dynamic) returns nothing {
 
 Required and non-null by contract:
 
-```fidan
+```fidan check=compile
 action greet with (certain name oftype string) returns nothing {
     print(name)
 }
@@ -62,7 +62,7 @@ action greet with (certain name oftype string) returns nothing {
 
 May be omitted, and can have defaults:
 
-```fidan
+```fidan check=compile
 action create_user with (
     certain name oftype string,
     optional age oftype integer = 18
@@ -78,7 +78,7 @@ Accepted separators:
 - `,`
 - `also`
 
-```fidan
+```fidan check=compile
 action create_user with (
     certain name oftype string also optional age oftype integer = 18
 ) returns nothing {
@@ -89,7 +89,7 @@ action create_user with (
 
 Explicit return types keep public signatures clear:
 
-```fidan
+```fidan check=compile
 action add with (certain a oftype integer, certain b oftype integer) returns integer {
     return a + b
 }
@@ -101,7 +101,7 @@ If no useful value is returned, use `returns nothing`.
 
 Fidan supports named calls:
 
-```fidan
+```fidan check=run expect=stdout
 action create_user with (
     certain name oftype string,
     optional age oftype integer = 18
@@ -113,11 +113,16 @@ create_user(name = "Ada", age = 37)
 create_user(name set "Ada", age set 37)
 ```
 
+```text
+Ada is 37
+Ada is 37
+```
+
 ## Positional arguments
 
 Normal positional calls work as expected:
 
-```fidan
+```fidan check=run context=create-user
 create_user("Ada", 37)
 create_user("Ada")
 ```
@@ -126,7 +131,7 @@ create_user("Ada")
 
 Most actions are top-level declarations:
 
-```fidan
+```fidan check=compile
 action parse_port with (text oftype string) returns integer {
     return integer(text)
 }
@@ -137,7 +142,7 @@ action parse_port with (text oftype string) returns integer {
 `action main` is a normal action declaration. It does not auto-run by itself;
 call `main()` explicitly in the module you want to execute.
 
-```fidan
+```fidan check=run expect=stdout
 action main {
     print("hello")
 }
@@ -145,14 +150,19 @@ action main {
 main()
 ```
 
+```text
+hello
+```
+
 Declarations are hoisted, so calls can appear before declaration text:
 
-```fidan
+```fidan check=run
 var value = square(8)
 
 action square with (certain x oftype integer) returns integer {
     return x * x
 }
+assert_eq(value, 64)
 ```
 
 This is also where decorators like `@precompile` and `@extern` apply.
@@ -161,7 +171,7 @@ This is also where decorators like `@precompile` and `@extern` apply.
 
 Extension actions add behavior to an existing object without editing the original object body:
 
-```fidan
+```fidan check=compile context=dog
 action bark extends Dog returns nothing {
     print("{this.name} barks")
 }
@@ -176,7 +186,7 @@ Inside an extension action:
 
 You can declare a `parallel action`:
 
-```fidan
+```fidan check=compile context=hash
 parallel action hash_chunk with (chunk oftype string) returns string {
     return do_hash(chunk)
 }
@@ -188,10 +198,11 @@ This marks the action for the parallel execution model rather than the ordinary 
 
 Actions are also first-class values through inline action expressions:
 
-```fidan
-var double = action with (value oftype integer) returns integer {
+```fidan check=run
+var double = action with (certain value oftype integer) returns integer {
     return value * 2
 }
+assert_eq(double(6), 12)
 ```
 
 This is especially useful for:
@@ -203,17 +214,18 @@ This is especially useful for:
 
 Example:
 
-```fidan
-counter.update(action with (value oftype integer) returns integer {
+```fidan check=run context=shared
+counter.update(action with (certain value oftype integer) returns integer {
     return value + 1
 })
+assert_eq(counter.get(), 1)
 ```
 
 ## Constructors
 
 Inside objects, constructors use `new` rather than a same-name action:
 
-```fidan
+```fidan check=compile
 object User {
     var name oftype string
 
@@ -229,7 +241,7 @@ Parent constructor calls go through `parent(...)`.
 
 Actions inside objects are just actions with receiver semantics:
 
-```fidan
+```fidan check=compile
 object User {
     var name oftype string
 
@@ -243,7 +255,7 @@ object User {
 
 Use `return` for explicit early exits and returned values:
 
-```fidan
+```fidan check=compile
 action max2 with (a oftype integer, b oftype integer) returns integer {
     if a > b {
         return a
@@ -265,7 +277,7 @@ Current compiler-known decorators:
 
 Example:
 
-```fidan
+```fidan check=compile
 @precompile
 action hot_path returns integer {
     return 42
@@ -284,7 +296,7 @@ Good defaults:
 
 Example:
 
-```fidan
+```fidan check=compile
 action connect with (
     certain host oftype string,
     optional port oftype integer = 5432,
@@ -293,3 +305,30 @@ action connect with (
     return {"host": host, "port": port, "tls": use_tls}
 }
 ```
+
+## Callable reflection and runtime argument lists
+
+The upcoming compiler exposes defensive `name` and `parameters` snapshots on
+first-class actions. Parameter descriptors report names, types, required/certain
+status and whether a default value is known. Reading metadata never evaluates a
+computed default or exposes captured values.
+
+```fidan check=run
+action increment with (certain value oftype integer) returns integer {
+    return value + 1
+}
+
+var callback oftype action = increment
+assert_eq(callback.name, "increment")
+assert_eq(callback.parameters[0]["name"], "value")
+assert_eq(callback(4), 5)
+assert_eq(callback.invoke([4]), 5)
+```
+
+Use the ordinary call when arguments are known in source. `invoke(list)` is the
+general operation for a runtime-computed positional argument list, for example
+inside a signature-driven CLI framework. It uses normal argument/default/type and
+exception handling, with no separate args-specific dispatcher. It does not treat
+the list as named arguments. Mutating a metadata snapshot does not alter the action.
+These APIs require the matching future compiler; they are absent from published
+Fidan 1.0.16. Select that compiler explicitly in editor `fidan.server.path`.

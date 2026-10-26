@@ -30,6 +30,90 @@ Current top-level commands:
 - `fidan exec`
 - `fidan dal`
 
+## Global operational diagnostics in the candidate
+
+| Option            | Operational diagnostics                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| none              | Off; existing output, errors, warnings and progress remain active                                            |
+| `-v`, `--verbose` | INFO: operation lifecycle, compilation/execution/backend selection, package and artifact operations          |
+| `-vv`             | DEBUG: frontend counts, phase boundaries, optimizer/build policy, cache/checksum and toolchain decisions     |
+| `-vvv`            | TRACE: nested phase timings, import processing, resolver branches, LLVM transitions and LSP document changes |
+| `-V`, `--version` | Version only; independent of verbosity                                                                       |
+
+Repeat `-v` or `--verbose` to increase the level. Counts add across nested command
+levels. More than three CLI occurrences is a usage error (exit 2). Normal compiler
+errors, warnings, essential progress and exit codes do not depend on these levels.
+The existing `--trace` option controls Fidan runtime stack reports, not these logs.
+
+## Placement and program arguments
+
+```sh
+fidan -vv run main.fdn -- --verbose -v -V
+fidan run -vv main.fdn -- --verbose
+fidan -v build main.fdn --backend cranelift --opt O3
+fidan -vv build main.fdn --backend llvm --lto full
+fidan dal -v add example-package
+fidan toolchain list -vv
+fidan -vv check .
+fidan -vvv repl
+```
+
+`run` and `exec` reserve their trailing arguments for the user program/toolchain
+command. Put Fidan verbosity **before the source file or exec namespace**. After
+that positional, `-v`, `--verbose` and `-V` belong to the program, even without
+`--`. Existing run options such as `--jit-threshold` remain supported after the
+file until the program argument tail starts. Use `--` for unequivocal forwarding:
+
+```sh
+fidan -vv run main.fdn -- --verbose > result.txt 2> compiler.log
+```
+
+Program stdout remains byte-for-byte program output. Formatter output, explicit
+IR output, profile JSON files, helper JSON and LSP JSON-RPC retain their existing
+channels. Operational diagnostics use stderr only, with no ANSI sequences, even
+in a terminal. Existing terminal-aware language-diagnostic rendering is separate.
+
+## Environment and filtering
+
+Previously the compiler did not initialize a RUST_LOG subscriber. The candidate
+supports `RUST_LOG=debug`, or first-party target directives such as
+`RUST_LOG=fidan::pipeline=debug,fidan_driver=trace`. Explicit CLI verbosity wins
+over RUST_LOG entirely, including an invalid RUST_LOG value. Without flags, an
+invalid filter is a startup error; it is never silently accepted. Accepted levels
+are `off,error,warn,info,debug,trace`. Targets must be `fidan`, `fidan::*`, or
+`fidan_*`. Field/regex filters and third-party targets are deliberately unsupported;
+`-vvv` never enables HTTP, TLS, Tokio or Cranelift dependency trace floods.
+
+The LLVM helper receives the resolved filter through a private child-process
+environment entry, not a wire-protocol change. Its diagnostics stay on stderr;
+its stdout remains the compile-response JSON. Existing explicit LLVM developer
+IR-dump switches are separate and are never enabled by verbosity.
+
+## Directory targets in the audit candidate
+
+The local audit candidate adds directory targets to `format`, `test`, `check`,
+and `fix`. This is not part of the published Fidan 1.0.16 CLI yet.
+
+```bash
+fidan format . --check
+fidan format . --in-place
+fidan test .
+fidan check .
+fidan fix .
+fidan fix . --in-place
+```
+
+Directory targets select `.fdn` files recursively in deterministic path order,
+without following symlinks. File-level errors do not prevent later files from
+being processed; the command fails if any selected file operation fails.
+Formatting uses each file's nearest `.fidanfmt`, with CLI overrides still applied.
+`check` does not execute programs. `fix` previews edits unless `--in-place` is
+specified; explicitly selected AI modes reuse the existing workflow per file.
+Remaining unfixed diagnostics can be checked with `fidan check`.
+
+`run`, `build`, and `profile` still take an entry-point file; `explain` targets a
+file and optional source lines. They do not recursively execute source modules.
+
 ## `fidan run`
 
 Run a Fidan source file through the interpreter, optionally with JIT hot-path compilation.
@@ -73,7 +157,7 @@ Compile a source file to a native binary.
 fidan build app.fdn --output app
 ```
 
-### Important flags
+### Important flags: `fidan build`
 
 - `--output <path>`
 - `--opt O0|O1|O2|O3|Os|Oz`
@@ -178,6 +262,8 @@ Useful for:
 
 `--trace` is supported here too for panic stack reporting.
 
+The REPL defaults runtime traces to `short` (unlike `run`, which defaults to `none`). Use `--max-errors-per-input` to bound each submission's diagnostics. Built-in session commands include `:help`, `:exit`/`:quit`/`:q`, `:clear`/`:cls`, `:reset`, `:cancel`, `:ast <snippet>`, `:type <expr>` and `:last [--full]`. Multiline blocks accumulate until their braces close; `:cancel` discards an unfinished block. Interactive terminal rendering and automated stdin sessions have different prompt presentation, but use the same frontend/runtime semantics.
+
 ## `fidan lsp`
 
 Start the language server:
@@ -240,7 +326,7 @@ fidan fix app.fdn --improve "refactor for readability"
 
 By default, `fidan fix` prints the proposed result to stdout so you can review it first. Use `--in-place` when you want the file rewritten.
 
-### Useful flags
+### Useful flags: `fidan fix`
 
 - `--in-place`
 - `--ai [steering text]`
@@ -326,7 +412,7 @@ If no version is provided for `install`, `use`, or `remove`, the CLI resolves `l
 
 Manage optional toolchains like LLVM and AI analysis.
 
-### Subcommands
+### Subcommands: `fidan toolchain`
 
 - `fidan toolchain available`
 - `fidan toolchain list`
@@ -378,7 +464,7 @@ For the complete model, see [AI-native tooling](/docs/tools/ai-native-tooling).
 
 Work with the Dal package registry.
 
-### Subcommands
+### Subcommands: `fidan dal`
 
 - `login`
 - `logout`
@@ -392,13 +478,13 @@ Work with the Dal package registry.
 - `yank`
 - `unyank`
 
-### Examples
+### Examples: `fidan dal`
 
 ```bash
 fidan dal login
 fidan dal search regex
 fidan dal info torch
-fidan dal add json_parser
+fidan dal add json-parser
 fidan dal package
 fidan dal publish
 ```
@@ -408,7 +494,7 @@ fidan dal publish
 Package requests can include feature selections:
 
 ```bash
-fidan dal add torch[pybindings,gpu]
+fidan dal add 'demo[pretty]'
 ```
 
 ## Common workflows
@@ -416,7 +502,7 @@ fidan dal add torch[pybindings,gpu]
 ### Fast edit-run loop
 
 ```bash
-fidan run app.fdn --reload
+fidan run --reload app.fdn
 ```
 
 ### Strict CI validation
@@ -481,3 +567,23 @@ For package work:
 - `fidan dal add`
 - `fidan dal package`
 - `fidan dal publish`
+
+## Program arguments: Recommended usage pattern
+
+Put Fidan verbosity flags before the source filename. Recognized run options can follow the filename until the trailing program-argument sequence begins. Use `--` to make the boundary explicit:
+
+```bash
+fidan run --trace none main.fdn -- --name Dal --verbose
+fidan run main.fdn --name Dal --verbose
+```
+
+Both forms forward the same three arguments through `std.env.args()` / `std.io.args()`; those APIs exclude the script executable/name. Prefer the explicit `--` separator in examples. Registry package names use hyphens, not underscores; the corresponding import module replaces hyphens with underscores. Package names in examples must exist in the chosen registry. See the Dal relaunch candidate guide for compatibility, checksum and lock/yank policy; do not assume unpublished candidate changes are already in the stable CLI.
+
+### Application argument example
+
+The documentation harness runs this complete program with the three forwarded tokens shown below, independently of Fidan's own verbosity setting.
+
+```fidan check=run id=program-arguments
+use std.env as env
+assert_eq(env.args(), ["--verbose", "-v", "-V"])
+```

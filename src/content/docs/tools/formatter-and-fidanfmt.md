@@ -70,3 +70,9 @@ The VS Code extension uses the same formatting backend. If formatting looks wron
 3. check workspace/editor overrides
 
 Fidan's own preferred indentation is 4 spaces.
+
+## Directory and slice behavior in the candidate
+
+`fidan format . --check` recursively checks `.fdn` files in deterministic order without following directory symlinks. Explicit files still require the supported extension. `--in-place` writes changes; review the diff before committing.
+
+Bracket slices canonicalize to colon syntax: `items[1:5]`, `items[:5]`, `items[2:]`, `items[::-1]`, `items[1:10:2]`. Legacy range-style slices remain accepted as input. Standalone `1..5` ranges keep range syntax. See [collections and ranges](/docs/language/collections-and-enums).

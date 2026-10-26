@@ -10,8 +10,12 @@ order: 20
 
 Create a file named `hello.fdn`.
 
-```fidan
+```fidan check=run expect=stdout
 print("hello from Fidan")
+```
+
+```text
+hello from Fidan
 ```
 
 Run it:
@@ -33,12 +37,16 @@ That gives you a native executable instead of interpreted execution.
 
 ## Try a slightly less trivial example
 
-```fidan
+```fidan check=run expect=stdout
 action greet with (certain name oftype string) returns nothing {
     print("hello, {name}")
 }
 
 greet("Fidan")
+```
+
+```text
+hello, Fidan
 ```
 
 ## What to notice
