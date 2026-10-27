@@ -8,9 +8,11 @@ order: 440
 
 # LLVM AOT
 
-LLVM AOT is an optional native compilation backend. The current release toolchain
-uses LLVM 23.1.2 and helper 1.0.6; supported language/runtime behavior still
-needs backend-specific regression coverage. The upcoming source candidate requires a protocol-8 helper built from its matching source; the public helper is not a substitute.
+LLVM AOT is an optional native compilation backend. Fidan **1.1.0** requires
+LLVM toolchain/helper **1.1.0**, backend protocol **8**, using upstream LLVM
+**23.1.2**. The historical helper 1.0.6 uses protocol 5 and belongs to Fidan
+1.0.16. Install only a compatible package after its distribution is available;
+source metadata alone does not establish that publication has completed.
 
 ## Build example
 
@@ -55,13 +57,13 @@ Portable override:
 fidan build app.fdn --backend llvm --release --target-cpu generic
 ```
 
-## Relaunch audit branch compatibility
+## Compiler/helper compatibility
 
-The published LLVM 23.1.2 toolchain and helper 1.0.6 belong to the released
-compiler contract. The Dal relaunch source branch introduces internal LLVM backend protocol 8
-for package-module/export identity, callable metadata and optional scalar parameter
-ABI support, plus thread-local native global ownership and worker snapshots. It rejects older protocol 5/6/7 helpers.
-The selected release pair is Fidan 1.1.0 stable and LLVM helper 1.1.0; publication
-still requires separate approval. Do not overwrite
-published 1.0.16/1.0.6 artifacts or mix an audit compiler with an older helper. The
-private audit helper is test evidence, not an available public release.
+Protocol 8 preserves package-module/export identity, callable metadata, optional
+scalar parameters and thread-local native globals/worker snapshots. Fidan 1.1.0
+rejects protocol-5/6/7 helpers. Keep compiler and LLVM helper 1.1.0 together;
+existing published 1.0.16/1.0.6 artifacts remain unchanged.
+
+The independent AI Analysis toolchain **1.0.5** retains helper protocol **2**.
+It is optional and does not provide the LLVM backend. DAL production launch,
+args publication, website deployment and editor publication remain separate gates.

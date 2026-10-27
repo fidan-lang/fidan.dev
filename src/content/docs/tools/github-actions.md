@@ -15,7 +15,7 @@ The Setup Action installs a release archive selected from the configured release
 steps:
   - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
   # Requires the audited action commit to be available remotely.
-  - uses: fidan-lang/fidan-actions/setup@096d2a496cfd03b31fb0e67e4cdbb34f23f98df3
+  - uses: fidan-lang/fidan-actions/setup@f02424b12857f728098a2ec42760ad8c4304aa7d
     with:
       version: "1.1.0"
       cache: "true"

@@ -11,9 +11,9 @@ order: 15
 
 The publicly released **Fidan 1.0.16** remains the stable Windows hotfix release. The upcoming source candidate adds callable metadata/invocation, custom decorator fixes, lazy Boolean evaluation and global verbosity. Do not install `latest` and assume those APIs exist.
 
-The candidate source currently still reports package version `1.0.16`; therefore `--version` alone cannot establish compatibility. Website CI selects the full immutable compiler SHA in `ci/compiler-candidate.json`, verifies the actual clean checkout identity, builds with `--locked`, and runs a behavioral reflection/decorator probe before checking examples. The recorded SHA must be remotely available before coordinated GitHub CI can fetch it.
+The release source reports **Fidan 1.1.0**. The previously published 1.0.16 binary does not provide these APIs. Website CI selects the full immutable compiler SHA in `ci/compiler-candidate.json`, verifies the actual clean checkout identity, builds with `--locked`, and runs a behavioral reflection/decorator probe before checking examples. The recorded SHA must be remotely available before coordinated GitHub CI can fetch it.
 
-The proposed coordinated version overlay is recorded in the compiler's `config/release-candidate.json`. The owner has selected the 1.1.0 stable target; release publication is not yet approved or performed. The upcoming LLVM helper uses **backend protocol 8**; a previously published helper is not interchangeable merely because its package version looks familiar.
+The committed release versions are recorded in the compiler's `config/release-candidate.json`: compiler and LLVM helper/toolchain **1.1.0**, AI Analysis helper/toolchain **1.0.5**. Publication is a separate verified workflow gate, not implied by source version metadata. The upcoming LLVM helper uses **backend protocol 8**; a previously published helper is not interchangeable merely because its package version looks familiar.
 
 ## Isolated source build
 
@@ -39,10 +39,10 @@ Boolean `and`/`or` now skip the unnecessary right operand. Remove dependencies o
 ## Planned stable release order
 
 The selected target is **Fidan 1.1.0 stable**, **LLVM helper 1.1.0** (protocol 8)
-and **args 0.1.0**, with no intermediate public RC. Engineering/merge gates come
+**AI Analysis 1.0.5** (helper protocol 2), and **args 0.1.0**, with no intermediate public RC. Engineering/merge gates come
 first, then stable compiler/helper artifacts, production DAL readiness and launch,
 args publication, and the approved editor/website/distribution updates.
 The args source sentinel remains until the compiler and registry gates are met.
-Source-candidate CI still expects the actual reported source version; preparation
-applies the stable versions only in an isolated release copy. Existing stable
+Source CI expects the committed 1.1.0 version and verifies exact source identity;
+isolated preparation remains available for installation and rollback rehearsals. Existing stable
 artifacts are never overwritten to add new APIs.
