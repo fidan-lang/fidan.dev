@@ -9,7 +9,7 @@ order: 370
 
 ## Confirm the binary and source contract
 
-Check `fidan --version`, then the executable resolved by your shell (`Get-Command fidan` on PowerShell, `command -v fidan` on Unix). For candidate-only behavior, invoke the isolated build path directly and compare its checked-out source SHA with the coordinated candidate contract. A version string alone cannot distinguish old published 1.0.16 from a source checkout retaining that package version.
+Check `fidan --version`, then the executable resolved by your shell (`Get-Command fidan` on PowerShell, `command -v fidan` on Unix). For candidate-only behavior, invoke the isolated build path directly and compare its checked-out source SHA with the coordinated candidate contract. The current release source reports 1.1.0; the older published 1.0.16 binary does not provide the new callable/decorator contracts. Exact source CI still verifies the commit and behavior.
 
 Use `fidan -v check app.fdn` for lifecycle information, `-vv` for phase/resolver details and `-vvv` for targeted tracing. Put these flags before the source file. Logs go to stderr; program stdout and JSON-RPC stay separate. Existing errors and warnings remain visible without verbosity. `--trace full` is a runtime stack-report choice, not the operational logging level.
 
