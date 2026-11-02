@@ -181,6 +181,41 @@ try {
       result.stdout,
     );
   });
+  test("operator guide contains checked XOR output, type errors and dynamic errors", () => {
+    const samples = extractFences(
+      path.join(cwd, "src/content/docs/language/expressions-and-operators.md"),
+    );
+    assert(
+      samples.some(
+        (sample) =>
+          sample.code.includes("visits += name") &&
+          sample.expected === "true\nleftright\n",
+      ),
+    );
+    assert(
+      samples.some(
+        (sample) =>
+          sample.code.includes("print(4 ^ 2 & 3)") &&
+          sample.expected === "6\n2\n",
+      ),
+    );
+    assert(
+      samples.some(
+        (sample) =>
+          sample.info.check === "error" &&
+          sample.info.error === "E0203" &&
+          sample.code.includes("xor"),
+      ),
+    );
+    assert(
+      samples.some(
+        (sample) =>
+          sample.info.check === "runtime-error" &&
+          sample.info.error === "R0001" &&
+          sample.code.includes("xor"),
+      ),
+    );
+  });
   test("inline test examples execute test bodies", () => {
     assert.equal(check('test "works" { assert_eq(2, 2) }', "test").status, 0);
     assert.notEqual(

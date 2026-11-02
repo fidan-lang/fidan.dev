@@ -9,11 +9,25 @@ order: 15
 
 ## Two distinct contracts
 
-The publicly released **Fidan 1.0.16** remains the stable Windows hotfix release. The upcoming source candidate adds callable metadata/invocation, custom decorator fixes, lazy Boolean evaluation and global verbosity. Do not install `latest` and assume those APIs exist.
+The publicly released **Fidan 1.1.0** provides callable reflection/invocation,
+custom decorator fixes, lazy Boolean evaluation and global verbosity. The older
+1.0.16 binary does not provide those APIs.
 
-The release source reports **Fidan 1.1.0**. The previously published 1.0.16 binary does not provide these APIs. Website CI selects the full immutable compiler SHA in `ci/compiler-candidate.json`, verifies the actual clean checkout identity, builds with `--locked`, and runs a behavioral reflection/decorator probe before checking examples. The recorded SHA must be remotely available before coordinated GitHub CI can fetch it.
+**Logical `xor` and corrected bitwise precedence are not in stable 1.1.0.**
+They require the exact compiler source selected by `ci/compiler-candidate.json`.
+The candidate still reports 1.1.0 until release preparation; a version string
+alone cannot establish these capabilities. Website CI verifies the actual clean
+checkout identity, builds with `--locked`, and executes reflection, decorator,
+XOR and precedence probes before checking examples. There is no `latest` or
+public-stable fallback. See the [operator migration guide](/docs/language/expressions-and-operators#precedence-and-migration).
 
-The committed release versions are recorded in the compiler's `config/release-candidate.json`: compiler and LLVM helper/toolchain **1.1.0**, AI Analysis helper/toolchain **1.0.5**. Publication is a separate verified workflow gate, not implied by source version metadata. The upcoming LLVM helper uses **backend protocol 8**; a previously published helper is not interchangeable merely because its package version looks familiar.
+LLVM helper/toolchain **1.1.0** uses backend protocol **8**. AI Analysis
+helper/toolchain **1.0.5** uses protocol **2**. XOR uses existing MIR/runtime
+operations and remains protocol-8 wire-compatible. Published LLVM package
+metadata currently permits compiler `^1.1.0`; a future 2.0 release must prepare
+explicitly compatible toolchain metadata rather than bypassing that check.
+Because corrected precedence can change valid programs' results, **2.0.0 is the
+recommended next release boundary**, not an already published or selected version.
 
 ## Isolated source build
 
@@ -28,7 +42,7 @@ On Windows, run `./target/release/fidan.exe`. Invoke that path explicitly; do no
 
 ## Packages and editors
 
-The new `args` source requires the candidate's reflection, decorator and short-circuit semantics. Its unreleased compatibility sentinel intentionally prevents an accidental claim that the old public compiler supports it. Local test staging replaces the constraint only in an isolated package copy after executing the actual compiler capability test. See [args](/docs/dal/args-framework).
+The `args` source requires reflection, decorator and short-circuit semantics supplied by Fidan 1.1.0 or a compatible candidate. Its unreleased compatibility sentinel intentionally prevents an accidental claim that the old public compiler supports it. Local test staging replaces the constraint only in an isolated package copy after executing the actual compiler capability test. See [args](/docs/dal/args-framework).
 
 Normal editing with the released extension does not require AI configuration. For candidate-only language APIs, point `fidan.server.path` at the isolated candidate binary and test the matching editor source. AI commands additionally need a compatible analysis toolchain/provider. Source CI pins compiler and installer revisions explicitly; see [GitHub Actions](/docs/tools/github-actions).
 
@@ -36,13 +50,11 @@ Normal editing with the released extension does not require AI configuration. Fo
 
 Boolean `and`/`or` now skip the unnecessary right operand. Remove dependencies on RHS side effects. Both operands still receive static diagnostics. The formatter canonicalizes bracket slices to colon syntax while preserving range aliases as input. Normal run output stays on stdout; optional `-v` diagnostics use stderr. Review the [operators](/docs/language/expressions-and-operators) and [CLI](/docs/tools/cli) guides before migrating automation.
 
-## Planned stable release order
+## Publication gates
 
-The selected target is **Fidan 1.1.0 stable**, **LLVM helper 1.1.0** (protocol 8)
-**AI Analysis 1.0.5** (helper protocol 2), and **args 0.1.0**, with no intermediate public RC. Engineering/merge gates come
-first, then stable compiler/helper artifacts, production DAL readiness and launch,
-args publication, and the approved editor/website/distribution updates.
-The args source sentinel remains until the compiler and registry gates are met.
-Source CI expects the committed 1.1.0 version and verifies exact source identity;
-isolated preparation remains available for installation and rollback rehearsals. Existing stable
-artifacts are never overwritten to add new APIs.
+Published 1.1.0 compiler/helper artifacts and AI Analysis 1.0.5 are separate
+from the next compiler candidate. Source version metadata alone never proves
+publication. DAL production readiness and launch must precede args 0.1.0
+publication; its source sentinel remains until registry and compatibility gates
+are approved. Website and editor publication are separate approved operations.
+Existing stable artifacts must never be overwritten to add new APIs.
