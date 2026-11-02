@@ -231,8 +231,7 @@ function runtimeCheck(bin, filePath, cwd, scenario = {}) {
   );
 }
 
-// Capability checks intentionally test behavior: the source candidate still has
-// the old package version, so a --version check alone cannot establish support.
+// Source candidates can share a version with stable; test behavior as well as identity.
 function verifyCapabilities(bin, tempRoot, cwd) {
   if (process.env.FIDAN_EXPECTED_VERSION) {
     const version = runCommand(bin, ["--version"], cwd);
@@ -256,13 +255,15 @@ action replace_action with (certain callback oftype action) returns action { ret
 @replace_action
 action decorated with (certain value oftype integer) returns integer { return value + 1 }
 assert_eq(decorated(4), 6)
+assert_eq(true xor false, true)
+assert_eq(4 ^ 2 & 3, 6)
 `,
     "utf8",
   );
   const result = runtimeCheck(bin, probe, cwd);
   if (result.status !== 0)
     throw new Error(
-      `Incompatible compiler candidate: callable reflection/invocation and decorator replacement capability check failed. Select the exact ci/compiler-candidate.json source commit.\n${result.stderr || result.stdout}`,
+      `Incompatible compiler candidate: callable reflection/invocation, decorator replacement, XOR or operator precedence capability check failed. Select the exact ci/compiler-candidate.json source commit.\n${result.stderr || result.stdout}`,
     );
 }
 

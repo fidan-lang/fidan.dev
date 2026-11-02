@@ -156,3 +156,38 @@ test("homepage leads with AI-native/native-first benefits for Python, Rust and G
     }),
   ).toBeVisible();
 });
+
+test("operator docs distinguish unreleased XOR and render precedence as three columns", async ({
+  page,
+}) => {
+  await page.goto("/language/expressions-and-operators");
+  await expect(
+    page.getByRole("heading", { name: "Logical XOR: eager and Boolean-only" }),
+  ).toBeVisible();
+  await expect(page.locator("main")).toContainText(
+    "not the published Fidan 1.1.0 binary",
+  );
+  await expect(page.locator("main")).toContainText(
+    'print(mark("left", true) xor mark("right", false))',
+  );
+  await page
+    .getByRole("link", { name: "syntax reference", exact: true })
+    .click();
+  const table = page.locator("table").filter({ hasText: "Logical XOR" });
+  await expect(table.locator("thead th")).toHaveText([
+    "Tier",
+    "Operators",
+    "Association",
+  ]);
+  for (const [tier, operator] of [
+    ["Bitwise OR", "|"],
+    ["Logical XOR", "xor"],
+    ["Logical OR", "or, ||"],
+  ]) {
+    const row = table
+      .locator("tbody tr")
+      .filter({ has: page.getByRole("cell", { name: tier, exact: true }) });
+    await expect(row.locator("td")).toHaveCount(3);
+    await expect(row.locator("td").nth(1)).toHaveText(operator);
+  }
+});

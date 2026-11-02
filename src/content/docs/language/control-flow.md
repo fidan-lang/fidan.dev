@@ -37,7 +37,7 @@ Accepted spellings:
 
 ## Logical operators: short-circuit evaluation
 
-In the upcoming compiler candidate, `and` (`&&`) and `or` (`||`) evaluate from
+Since Fidan 1.1.0, `and` (`&&`) and `or` (`||`) evaluate from
 left to right. Both expressions are statically checked, including an expression
 that will be skipped at runtime. Operands must be Boolean; a flexible value is
 checked when evaluated and does not use truthiness. An evaluated `nothing` is a
@@ -68,6 +68,9 @@ selected branch; `??` evaluates its fallback only when the left value is nothing
 This is an intentional compatibility change from the previous eager logical
 implementation, not a feature of the published 1.0.16 binary. Move work into an
 explicit preceding statement if it must run regardless of the Boolean result.
+
+The unreleased logical `xor` operator evaluates both operands exactly once,
+left to right. It does not short-circuit; see the [XOR contract and examples](/docs/language/expressions-and-operators#logical-xor-eager-and-boolean-only).
 
 ## Ternary expressions
 

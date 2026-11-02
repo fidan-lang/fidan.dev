@@ -666,6 +666,7 @@ var lookup = {x: x * x for x in values}
 Canonical:
 
 - `and`
+- `xor` (unreleased next-release candidate; Boolean exclusive-or)
 - `or`
 - `not`
 
@@ -727,19 +728,36 @@ var actual = maybe_value ?? fallback
 
 ## Operator precedence
 
-From lower to higher:
+The following table describes the **unreleased next-release candidate**, from
+highest to lowest precedence. Fidan 1.1.0 uses the older bitwise grouping; see
+[operator migration notes](/docs/language/expressions-and-operators#precedence-and-migration)
+before upgrading.
 
-1. ternary `a if cond else b`
-2. null-coalescing `??`
-3. ranges `..`, `...`
-4. `or`
-5. `and`
-6. comparisons
-7. `+`, `-`, `|`
-8. `*`, `/`, `%`, `&`, shifts
-9. power `**` and `^`
-10. unary prefix `+`, `-`, `not`, `spawn`, `await`
-11. postfix call, field access, indexing, slicing
+| Tier            | Operators                                          | Association                  |
+| --------------- | -------------------------------------------------- | ---------------------------- |
+| Postfix         | calls, `.`, `[]`                                   | left                         |
+| Prefix          | `not`/`!`, unary `+`/`-`, `spawn`, `await`         | nested prefix                |
+| Power           | `**` (`pow`)                                       | left                         |
+| Multiplicative  | `*`, `/`, `%` (`mod`)                              | left                         |
+| Additive        | `+`, `-`                                           | left                         |
+| Shifts          | `<<`, `>>`                                         | left                         |
+| Bitwise AND     | `&`                                                | left                         |
+| Bitwise XOR     | `^`                                                | left                         |
+| Bitwise OR      | `\|`                                               | left                         |
+| Comparisons     | `==`, `!=`, `<`, `<=`, `>`, `>=`, readable aliases | left                         |
+| Logical AND     | `and`, `&&`                                        | left, short-circuit          |
+| Logical XOR     | `xor`                                              | left, eager                  |
+| Logical OR      | `or`, `\|\|`                                       | left, short-circuit          |
+| Range           | `..`, `...`                                        | left                         |
+| Null coalescing | `??`                                               | left, lazy right side        |
+| Conditional     | `value if condition else fallback`                 | explicit nesting recommended |
+
+Prefix `not` binds more tightly than comparisons: use `not (a < b)` to negate
+a comparison. Power preserves its existing left association: `2 ** 3 ** 2`
+is `64`, whereas `2 ** (3 ** 2)` is `512`. XOR operators `^` and `xor` are
+left-associative; neither short-circuits. Logical `xor` is contextual rather
+than reserved, preserving existing identifiers. Parser and formatter share
+these rules; parentheses preserve intentionally different grouping.
 
 ## Type syntax
 

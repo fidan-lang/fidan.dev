@@ -108,8 +108,10 @@ claim official affiliation or endorsement.
 
 ## Implementation-verified documentation
 
-The public stable installer currently supplies Fidan 1.0.16. Candidate-only pages
-are explicitly identified; their CI never substitutes `latest` for the selected
+The public stable compiler is Fidan 1.1.0. Logical `xor` and corrected bitwise
+precedence require the next-release source candidate, even while that source
+still reports 1.1.0. Candidate-only pages are explicitly identified; CI checks
+behavior as well as version and never substitutes `latest` for the selected
 source. `ci/compiler-candidate.json` pins compiler, installer and args commits.
 Those commits must be available remotely before dependent PR CI can check them out.
 

@@ -1,7 +1,7 @@
 ---
 title: "Expressions and operators"
-description: "Boolean short-circuiting, numeric errors, shifts, equality and evaluation order."
-summary: "Boolean short-circuiting, numeric errors, shifts, equality and evaluation order."
+description: "Boolean short-circuiting and XOR, operator precedence, numeric errors and evaluation order."
+summary: "Boolean short-circuiting and XOR, operator precedence, numeric errors and evaluation order."
 order: 112
 ---
 
@@ -35,6 +35,89 @@ assert(caught)
 ```fidan check=error error=E0203
 var invalid = false and 42
 ```
+
+## Logical XOR: eager and Boolean-only
+
+**Unreleased:** logical `xor` and the corrected bitwise precedence below require
+[the exact next-release compiler candidate](/docs/getting-started/release-candidate),
+not the published Fidan 1.1.0 binary. The recommended release boundary is 2.0.0
+because unparenthesized mixed bitwise expressions can change their result.
+
+`xor` returns true when exactly one Boolean operand is true. Both expressions
+are evaluated exactly once, left to right, including when the left value is
+false or true. An exception in the left expression stops evaluation normally.
+If both expressions return, both run before runtime Boolean validation.
+Unlike `and` and `or`, XOR never short-circuits.
+
+```fidan check=run expect=stdout
+assert_eq(false xor false, false)
+assert_eq(false xor true, true)
+assert_eq(true xor false, true)
+assert_eq(true xor true, false)
+var visits = ""
+action mark with (certain name oftype string, certain value oftype boolean) returns boolean {
+    visits += name
+    return value
+}
+print(mark("left", true) xor mark("right", false))
+print(visits)
+```
+
+```text
+true
+leftright
+```
+
+There is no integer/Boolean conversion: `^` is integer bitwise XOR, while `xor`
+is logical Boolean XOR. Static invalid operands produce `E0203`; invalid
+flexible/dynamic operands raise catchable `R0001`, even if the result is unused.
+Both operands always receive normal static checking.
+
+```fidan check=error error=E0203
+var invalid = false xor 1
+```
+
+```fidan check=runtime-error error=R0001
+var invalid oftype flexible = nothing
+print(false xor invalid)
+```
+
+`xor` is contextual, so it remains a valid variable, action, parameter, import
+or field name. `var xor = true; print(xor xor false)` uses both meanings.
+A new line beginning with `xor` starts a statement, preserving existing
+`xor(value)` calls. Keep a binary XOR expression together on its expression line.
+
+## Precedence and migration
+
+The [syntax reference](/docs/reference/syntax-reference#operator-precedence)
+lists every tier. From tighter to looser, bitwise expressions bind as shifts,
+`&`, `^`, then `|`, all above comparisons. Logical precedence is `not`,
+comparisons, `and`, `xor`, `or`; prefix `not` binds more tightly than comparisons,
+so negate a comparison with `not (a < b)`.
+
+```fidan check=run expect=stdout
+print(4 ^ 2 & 3)          # 4 ^ (2 & 3)
+print((4 ^ 2) & 3)
+assert_eq(8 >> 1 + 1, 2)
+assert_eq(1 | 2 == 3, true)
+assert_eq(false xor true and false, false)
+assert_eq(true or true xor true, true)
+assert_eq(not true xor true, true)
+assert_eq(2 ** 3 ** 2, 64)
+assert_eq(2 ** (3 ** 2), 512)
+```
+
+```text
+6
+2
+```
+
+The published 1.1.0 parser groups `^` with power, `&` and shifts with
+multiplication, and `|` with addition. In particular, `4 ^ 2 & 3` previously
+returned `2`, and now returns `6`. Parenthesize old intentional groupings before
+upgrading. Use the formatter and compiler from the same version: the new formatter
+shares the parser's precedence and preserves meaning through parentheses.
+Power retains its existing left association; this is not a change to `**`.
 
 ## Checked integer arithmetic
 
