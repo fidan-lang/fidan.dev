@@ -72,6 +72,14 @@ npm run e2e
 
 This site is configured for **Cloudflare Pages**.
 
+Pushes to `main` automatically deploy changes to `src/`, `static/`, dependencies,
+Svelte/Vite/TypeScript/Wrangler configuration, the dependency-install hook, bundled
+legal notices, or the deploy/web-check workflows. The existing web checks must
+pass before deployment; no manual approval or confirmation input is required.
+Production deployments run one at a time. A manual run from `main` remains
+available for redeploying. Changes only to repository documentation or test files
+do not trigger deployment.
+
 Relevant files:
 
 - `wrangler.toml`
@@ -83,6 +91,10 @@ The deploy workflow expects:
 
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
+
+The `cloudflare-deploy` GitHub environment must allow `main` without required
+reviewers or a wait timer. Check the deployment workflow contract with
+`python scripts/check-deploy-workflow.py` (PyYAML 6.0.3, also used by docs CI).
 
 ## Repo Scope
 
