@@ -150,7 +150,7 @@
           </p>
           <a
             class="text-sm font-semibold text-[var(--color-primary-light)] underline"
-            href="https://github.com/fidan-lang/fidan/blob/main/docs/COMPILER_GROUNDED_AI_QUICKSTART.md"
+            href="https://docs.fidan.dev/tools/compiler-grounded-ai-quickstart"
           >
             Follow the reproducible AI quickstart
           </a>
@@ -318,7 +318,7 @@
         ·
         <a
           class="text-[var(--color-primary-light)] underline"
-          href="https://github.com/fidan-lang/fidan/blob/main/docs/COMPILER_GROUNDED_AI_QUICKSTART.md"
+          href="https://docs.fidan.dev/tools/compiler-grounded-ai-quickstart"
           >Compiler-grounded AI quickstart</a
         >
       </p>

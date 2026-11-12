@@ -8,7 +8,9 @@ function escapeRegex(value: string): string {
 test("marketing home renders", async ({ page }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: /expressive code\. native software\./i }),
+    page.getByRole("heading", {
+      name: "Write code. Give AI compiler context.",
+    }),
   ).toBeVisible();
   await expect(page.getByTestId("ambient-scene")).toBeVisible();
   await expect(page.getByTestId("proof-stat-panel")).toHaveCount(4);

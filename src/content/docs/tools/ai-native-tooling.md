@@ -10,6 +10,8 @@ order: 345
 
 Fidan's AI workflows are built around compiler-derived context.
 
+Start with the [compiler-grounded AI quickstart](/docs/tools/compiler-grounded-ai-quickstart) for a runnable example, deterministic analysis without a provider, and optional AI Analysis Helper 1.0.6 setup.
+
 That matters because the model is not asked to guess the program from raw text alone. The toolchain can provide the selected source range, diagnostics, inferred types, reads and writes, related symbols, call graph, type map, and a static runtime trace.
 
 ## Install the AI analysis toolchain

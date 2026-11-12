@@ -213,7 +213,7 @@ export const marketingSections = {
   whyIntro:
     "Fidan pairs an expressive language with compiler-derived program facts that AI tools can use. Explore the analysis first, then native execution, editor support and packages.",
   reliability:
-    "AI-native means giving development tools access to diagnostics, inferred types, symbols, reads and writes, call graphs and static traces. Explain, fix and improve can work from that structured compiler knowledge alongside source text.",
+    "Use MCP to inspect symbols, reads and writes, call graphs and static traces from your AI client. Review suggested fixes before applying them, then check and test your code: compiler context does not guarantee that model edits preserve behavior.",
   ecosystem:
     "Move from editor feedback to packages and native libraries without leaving the ecosystem: LSP support, DAL, a REPL, build tools and @extern interop are part of the same development story.",
 } as const;

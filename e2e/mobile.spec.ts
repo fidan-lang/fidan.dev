@@ -62,7 +62,7 @@ test.describe("mobile layout", () => {
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
-        name: /expressive code\. native software\./i,
+        name: "Write code. Give AI compiler context.",
       }),
     ).toBeVisible();
     await expectNoHorizontalOverflow(page);

@@ -133,16 +133,32 @@ test("documentation tabs support keyboard navigation and roving focus", async ({
   await expect(second).toHaveAttribute("tabindex", "-1");
 });
 
-test("homepage leads with AI-native/native-first benefits for Python, Rust and Go", async ({
+test("homepage leads with compiler-grounded AI and native benefits for Python, Rust and Go", async ({
   page,
 }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     "content",
-    /AI-native, native-first/,
+    "Open-source programming language with compiler-grounded AI tooling: structured diagnostics, inferred types, static analysis, native backends and MCP integration.",
   );
   await expect(page.locator("h1")).toContainText(
-    "AI-native from the compiler up",
+    "Write code. Give AI compiler context.",
+  );
+  await expect(page).toHaveTitle(
+    "Fidan | Compiler-Grounded AI and Native Programming",
+  );
+  const features = page.locator("#why-fidan");
+  await expect(features.getByRole("heading", { level: 2 })).toHaveText(
+    "Compiler context for AI. Native tooling for developers.",
+  );
+  await expect(features.getByRole("heading", { level: 3 })).toHaveText([
+    "Native builds, one continuous workflow",
+    "Concurrency that reads like intent",
+    "Interop that does not fight you",
+    "Ask the compiler, not just the source text",
+  ]);
+  await expect(features).toContainText(
+    "Compiler-derived types, diagnostics, symbols and call relationships",
   );
   for (const language of ["Python", "Rust", "Go"]) {
     await expect(
