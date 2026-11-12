@@ -307,7 +307,7 @@ try {
       );
     },
   );
-  test("landing-page concurrency program executes with the actual candidate", () => {
+  test("landing-page check expression executes with the actual candidate", () => {
     const { heroSnippet } = loadTypeScript(
       new URL("../src/lib/data/site.ts", import.meta.url),
     );
@@ -325,16 +325,13 @@ try {
           env: { ...process.env, FIDAN_HOME: path.join(root, ".fidan") },
         },
       );
-      assert.equal(result.status, 0, result.error || result.stderr);
+      assert.equal(
+        result.status,
+        0,
+        `Hero example failed with JIT threshold ${threshold}: ${result.error || result.stderr}\n${result.stdout}`,
+      );
       const lines = result.stdout.trim().split(/\r?\n/);
-      assert.deepEqual(lines.slice(0, 2).sort(), [
-        "native work",
-        "real threads",
-      ]);
-      assert.deepEqual(lines.slice(2), [
-        "cooperative scheduling",
-        "Compiler-grounded tooling.",
-      ]);
+      assert.deepEqual(lines, ["Wednesday"], `JIT threshold ${threshold}`);
     }
   });
 } finally {

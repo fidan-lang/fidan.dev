@@ -558,6 +558,26 @@ button:focus-visible .arrow-icon--left {
   min-width: 0;
 }
 
+.code-window-shell .code-block--prompted {
+  width: 100%;
+}
+
+.code-window-shell .code-line {
+  grid-template-columns: 3ch minmax(0, 1fr);
+}
+
+.code-window-shell .code-line__content {
+  grid-column: 2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code-line--comment {
+  color: var(--color-text-muted);
+  filter: saturate(0);
+  font-style: italic;
+}
+
 .doc-callout {
   margin: 1.4rem 0;
   overflow: hidden;

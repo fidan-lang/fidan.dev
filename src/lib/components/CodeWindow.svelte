@@ -78,9 +78,15 @@
       class:py-4={compact}
       class:py-6={!compact}>{#if prompt}<code
           class="language-{language} code-block--prompted"
-          >{#each promptedLines as line}<span class="code-line"
-              ><span class="code-prompt" aria-hidden="true">{prompt}</span><span
-                class="code-line__content">{line || "\u00A0"}</span
+          >{#each promptedLines as line}{@const isComment = line
+              .trimStart()
+              .startsWith("#")}<span
+              class="code-line"
+              class:code-line--comment={isComment}
+              >{#if line.trim() && !isComment}<span
+                  class="code-prompt"
+                  aria-hidden="true">{prompt}</span
+                >{/if}<span class="code-line__content">{line || "\u00A0"}</span
               ></span
             >{/each}</code
         >{:else}<code class="language-{language}">{normalizedCode}</code
