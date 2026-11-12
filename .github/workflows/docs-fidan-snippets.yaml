@@ -94,6 +94,7 @@ jobs:
         run: |
           python -m pip install PyYAML==6.0.3
           python ../audited-setup/scripts/check-workflows.py . ../audited-setup
+          python scripts/check-deploy-workflow.py
       - run: npm ci
       - name: Compiler-owned API and CLI reference drift checks
         run: |

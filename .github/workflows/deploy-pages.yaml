@@ -1,16 +1,39 @@
 name: Deploy to Cloudflare Pages
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "static/**"
+      - "scripts/install-git-hooks.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - "svelte.config.js"
+      - "tsconfig.json"
+      - "vite.config.mts"
+      - "wrangler.toml"
+      - "LICENSE"
+      - "NOTICE"
+      - ".github/workflows/_web-checks.yaml"
+      - ".github/workflows/deploy-pages.yaml"
   workflow_dispatch:
-    inputs:
-      confirmation:
-        type: string
-        required: true
-        description: Enter DEPLOY_APPROVED_PAGES only after owner approval
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-pages-production
+  cancel-in-progress: false
 
 jobs:
+  checks:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/_web-checks.yaml
+
   deploy:
-    if: github.ref == 'refs/heads/main' && inputs.confirmation == 'DEPLOY_APPROVED_PAGES'
+    needs: checks
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: cloudflare-deploy
     permissions:
