@@ -6,6 +6,7 @@
     compareRows,
     featureCards,
     heroSnippet,
+    aiDemoCommands,
     installCommands,
     marketingSections,
     primaryNav,
@@ -22,9 +23,7 @@
 
 <svelte:head>
   <title
-    >{data.host === "docs"
-      ? "Fidan Docs"
-      : marketingSections.seoTitle}</title
+    >{data.host === "docs" ? "Fidan Docs" : marketingSections.seoTitle}</title
   >
   <meta
     name="description"
@@ -59,8 +58,12 @@
           <h1
             class="mb-6 max-w-3xl text-4xl leading-[0.94] font-semibold tracking-[-0.06em] text-white sm:text-6xl lg:text-7xl"
           >
-            {marketingSections.heroTitle} <span class="gradient-text"
-              ><span class="whitespace-nowrap">{marketingSections.heroAccentLabel}</span> {marketingSections.heroAccent}</span
+            {marketingSections.heroTitle}
+            <span class="gradient-text"
+              ><span class="whitespace-nowrap"
+                >{marketingSections.heroAccentLabel}</span
+              >
+              {marketingSections.heroAccent}</span
             >
           </h1>
           <p
@@ -111,7 +114,54 @@
           </div>
         </div>
         <div class="animate-fade-up min-w-0 [animation-delay:120ms]">
-          <CodeWindow title="concurrency_showcase.fdn" code={heroSnippet} />
+          <CodeWindow title="check_val.fdn" code={heroSnippet} />
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="compiler-ai"
+      class="border-y border-white/6 bg-[rgba(12,18,13,0.65)]"
+    >
+      <div
+        class="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8"
+      >
+        <div class="min-w-0">
+          <div
+            class="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary-light)]"
+          >
+            Compiler-grounded AI in practice
+          </div>
+          <h2
+            class="mb-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl"
+          >
+            Ask the compiler. Then ask your AI.
+          </h2>
+          <p class="mb-5 text-base leading-8 text-[var(--color-text-muted)]">
+            Fidan exposes structured compiler diagnostics, inferred types and
+            source-level relationships. Try deterministic analysis without an
+            API key, then optionally connect a model for explain, fix and
+            improve.
+          </p>
+          <p class="mb-5 text-sm leading-7 text-[var(--color-text-muted)]">
+            These are static analyses, not live runtime inspection. Run the
+            example commands from a checkout of the Fidan repository. An AI
+            provider is needed only for the model-assisted step.
+          </p>
+          <a
+            class="text-sm font-semibold text-[var(--color-primary-light)] underline"
+            href="https://github.com/fidan-lang/fidan/blob/main/docs/COMPILER_GROUNDED_AI_QUICKSTART.md"
+          >
+            Follow the reproducible AI quickstart
+          </a>
+        </div>
+        <div class="min-w-0">
+          <CodeWindow
+            title="Compiler-grounded AI CLI demo"
+            code={aiDemoCommands}
+            language="bash"
+            compact={true}
+          />
         </div>
       </div>
     </section>
@@ -253,14 +303,24 @@
           Get from zero to native output quickly.
         </h2>
         <p class="text-base leading-8 text-[var(--color-text-muted)]">
-          Install the released CLI and start with a real program. For upcoming
-          callable, decorator and args APIs, follow the exact-source candidate
-          guide instead of assuming the stable installer includes them.
+          Install the published Fidan CLI and start with a real program.
+          Deterministic compiler analysis does not require an AI provider;
+          model-assisted workflows use an optional toolchain and configured
+          provider.
         </p>
       </div>
       <p class="mb-8 text-sm leading-7 text-[var(--color-text-muted)]">
-        <a class="text-[var(--color-primary-light)] underline" href="https://docs.fidan.dev/getting-started/first-program">Write your first program</a>
-        · <a class="text-[var(--color-primary-light)] underline" href="https://docs.fidan.dev/getting-started/release-candidate">Stable and candidate compatibility</a>
+        <a
+          class="text-[var(--color-primary-light)] underline"
+          href="https://docs.fidan.dev/getting-started/first-program"
+          >Write your first program</a
+        >
+        ·
+        <a
+          class="text-[var(--color-primary-light)] underline"
+          href="https://github.com/fidan-lang/fidan/blob/main/docs/COMPILER_GROUNDED_AI_QUICKSTART.md"
+          >Compiler-grounded AI quickstart</a
+        >
       </p>
       <div class="grid gap-5 lg:grid-cols-3">
         {#each installCommands as install}

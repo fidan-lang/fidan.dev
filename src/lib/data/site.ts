@@ -64,26 +64,23 @@ export const footerColumns = [
 ] satisfies Array<{ title: string; links: NavLink[] }>;
 
 export const heroSnippet = `
-use std.async
-use std.io
-
-action main {
-    parallel {
-        task { io.print("native work") }
-        task { io.print("real threads") }
-    }
-
-    concurrent {
-        task {
-            await async.sleep(40)
-            io.print("cooperative scheduling")
-        }
-    }
-
-    io.print("Compiler-grounded tooling.")
+var day = 3
+var day_name = check day {
+    1 => "Monday"
+    2 => "Tuesday"
+    3 => "Wednesday"
+    _ => "Weekend"
 }
+print("{day_name}")`;
 
-main()`;
+// Commands are run from a clone of fidan-lang/fidan after installing Fidan.
+export const aiDemoCommands = `fidan check test/examples/check_val.fdn
+fidan explain test/examples/check_val.fdn --line 2
+
+# Optional: a configured provider is required for model-assisted explain.
+fidan toolchain add ai-analysis --version 1.0.6
+fidan exec ai setup
+fidan explain test/examples/check_val.fdn --line 2 --ai "Explain this branch selection"`;
 
 export const featureCards = [
   {
@@ -105,10 +102,10 @@ export const featureCards = [
     eyebrow: "Interop",
   },
   {
-    title: "AI that starts with compiler knowledge",
+    title: "Ask the compiler, not just the source text",
     description:
-      "Give explain, fix and improve workflows structured diagnostics, types, symbols and program relationships. Formatting, LSP, tracing and replay stay close at hand.",
-    eyebrow: "Tooling",
+      "Compiler-derived types, diagnostics, symbols and call relationships provide structured context to AI explain, fix and improve workflows and MCP tools.",
+    eyebrow: "AI tooling",
   },
 ] as const;
 
@@ -203,18 +200,18 @@ export const installCommands = [
 ] as const;
 
 export const marketingSections = {
-  seoTitle: "Fidan — AI-Native, Native-First Programming",
+  seoTitle: "Fidan | Compiler-Grounded AI and Native Programming",
   seoDescription:
-    "An AI-native, native-first programming language with expressive syntax, native execution backends and compiler-grounded AI tooling in one developer ecosystem.",
-  heroBadge: "AI-native by design. Native-first by architecture.",
-  heroTitle: "Expressive code. Native software.",
-  heroAccentLabel: "AI-native",
-  heroAccent: "from the compiler up.",
+    "Open-source programming language with compiler-grounded AI tooling: structured diagnostics, inferred types, static analysis, native backends and MCP integration.",
+  heroBadge: "Compiler-grounded AI. Native execution. Open source.",
+  heroTitle: "Write code. Give AI",
+  heroAccentLabel: "compiler",
+  heroAccent: "context.",
   heroLead:
-    "Write human-readable code and take it from a quick run to a native binary in one toolchain. Fidan connects expressive syntax, native execution and an integrated developer ecosystem with AI tools that can work from compiler knowledge, alongside source text.",
-  whyHeading: "More from your language. Less around it.",
+    "What if your AI assistant could query the compiler instead of relying on source text alone? Fidan combines compiler-derived types, diagnostics and program relationships with AI explain/fix workflows, MCP tools and native execution backends.",
+  whyHeading: "Compiler context for AI. Native tooling for developers.",
   whyIntro:
-    "Fidan brings expressive code, native execution and compiler-grounded AI into one developer ecosystem. Spend less effort connecting tools and more time expressing what your software should do.",
+    "Fidan pairs an expressive language with compiler-derived program facts that AI tools can use. Explore the analysis first, then native execution, editor support and packages.",
   reliability:
     "AI-native means giving development tools access to diagnostics, inferred types, symbols, reads and writes, call graphs and static traces. Explain, fix and improve can work from that structured compiler knowledge alongside source text.",
   ecosystem:
